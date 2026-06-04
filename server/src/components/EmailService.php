@@ -13,15 +13,15 @@ class EmailService {
         $this->mailer = new PHPMailer(true);
         // Server settings
         $this->mailer->isSMTP();
-        $this->mailer->Host       = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
+        $this->mailer->Host       = $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST') ?: 'smtp.gmail.com';
         $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = getenv('SMTP_USER') ?: 'rhankbrguwdev@gmail.com';
-        $this->mailer->Password   = getenv('SMTP_PASS') ?: 'avyn orvh unwg pnrd';
-        $this->mailer->SMTPSecure = getenv('SMTP_SECURE') ?: PHPMailer::ENCRYPTION_SMTPS;
-        $this->mailer->Port       = getenv('SMTP_PORT') ?: 465;
+        $this->mailer->Username   = $_ENV['SMTP_USER'] ?? getenv('SMTP_USER');
+        $this->mailer->Password   = $_ENV['SMTP_PASS'] ?? getenv('SMTP_PASS');
+        $this->mailer->SMTPSecure = $_ENV['SMTP_SECURE'] ?? getenv('SMTP_SECURE') ?: PHPMailer::ENCRYPTION_SMTPS;
+        $this->mailer->Port       = $_ENV['SMTP_PORT'] ?? getenv('SMTP_PORT') ?: 465;
 
         // Recipients
-        $this->mailer->setFrom(getenv('SMTP_FROM') ?: 'rhankbrguwdev@gmail.com', getenv('SMTP_FROM_NAME') ?: 'Tim El-Ngadu');
+        $this->mailer->setFrom($_ENV['SMTP_FROM'] ?? getenv('SMTP_FROM') ?: 'noreply@example.com', $_ENV['SMTP_FROM_NAME'] ?? getenv('SMTP_FROM_NAME') ?: 'Tim El-Ngadu');
     }
 
     private function getEmailTemplate($title, $content, $actionText = null, $actionUrl = null) {
@@ -89,7 +89,9 @@ class EmailService {
             return true;
         } catch (\Throwable $e) {
             // Log error silently to not break JSON response
-            error_log("Email tidak dapat dikirim. Pesan Error: {$this->mailer->ErrorInfo} | Exception: {$e->getMessage()}");
+            $err = "Email tidak dapat dikirim. Pesan Error: {$this->mailer->ErrorInfo} | Exception: {$e->getMessage()}\n";
+            file_put_contents(__DIR__ . '/../../../email_error.log', $err, FILE_APPEND);
+            error_log($err);
             return false;
         }
     }

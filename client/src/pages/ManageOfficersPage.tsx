@@ -1,4 +1,5 @@
 import { useManageOfficers } from "@/hooks/useManageOfficers";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Loader2, PlusCircle, ShieldCheck } from "lucide-react";
@@ -25,8 +26,11 @@ const PageHeader = ({ onAdd }: { onAdd: () => void }) => (
 );
 
 const LoadingState = () => (
- <div className="flex justify-center p-12">
- <Loader2 className="h-8 w-8 animate-spin text-primary" />
+ <div className="space-y-4 p-4">
+ <Skeleton className="h-10 w-full" />
+ <Skeleton className="h-24 w-full" />
+ <Skeleton className="h-24 w-full" />
+ <Skeleton className="h-24 w-full" />
  </div>
 );
 

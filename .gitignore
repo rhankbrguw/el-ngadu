@@ -1,7 +1,9 @@
 # Databases
 *.sqlite
+*.db
 el_ngadu.sqlite
 server/el_ngadu.sqlite
+server/elngadu.db
 
 # Node
 client/node_modules/

@@ -55,5 +55,5 @@ class AppMessages {
     
     public const EMAIL_TITLE_OTP = 'Kode OTP Login Anda';
     public const EMAIL_SUBJECT_OTP = 'Kode OTP Login El-Ngadu';
-    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 20px 0;"><h2 style="letter-spacing: 5px; font-size: 32px; padding: 15px; border-radius: 8px; border: 1px solid currentColor; display: inline-block;">%s</h2></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
+    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: #0f172a; color: #eab308; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
 }

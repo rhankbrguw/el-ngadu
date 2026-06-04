@@ -1,4 +1,5 @@
 import { useManageCitizens } from "@/hooks/useManageCitizens";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Loader2, Users } from "lucide-react";
@@ -20,8 +21,11 @@ const PageHeader = () => (
 );
 
 const LoadingState = () => (
- <div className="flex justify-center items-center p-5 min-h-[200px]">
- <Loader2 className="h-8 w-8 animate-spin text-primary" />
+ <div className="space-y-4 p-4">
+ <Skeleton className="h-10 w-full" />
+ <Skeleton className="h-20 w-full" />
+ <Skeleton className="h-20 w-full" />
+ <Skeleton className="h-20 w-full" />
  </div>
 );
 

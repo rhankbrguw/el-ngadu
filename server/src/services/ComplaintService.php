@@ -49,7 +49,7 @@ class ComplaintService {
                     $comp['email'], 
                     sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_STATUS ?? "Status: %s", strtoupper($status)), 
                     AppMessages::EMAIL_TITLE_COMPLAINT_STATUS ?? "Status Diubah", 
-                    sprintf(AppMessages::EMAIL_CONTENT_COMPLAINT_STATUS ?? "Status pengaduan '%s' Anda diubah menjadi %s", htmlspecialchars($comp['judul']), strtoupper($status)), 
+                    sprintf(AppMessages::EMAIL_CONTENT_COMPLAINT_STATUS ?? "Status pengaduan '%s' Anda diubah menjadi %s", htmlspecialchars($comp['nama']), htmlspecialchars($comp['judul']), strtoupper($status)), 
                     AppMessages::EMAIL_BTN_VIEW_COMPLAINT ?? "Lihat Pengaduan", 
                     rtrim($base, '/') . "/dashboard/history/$id"
                 );
@@ -87,7 +87,7 @@ class ComplaintService {
         foreach ($officers as $off) {
             NotificationManager::create($pdo, $off['id_petugas'], 'petugas', $msg, "/dashboard/complaints/$id");
             if (!empty($off['email'])) {
-                $email->sendEmail($off['email'], sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_NEW ?? "Pengaduan Masuk: %s", $title), AppMessages::EMAIL_TITLE_COMPLAINT_NEW ?? "Pengaduan Baru", sprintf(AppMessages::EMAIL_CONTENT_COMPLAINT_NEW ?? "Judul: %s\nKategori: %s", $title, $cat), AppMessages::EMAIL_BTN_VIEW_COMPLAINT ?? "Lihat", $url);
+                $email->sendEmail($off['email'], sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_NEW ?? "Pengaduan Masuk: %s", $title), AppMessages::EMAIL_TITLE_COMPLAINT_NEW ?? "Pengaduan Baru", sprintf(AppMessages::EMAIL_CONTENT_COMPLAINT_NEW ?? "Judul: %s\nKategori: %s\nPelapor: %s", $title, $cat, $user), AppMessages::EMAIL_BTN_VIEW_COMPLAINT ?? "Lihat", $url);
             }
         }
     }

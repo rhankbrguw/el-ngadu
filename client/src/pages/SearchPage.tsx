@@ -1,4 +1,5 @@
 import type { Petugas, Masyarakat, PengaduanWithPelapor } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Loader2, Search } from "lucide-react";
 import { useSearch } from "@/hooks/useSearch";
 import OfficerResults from "@/components/admin/officers/OfficerResults";
@@ -6,8 +7,13 @@ import CitizenResults from "@/components/admin/citizens/CitizenResults";
 import ComplaintResults from "@/components/complaints/ComplaintResults";
 
 const LoadingState = () => (
- <div className="flex justify-center items-center py-12">
- <Loader2 className="h-8 w-8 animate-spin text-primary" />
+ <div className="space-y-4 py-8">
+ <Skeleton className="h-12 w-full" />
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+ <Skeleton className="h-32 w-full" />
+ <Skeleton className="h-32 w-full" />
+ <Skeleton className="h-32 w-full" />
+ </div>
  </div>
 );
 
