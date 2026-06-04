@@ -19,7 +19,7 @@ try {
     $id_value = null;
 
     // Check masyarakat
-    $sql = "SELECT nik, reset_expires_at FROM masyarakat WHERE reset_token = ?";
+    $sql = "SELECT nik, reset_expires_at, password FROM masyarakat WHERE reset_token = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$token]);
     $user = $stmt->fetch();
@@ -31,9 +31,12 @@ try {
         if (strtotime($user['reset_expires_at']) < time()) {
             throw new \Core\ValidationException("Tautan reset password sudah kedaluwarsa.");
         }
+        if (password_verify($password, $user['password'])) {
+            throw new \Core\ValidationException("Password baru tidak boleh sama dengan password sebelumnya.");
+        }
     } else {
         // Check petugas
-        $sql = "SELECT id_petugas, reset_expires_at FROM petugas WHERE reset_token = ?";
+        $sql = "SELECT id_petugas, reset_expires_at, password FROM petugas WHERE reset_token = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$token]);
         $petugas = $stmt->fetch();
@@ -44,6 +47,9 @@ try {
             $id_value = $petugas['id_petugas'];
             if (strtotime($petugas['reset_expires_at']) < time()) {
                 throw new \Core\ValidationException("Tautan reset password sudah kedaluwarsa.");
+            }
+            if (password_verify($password, $petugas['password'])) {
+                throw new \Core\ValidationException("Password baru tidak boleh sama dengan password sebelumnya.");
             }
         } else {
             throw new \Core\ValidationException("Tautan reset password tidak valid.");

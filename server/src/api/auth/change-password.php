@@ -46,6 +46,10 @@ try {
     throw new Exception("Password lama yang Anda masukkan salah.", 401);
   }
 
+  if (password_verify($input['new_password'], $user_data['password'])) {
+    throw new Exception("Password baru tidak boleh sama dengan password saat ini.", 400);
+  }
+
   $new_password_hash = password_hash($input['new_password'], PASSWORD_DEFAULT);
   $sql_update = "UPDATE {$table} SET password = ? WHERE {$id_column} = ?";
   $stmt_update = $pdo->prepare($sql_update);

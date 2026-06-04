@@ -22,37 +22,61 @@ $session_update_data = [];
 if ($user_type === 'masyarakat') {
   $table = 'masyarakat';
   $id_column = 'nik';
-  if (isset($input['nama'])) {
-    $fields[] = 'nama = ?';
-    $params[] = trim($input['nama']);
-    $session_update_data['nama'] = trim($input['nama']);
-  }
 } elseif ($user_type === 'petugas') {
   $table = 'petugas';
   $id_column = 'id_petugas';
-  if (isset($input['nama_petugas'])) {
-    $fields[] = 'nama_petugas = ?';
-    $params[] = trim($input['nama_petugas']);
-    $session_update_data['nama_petugas'] = trim($input['nama_petugas']);
-  }
 } else {
   throw new \Core\ValidationException(\Core\Messages::ERR_TIPE_PENGGUNA_TIDAK_VALID);
 }
 
+$old_sql = "SELECT * FROM {$table} WHERE {$id_column} = ?";
+$old_stmt = $pdo->prepare($old_sql);
+$old_stmt->execute([$user_id]);
+$old_data = $old_stmt->fetch();
+
+if (!$old_data) {
+  throw new \Core\NotFoundException("Data pengguna tidak ditemukan.");
+}
+
+$has_changes = false;
+
+if ($user_type === 'masyarakat') {
+  if (isset($input['nama']) && trim($input['nama']) !== $old_data['nama']) {
+    $fields[] = 'nama = ?';
+    $params[] = trim($input['nama']);
+    $session_update_data['nama'] = trim($input['nama']);
+    $has_changes = true;
+  }
+} elseif ($user_type === 'petugas') {
+  if (isset($input['nama_petugas']) && trim($input['nama_petugas']) !== $old_data['nama_petugas']) {
+    $fields[] = 'nama_petugas = ?';
+    $params[] = trim($input['nama_petugas']);
+    $session_update_data['nama_petugas'] = trim($input['nama_petugas']);
+    $has_changes = true;
+  }
+}
+
 // Columns that can be updated by all roles
-if (isset($input['username'])) {
+if (isset($input['username']) && trim($input['username']) !== $old_data['username']) {
   $fields[] = 'username = ?';
   $params[] = trim($input['username']);
   $session_update_data['username'] = trim($input['username']);
+  $has_changes = true;
 }
-if (isset($input['telp'])) {
+if (isset($input['telp']) && trim($input['telp']) !== $old_data['telp']) {
   $fields[] = 'telp = ?';
   $params[] = trim($input['telp']);
+  $has_changes = true;
 }
-if (isset($input['email'])) {
+if (isset($input['email']) && trim($input['email']) !== $old_data['email']) {
   $fields[] = 'email = ?';
   $params[] = trim($input['email']);
   $session_update_data['email'] = trim($input['email']);
+  $has_changes = true;
+}
+
+if (!$has_changes) {
+  throw new \Core\ValidationException("Tidak ada perubahan. Data yang Anda masukkan sama dengan data saat ini.");
 }
 
 if (empty($fields)) {
