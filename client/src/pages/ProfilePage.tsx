@@ -13,6 +13,8 @@ import PasswordChangeForm from "@/components/profile/PasswordChangeForm";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
 import ProfileDetailCard from "@/components/profile/ProfileDetailCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 
 
@@ -88,7 +90,7 @@ export default function ProfilePage() {
  <TabsContent value="security" className="m-0 space-y-4 focus-visible:outline-none focus-visible:ring-0">
  <Card>
  <CardHeader>
- <CardTitle>Ubah Detail Profil</CardTitle>
+ <CardTitle>{APP_MESSAGES.PROFILE.EDIT_TITLE}</CardTitle>
  <CardDescription>
  Perbarui informasi pribadi Anda.
  </CardDescription>
@@ -100,7 +102,7 @@ export default function ProfilePage() {
 
  <Card>
  <CardHeader>
- <CardTitle>Ubah Kata Sandi</CardTitle>
+ <CardTitle>{APP_MESSAGES.PROFILE.EDIT_PASSWORD}</CardTitle>
  <CardDescription>
  Ganti kata sandi secara berkala untuk menjaga keamanan akun Anda.
  </CardDescription>

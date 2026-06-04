@@ -43,17 +43,17 @@ export default function CitizenTable({
  <Table>
  <TableHeader>
  <TableRow>
- <TableHead className="text-center">Nama</TableHead>
- <TableHead className="text-center">Username</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMMON.NAME}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
  <TableHead className="text-center hidden lg:table-cell text-center">
  NIK
  </TableHead>
  <TableHead className="text-center hidden lg:table-cell text-center">
  Telepon
  </TableHead>
- <TableHead className="text-center">Tanggal Daftar</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMMON.REGISTER_DATE}</TableHead>
  {(onDelete || onEdit) && (
- <TableHead className="text-center w-[100px]">Aksi</TableHead>
+ <TableHead className="text-center w-[100px]">{APP_MESSAGES.COMMON.ACTION}</TableHead>
  )}
  </TableRow>
  </TableHeader>
@@ -100,7 +100,7 @@ export default function CitizenTable({
  )}
  {onDelete && (
  <ConfirmationDialog
- title="Anda Yakin?"
+ title={APP_MESSAGES.COMMON.ARE_YOU_SURE}
  description={`Akun "${m.nama}" akan dihapus permanen.`}
  onConfirm={() => onDelete(m.nik, m.nama)}
  confirmText="Ya, Hapus"

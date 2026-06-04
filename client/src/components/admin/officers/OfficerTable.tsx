@@ -11,6 +11,8 @@ import { Phone, Shield, User as UserIcon, Mail } from "lucide-react";
 import type { Petugas } from "@/types";
 import OfficerActionDropdown from "./OfficerActionDropdown";
 import { getLevelVariant, formatLevel } from "@/lib/officerUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface OfficerTableProps {
  petugasList: Petugas[];
@@ -28,13 +30,13 @@ export default function OfficerTable({
  <Table>
  <TableHeader>
  <TableRow>
- <TableHead className="text-center">Nama Petugas</TableHead>
- <TableHead className="text-center">Username</TableHead>
- <TableHead className="text-center">Email</TableHead>
- <TableHead className="text-center">Telepon</TableHead>
- <TableHead className="text-center">Level</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.OFFICER.NAME}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.AUTH.EMAIL_LABEL}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMMON.PHONE}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.OFFICER.LEVEL}</TableHead>
  {onEdit && onDelete && (
- <TableHead className="text-center w-[100px]">Aksi</TableHead>
+ <TableHead className="text-center w-[100px]">{APP_MESSAGES.COMMON.ACTION}</TableHead>
  )}
  </TableRow>
  </TableHeader>

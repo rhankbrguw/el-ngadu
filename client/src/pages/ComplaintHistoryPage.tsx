@@ -15,6 +15,8 @@ import { AlertCircle, FileText, History } from "lucide-react";
 import { HistoryTable } from "@/components/history/HistoryTable";
 import { HistoryCards } from "@/components/history/HistoryCards";
 import DataTablePagination from "@/components/common/DataTablePagination";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function ComplaintHistoryPage() {
  const [pengaduan, setPengaduan] = useState<Pengaduan[]>([]);
@@ -101,7 +103,7 @@ export default function ComplaintHistoryPage() {
  <div className="flex items-center gap-4 mb-4">
  <History className="h-7 w-7 text-primary" />
  <div className="space-y-1">
- <h1 className="text-xl sm:text-2xl font-bold tracking-tight">History Pengaduan</h1>
+ <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{APP_MESSAGES.HISTORY.TITLE}</h1>
  <p className="text-sm sm:text-base text-muted-foreground">
  Kelola dan pantau semua pengaduan yang pernah Anda buat.
  </p>
@@ -112,7 +114,7 @@ export default function ComplaintHistoryPage() {
  <CardHeader>
  <div className="flex flex-col gap-y-3 md:flex-row md:items-center md:justify-between">
  <div>
- <CardTitle>Daftar Pengaduan Saya</CardTitle>
+ <CardTitle>{APP_MESSAGES.HISTORY.LIST_TITLE}</CardTitle>
  <CardDescription>
  {pagination
  ? `${pagination.total_records} pengaduan ditemukan.`

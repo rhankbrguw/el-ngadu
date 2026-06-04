@@ -62,7 +62,7 @@ export default function OfficerCards({
  <Edit className="w-4 h-4 mr-2" />{APP_MESSAGES.COMMON.EDIT}</Button>
  
  <ConfirmationDialog
- title="Anda Yakin?"
+ title={APP_MESSAGES.COMMON.ARE_YOU_SURE}
  description={`Akun petugas dengan nama "${petugas.nama_petugas}" akan dihapus secara permanen.`}
  onConfirm={() => onDelete(petugas.id_petugas)}
  confirmText="Ya, Hapus"

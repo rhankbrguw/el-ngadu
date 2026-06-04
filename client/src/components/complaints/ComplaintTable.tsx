@@ -1,6 +1,6 @@
 import type { PengaduanWithPelapor } from "@/types";
-import {
- Table,
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import { Table,
  TableBody,
  TableCell,
  TableHead,
@@ -26,15 +26,15 @@ export default function ComplaintTable({ pengaduanList }: ComplaintTableProps) {
  <TableHeader>
  <TableRow>
  <TableHead className="text-center w-[80px]">ID</TableHead>
- <TableHead className="text-center">Judul</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMPLAINT.TITLE}</TableHead>
  <TableHead className="text-center hidden md:table-cell w-[200px]">
  Pelapor
  </TableHead>
- <TableHead className="text-center w-[120px] text-center">Status</TableHead>
+ <TableHead className="text-center w-[120px] text-center">{APP_MESSAGES.COMPLAINT.STATUS}</TableHead>
  <TableHead className="text-center hidden lg:table-cell w-[150px]">
  Tanggal
  </TableHead>
- <TableHead className="text-center w-[180px] text-center">Aksi</TableHead>
+ <TableHead className="text-center w-[180px] text-center">{APP_MESSAGES.COMMON.ACTION}</TableHead>
  </TableRow>
  </TableHeader>
  <TableBody>

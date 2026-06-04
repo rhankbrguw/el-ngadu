@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { Loader2 } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function PasswordChangeForm() {
  const form = useForm<ChangePasswordPayload>({
@@ -60,7 +62,7 @@ export default function PasswordChangeForm() {
  name="old_password"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Kata Sandi Lama</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.OLD_PASSWORD}</FormLabel>
  <FormControl>
  <PasswordInput placeholder="••••••••" {...field} />
  </FormControl>
@@ -74,7 +76,7 @@ export default function PasswordChangeForm() {
  name="new_password"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Kata Sandi Baru</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.NEW_PASSWORD}</FormLabel>
  <FormControl>
  <PasswordInput
  placeholder="Minimal 8 karakter"

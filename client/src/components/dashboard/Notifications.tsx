@@ -74,7 +74,7 @@ export default function Notifications({
  {unreadCount > 99 ? '99+' : unreadCount}
  </Badge>
  )}
- <span className="sr-only">Notifikasi</span>
+ <span className="sr-only">{APP_MESSAGES.SETTINGS.NOTIFICATIONS}</span>
  </Button>
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end" className="w-80 sm:w-96">

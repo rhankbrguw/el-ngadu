@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User as UserIcon, Settings, LogOut } from "lucide-react";
 import type { User } from "@/types";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface UserNavProps {
  user: User | null;
@@ -71,7 +73,7 @@ export default function UserNav({ user, profileProgress, onLogout }: UserNavProp
  </DropdownMenuItem>
  <DropdownMenuItem onSelect={() => navigate("/dashboard/settings")}>
  <Settings className="mr-2 h-4 w-4" />
- <span>Pengaturan</span>
+ <span>{APP_MESSAGES.SETTINGS.TITLE}</span>
  </DropdownMenuItem>
  </DropdownMenuGroup>
  <DropdownMenuSeparator />

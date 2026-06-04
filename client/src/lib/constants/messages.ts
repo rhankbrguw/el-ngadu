@@ -13,6 +13,19 @@ export const APP_MESSAGES = {
     NO_DATA: "Belum ada data",
     SUCCESS: "Berhasil",
     FAILED: "Gagal",
+    BACK_TO_DASHBOARD: "Kembali ke Dashboard",
+    NOT_FOUND: "Halaman Tidak Ditemukan",
+    BACK_TO_HOME: "Kembali ke Beranda",
+    NAME: "Nama",
+    NIK: "NIK",
+    PHONE: "Telepon",
+    REGISTER_DATE: "Tanggal Daftar",
+    ACTION: "Aksi",
+    ACCESS_DENIED: "Akses Ditolak",
+    WAIT: "Tunggu Sebentar..",
+    MESSAGE: "Pesan",
+    ARE_YOU_SURE: "Anda Yakin?",
+    SEARCH_PLACEHOLDER: "Cari..."
   },
   SEARCH: {
     TITLE: "Hasil Pencarian",
@@ -38,6 +51,9 @@ export const APP_MESSAGES = {
     RETRY: "Coba Lagi",
     EMPTY: "Belum ada data petugas yang tersedia.",
     ADD: "Tambah Petugas",
+    NAME: "Nama Petugas",
+    LEVEL: "Level",
+    MANAGE: "Kelola Petugas"
   },
   AUTH: {
     LOGIN_TITLE: "Masuk",
@@ -49,14 +65,25 @@ export const APP_MESSAGES = {
     NAME_LABEL: "Nama Lengkap",
     TELP_LABEL: "Nomor Telepon",
     SUBMIT: "Kirim",
-    LOGOUT: "Keluar"
+    LOGOUT: "Keluar",
+    FORGOT_PASSWORD: "Lupa Password",
+    WELCOME_BACK: "Selamat Datang Kembali!",
+    LOGIN_SUCCESS: "Login Berhasil!",
+    RESET_PASSWORD: "Atur Ulang Password",
+    NEW_PASSWORD: "Kata Sandi Baru",
+    CONFIRM_PASSWORD: "Konfirmasi Kata Sandi",
+    OLD_PASSWORD: "Kata Sandi Lama",
+    USERNAME: "Username",
+    FORGOT_PASSWORD_LINK: "Lupa Password?",
+    REGISTER_LINK: "Daftar di sini"
   },
   DASHBOARD: {
     TITLE: "Dashboard",
     WELCOME: "Selamat Datang",
     TOTAL_CITIZENS: "Total Masyarakat",
     TOTAL_OFFICERS: "Total Petugas",
-    TOTAL_COMPLAINTS: "Total Pengaduan"
+    TOTAL_COMPLAINTS: "Total Pengaduan",
+    QUICK_ACTIONS: "Aksi Cepat"
   },
   LANDING: {
     HERO_TITLE: "Suarakan Aspirasi, Wujudkan Perubahan.",
@@ -64,6 +91,41 @@ export const APP_MESSAGES = {
     HERO_CTA: "Buat Pengaduan Sekarang",
     HERO_SECONDARY_CTA: "Pelajari Alur",
     FOOTER_DESC: "Platform Pengaduan Masyarakat Online.",
-    COPYRIGHT: "Hak Cipta Dilindungi."
+    COPYRIGHT: "Hak Cipta Dilindungi.",
+    CONTACT_US: "Hubungi Kami"
+  },
+  HISTORY: {
+    TITLE: "Riwayat Laporan",
+    DESC: "Kelola dan pantau semua pengaduan yang pernah Anda buat.",
+    LIST_TITLE: "Daftar Pengaduan Saya",
+    CREATE_NEW: "Buat Pengaduan Baru"
+  },
+  COMPLAINT: {
+    MANAGE_TITLE: "Kelola Pengaduan",
+    PROCESS_ACTION: "Tindak Lanjuti",
+    RESPOND_ACTION: "Berikan Tanggapan Akhir",
+    PHOTO_EVIDENCE: "Bukti Foto",
+    OFFICER_RESPONSE: "Response Petugas",
+    VIEW_RESPOND: "Lihat & Tanggapi",
+    TITLE: "Judul",
+    REPORTER: "Pelapor",
+    STATUS: "Status",
+    DATE: "Tanggal",
+    CREATE: "Buat Pengaduan",
+    PROCESS: "Proses Pengaduan"
+  },
+  PROFILE: {
+    EDIT_TITLE: "Ubah Detail Profil",
+    EDIT_PASSWORD: "Ubah Kata Sandi",
+    DETAIL: "Detail Profil"
+  },
+  SETTINGS: {
+    TITLE: "Pengaturan",
+    APPEARANCE: "Tampilan",
+    NOTIFICATIONS: "Notifikasi"
+  },
+  HELP: {
+    TITLE: "Bantuan",
+    GUIDE: "Panduan"
   }
 };

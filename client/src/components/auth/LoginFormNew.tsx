@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { loginSchema } from "@/lib/validators/auth";
 import type { LoginFormValues } from "@/lib/validators/auth";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface LoginFormProps {
  onSubmit: (data: LoginFormValues) => void;
@@ -36,7 +38,7 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
  className="space-y-4"
  >
  <div className="space-y-1.5">
- <Label htmlFor="username" className="text-sm">Username</Label>
+ <Label htmlFor="username" className="text-sm">{APP_MESSAGES.AUTH.USERNAME}</Label>
  <Input
  id="username"
  placeholder="Masukkan username anda"
@@ -49,7 +51,7 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
  </div>
 
  <div className="space-y-1.5">
- <Label htmlFor="password" className="text-sm">Password</Label>
+ <Label htmlFor="password" className="text-sm">{APP_MESSAGES.AUTH.PASSWORD_LABEL}</Label>
  <PasswordInput
  id="password"
  placeholder="Masukkan password anda"

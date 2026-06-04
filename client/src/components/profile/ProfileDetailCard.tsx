@@ -1,4 +1,6 @@
-import { User, Phone, ShieldCheck, Fingerprint, Mail } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import {
+ User, Phone, ShieldCheck, Fingerprint, Mail } from "lucide-react";
 import {
  Card,
  CardContent,
@@ -29,7 +31,7 @@ export default function ProfileDetailCard({ user, isMasyarakat, isPetugas }: { u
  return (
  <Card>
  <CardHeader>
- <CardTitle>Detail Profil</CardTitle>
+ <CardTitle>{APP_MESSAGES.PROFILE.DETAIL}</CardTitle>
  <CardDescription>
  Informasi akun Anda yang terdaftar dalam sistem.
  </CardDescription>

@@ -3,6 +3,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, LogOut, Moon, Sun } from "lucide-react";
 import type { NavItem } from "@/types";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface DashboardSidebarProps {
  navItems: NavItem[];
@@ -78,7 +80,7 @@ export default function DashboardSidebar({ navItems, onLogout }: DashboardSideba
  className="w-full justify-start gap-3 h-10 px-3 text-muted-foreground hover:text-foreground transition-all duration-200 group"
  >
  <HelpCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
- <span>Bantuan</span>
+ <span>{APP_MESSAGES.HELP.TITLE}</span>
  </Button>
 
  <Button

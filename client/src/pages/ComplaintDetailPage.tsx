@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PhotoProofCard } from "@/components/complaint-detail/PhotoProofCard";
 import { ResponseCard } from "@/components/complaint-detail/ResponseCard";
 import { OfficerActionPanel } from "@/components/complaint-detail/OfficerActionPanel";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function ComplaintDetailPage() {
  const {
@@ -42,7 +44,7 @@ export default function ComplaintDetailPage() {
  {error || "Data tidak ditemukan."}
  </p>
  <Button asChild variant="link" className="mt-4" onClick={refetch}>
- <Link to="/dashboard">Kembali ke Dashboard</Link>
+ <Link to="/dashboard">{APP_MESSAGES.COMMON.BACK_TO_DASHBOARD}</Link>
  </Button>
  </div>
  );

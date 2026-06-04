@@ -34,7 +34,7 @@ export default function OfficerActionDropdown({
  <DropdownMenuItem onClick={() => onEdit(petugas)} className="gap-2">
  <Edit className="h-4 w-4" />{APP_MESSAGES.COMMON.EDIT}</DropdownMenuItem>
  <ConfirmationDialog
- title="Anda Yakin?"
+ title={APP_MESSAGES.COMMON.ARE_YOU_SURE}
  description={`Akun petugas dengan nama "${petugas.nama_petugas}" akan dihapus secara permanen.`}
  onConfirm={() => onDelete(petugas.id_petugas)}
  confirmText="Ya, Hapus"

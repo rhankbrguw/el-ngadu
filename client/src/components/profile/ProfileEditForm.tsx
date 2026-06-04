@@ -18,6 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Loader2 } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function ProfileEditForm() {
  const { user, updateUser } = useAuth();
@@ -66,7 +68,7 @@ export default function ProfileEditForm() {
  name="nama"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Nama Lengkap</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.NAME_LABEL}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>
@@ -80,7 +82,7 @@ export default function ProfileEditForm() {
  name="nama_petugas"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Nama Lengkap</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.NAME_LABEL}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>
@@ -94,7 +96,7 @@ export default function ProfileEditForm() {
  name="username"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Username</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.USERNAME}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>
@@ -107,7 +109,7 @@ export default function ProfileEditForm() {
  name="telp"
  render={({ field }) => (
  <FormItem>
- <FormLabel>No. Telepon</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.TELP_LABEL}</FormLabel>
  <FormControl>
  <PhoneInput 
  value={field.value} 
@@ -123,7 +125,7 @@ export default function ProfileEditForm() {
  name="email"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Email</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.EMAIL_LABEL}</FormLabel>
  <FormControl>
  <Input {...field} type="email" placeholder="contoh@email.com" />
  </FormControl>

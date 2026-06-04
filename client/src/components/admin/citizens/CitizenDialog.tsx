@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface CitizenDialogProps {
  masyarakatToEdit: Masyarakat | null;
@@ -87,7 +89,7 @@ export default function CitizenDialog({
  name="nama"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Nama Lengkap</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.NAME_LABEL}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>
@@ -100,7 +102,7 @@ export default function CitizenDialog({
  name="username"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Username</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.USERNAME}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>
@@ -113,7 +115,7 @@ export default function CitizenDialog({
  name="telp"
  render={({ field }) => (
  <FormItem>
- <FormLabel>No. Telepon</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.TELP_LABEL}</FormLabel>
  <FormControl>
  <Input {...field} />
  </FormControl>

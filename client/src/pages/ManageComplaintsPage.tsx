@@ -11,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ComplaintTable from "@/components/complaints/ComplaintTable";
 import ComplaintCards from "@/components/complaints/ComplaintCards";
 import DataTablePagination from "@/components/common/DataTablePagination";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function ManageComplaintsPage() {
  const [pengaduan, setPengaduan] = useState<PengaduanWithPelapor[]>([]);
@@ -63,7 +65,7 @@ export default function ManageComplaintsPage() {
  <div className="flex items-center gap-4 mb-4">
  <ClipboardList className="h-7 w-7 text-primary" />
  <div className="space-y-1">
- <h2 className="text-xl font-bold tracking-tight">Kelola Pengaduan</h2>
+ <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.COMPLAINT.MANAGE_TITLE}</h2>
  <p className="text-muted-foreground">
  Daftar semua pengaduan yang masuk dari masyarakat.
  </p>

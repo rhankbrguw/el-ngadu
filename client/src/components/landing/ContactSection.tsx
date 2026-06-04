@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 const contactInfo = [
  { icon: <MapPin className="h-6 w-6 text-foreground" />, title: "Alamat", content: "Jl. Kelapa Dua, No 16, Jakarta Barat, Indonesia" },
@@ -16,7 +18,7 @@ export function ContactSection() {
  <section id="kontak" className="py-16 bg-card ">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <h2 className="text-2xl font-bold text-foreground mb-4">Hubungi Kami</h2>
+ <h2 className="text-2xl font-bold text-foreground mb-4">{APP_MESSAGES.LANDING.CONTACT_US}</h2>
  <div className="w-24 h-1 bg-secondary mx-auto"></div>
  </div>
  <div className="grid lg:grid-cols-2 gap-12">
@@ -43,15 +45,15 @@ export function ContactSection() {
  <CardContent>
  <form className="space-y-3">
  <div className="grid gap-2">
- <Label htmlFor="name">Nama Lengkap</Label>
+ <Label htmlFor="name">{APP_MESSAGES.AUTH.NAME_LABEL}</Label>
  <Input id="name" type="text" placeholder="Nama Anda" />
  </div>
  <div className="grid gap-2">
- <Label htmlFor="email">Email</Label>
+ <Label htmlFor="email">{APP_MESSAGES.AUTH.EMAIL_LABEL}</Label>
  <Input id="email" type="email" placeholder="email@anda.com" />
  </div>
  <div className="grid gap-2">
- <Label htmlFor="message">Pesan</Label>
+ <Label htmlFor="message">{APP_MESSAGES.COMMON.MESSAGE}</Label>
  <Textarea id="message" placeholder="Tulis pesan Anda di sini..." />
  </div>
  <Button type="submit" className="w-full ">Kirim Pesan</Button>

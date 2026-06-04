@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/form";
 import type { UseFormReturn } from "react-hook-form";
 import type { RegisterFormValues } from "@/lib/validators/auth";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface RegisterFormFieldsProps {
  form: UseFormReturn<RegisterFormValues>;
@@ -91,7 +93,7 @@ export function RegisterFormFields({
  name="email"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Email</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.EMAIL_LABEL}</FormLabel>
  <FormControl>
  <Input
  type="email"

@@ -5,6 +5,8 @@ import {
  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HelpCircle, User, FileText, ShieldCheck } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 const faqItems = [
  {
@@ -50,7 +52,7 @@ export default function HelpPage() {
  <div className="flex items-center gap-4">
  <HelpCircle className="h-7 w-7 text-primary" />
  <div>
- <h2 className="text-xl font-bold tracking-tight">Pusat Bantuan</h2>
+ <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.HELP.TITLE}</h2>
  <p className="text-muted-foreground">
  Temukan jawaban untuk pertanyaan yang sering diajukan di sini.
  </p>

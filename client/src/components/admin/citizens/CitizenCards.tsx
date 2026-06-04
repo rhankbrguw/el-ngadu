@@ -60,7 +60,7 @@ export default function CitizenCards({
  
  {onDelete && (
  <ConfirmationDialog
- title="Anda Yakin?"
+ title={APP_MESSAGES.COMMON.ARE_YOU_SURE}
  description={`Akun masyarakat dengan nama "${m.nama}" akan dihapus secara permanen.`}
  onConfirm={() => onDelete(m.nik, m.nama)}
  confirmText="Ya, Hapus"

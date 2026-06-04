@@ -1,5 +1,7 @@
 import type { Report } from "@/types";
-import { Card, CardContent } from "@/components/ui/card";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import {
+ Card, CardContent } from "@/components/ui/card";
 import {
  Table,
  TableBody,
@@ -28,8 +30,8 @@ export function ReportTable({ laporanList }: ReportTableProps) {
  <TableHeader>
  <TableRow>
  <TableHead className="text-center w-[300px]">Pengaduan</TableHead>
- <TableHead className="text-center w-[180px]">Pelapor</TableHead>
- <TableHead className="text-center w-[120px] text-center">Status</TableHead>
+ <TableHead className="text-center w-[180px]">{APP_MESSAGES.COMPLAINT.REPORTER}</TableHead>
+ <TableHead className="text-center w-[120px] text-center">{APP_MESSAGES.COMPLAINT.STATUS}</TableHead>
  <TableHead className="text-center w-[300px]">Response</TableHead>
  <TableHead className="text-center w-[180px]">Penanggap</TableHead>
  </TableRow>

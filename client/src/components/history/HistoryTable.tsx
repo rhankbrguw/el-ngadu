@@ -1,5 +1,7 @@
 import type { Pengaduan } from "@/types";
-import { Link } from "react-router-dom";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import {
+ Link } from "react-router-dom";
 import {
  Table,
  TableBody,
@@ -28,10 +30,10 @@ export function HistoryTable({ riwayatList }: HistoryTableProps) {
  <TableHeader>
  <TableRow>
  <TableHead className="text-center w-16 text-center">ID</TableHead>
- <TableHead className="text-center">Judul Pengaduan</TableHead>
- <TableHead className="text-center w-32 text-center">Status</TableHead>
- <TableHead className="text-center w-40 text-center">Tanggal</TableHead>
- <TableHead className="text-center w-32 text-center">Aksi</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMPLAINT.TITLE}</TableHead>
+ <TableHead className="text-center w-32 text-center">{APP_MESSAGES.COMPLAINT.STATUS}</TableHead>
+ <TableHead className="text-center w-40 text-center">{APP_MESSAGES.COMPLAINT.DATE}</TableHead>
+ <TableHead className="text-center w-32 text-center">{APP_MESSAGES.COMMON.ACTION}</TableHead>
  </TableRow>
  </TableHeader>
  <TableBody>

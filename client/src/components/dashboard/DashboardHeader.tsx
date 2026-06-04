@@ -8,6 +8,8 @@ import MobileSheet from "./MobileSheet";
 import Notifications from "./Notifications";
 import UserNav from "./UserNav";
 import type { User, Notification, NavItem, Pagination } from "@/types";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface DashboardHeaderProps {
  user: User | null;
@@ -41,7 +43,7 @@ export default function DashboardHeader({
  const [searchParams] = useSearchParams();
 
  const [searchQuery, setSearchQuery] = useState("");
- const [searchPlaceholder, setSearchPlaceholder] = useState("Cari...");
+ const [searchPlaceholder, setSearchPlaceholder] = useState(APP_MESSAGES.COMMON.SEARCH_PLACEHOLDER);
  const [searchContext, setSearchContext] = useState("pengaduan");
 
  useEffect(() => {
@@ -67,7 +69,7 @@ export default function DashboardHeader({
  const handleSearch = (e: FormEvent) => {
  e.preventDefault();
  if (searchQuery.trim()) {
- navigate(`/dashboard/search?q=${encodeURIComponent(searchQuery)}&context=${searchContext}`);
+ navigate(`/dashboard/search?q=${encodeURIComponent(searchQuery)}&type=${searchContext}`);
  } else {
  if (searchContext === "petugas") {
  navigate("/dashboard/manage-officers");

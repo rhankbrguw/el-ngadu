@@ -5,6 +5,8 @@ import { CheckCircle } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { LoginForm } from "@/components/auth/LoginFormNew";
 import { OtpForm } from "@/components/auth/OtpFormNew";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function LoginPage() {
  const {
@@ -58,7 +60,7 @@ export default function LoginPage() {
  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-success/20 dark:bg-success/20 mb-2">
  <CheckCircle className="h-5 w-5 text-success dark:text-success/80" />
  </div>
- <DialogTitle className="text-base">Login Berhasil!</DialogTitle>
+ <DialogTitle className="text-base">{APP_MESSAGES.AUTH.LOGIN_SUCCESS}</DialogTitle>
  <DialogDescription className="text-sm">
  Anda akan diarahkan dalam sesaat...
  </DialogDescription>

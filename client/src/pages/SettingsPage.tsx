@@ -7,6 +7,8 @@ import {
 import { Settings, Bell, Palette } from "lucide-react";
 import { ThemeSettings } from "@/components/settings/ThemeSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export default function SettingsPage() {
  return (
@@ -16,7 +18,7 @@ export default function SettingsPage() {
  <Settings className="h-6 w-6 text-primary flex-shrink-0" />
  </div>
  <div>
- <h2 className="text-xl font-bold tracking-tight">Pengaturan</h2>
+ <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.SETTINGS.TITLE}</h2>
  <p className="text-sm text-muted-foreground">
  Kelola profil dan preferensi tampilan Anda.
  </p>

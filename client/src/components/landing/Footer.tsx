@@ -26,7 +26,7 @@ export function Footer() {
  <ul className="space-y-2">
  <li><Link to="/login" className="hover:text-primary-foreground">Masuk</Link></li>
  <li><Link to="/register" className="hover:text-primary-foreground">Daftar</Link></li>
- <li><Link to="/login" className="hover:text-primary-foreground">Buat Pengaduan</Link></li>
+ <li><Link to="/login" className="hover:text-primary-foreground">{APP_MESSAGES.COMPLAINT.CREATE}</Link></li>
  </ul>
  </div>
  </div>

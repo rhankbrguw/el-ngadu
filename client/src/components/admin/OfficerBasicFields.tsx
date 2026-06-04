@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { PETUGAS_DIALOG_STRINGS } from "@/lib/constants/admin";
 import type { Control } from "react-hook-form";
 import type { PetugasPayload } from "@/lib/validators";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 export function OfficerBasicFields({ control }: { control: Control<PetugasPayload> }) {
  return (
@@ -38,7 +40,7 @@ export function OfficerBasicFields({ control }: { control: Control<PetugasPayloa
  name="email"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Email</FormLabel>
+ <FormLabel>{APP_MESSAGES.AUTH.EMAIL_LABEL}</FormLabel>
  <FormControl>
  <Input type="email" placeholder="contoh@gmail.com" {...field} />
  </FormControl>
