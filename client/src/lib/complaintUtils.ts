@@ -20,7 +20,8 @@ export const getStatusVariant = (
 export const formatDate = (dateString: string | null | undefined): string => {
  if (!dateString) return "-";
 
- return new Date(dateString).toLocaleDateString("id-ID", {
+  const utcDate = dateString.endsWith('Z') ? dateString : dateString.replace(' ', 'T') + 'Z';
+  return new Date(utcDate).toLocaleDateString("id-ID", {
  year: "numeric",
  month: "short",
  day: "numeric",

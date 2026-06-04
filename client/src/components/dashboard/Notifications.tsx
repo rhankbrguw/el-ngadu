@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,9 +26,12 @@ interface NotificationsProps {
 }
 
 const timeAgo = (date: string): string => {
- const seconds = Math.floor(
- (new Date().getTime() - new Date(date).getTime()) / 1000
- );
+  // Ensure the date is treated as UTC if it comes from SQLite CURRENT_TIMESTAMP
+  const utcDate = date.endsWith('Z') ? date : date.replace(' ', 'T') + 'Z';
+  let seconds = Math.floor(
+    (new Date().getTime() - new Date(utcDate).getTime()) / 1000
+  );
+  if (seconds < 0) seconds = 0; // Prevent negative time due to slight sync issues
  let interval = seconds / 31536000;
  if (interval > 1) return Math.floor(interval) + " tahun lalu";
  interval = seconds / 2592000;
@@ -51,6 +55,13 @@ export default function Notifications({
  onMarkAllAsRead,
 }: NotificationsProps) {
  const navigate = useNavigate();
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    // Memperbarui waktu setiap 1 menit (60000ms) agar waktu relatif (timeAgo) real-time
+    const interval = setInterval(() => setTick(t => t + 1), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
  const handleNotificationClick = (notification: Notification) => {
  if (!notification.is_read) {
