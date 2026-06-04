@@ -1,5 +1,29 @@
+# Databases
+*.sqlite
 el_ngadu.sqlite
+server/el_ngadu.sqlite
+
+# Node
 client/node_modules/
 client/dist/
+client/build/
+npm-debug.log*
+
+# PHP / Composer
+server/vendor/
+
+# Uploads
 server/uploads/
+
+# Environments
 .env
+.env.local
+.env.*.local
+client/.env
+server/.env
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.log

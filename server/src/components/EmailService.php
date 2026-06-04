@@ -1,6 +1,8 @@
 <?php
 namespace Components;
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -11,15 +13,15 @@ class EmailService {
         $this->mailer = new PHPMailer(true);
         // Server settings
         $this->mailer->isSMTP();
-        $this->mailer->Host       = 'smtp.gmail.com';
+        $this->mailer->Host       = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
         $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = 'rhankbrguwdev@gmail.com';
-        $this->mailer->Password   = 'avyn orvh unwg pnrd';
-        $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $this->mailer->Port       = 465;
+        $this->mailer->Username   = getenv('SMTP_USER') ?: 'rhankbrguwdev@gmail.com';
+        $this->mailer->Password   = getenv('SMTP_PASS') ?: 'avyn orvh unwg pnrd';
+        $this->mailer->SMTPSecure = getenv('SMTP_SECURE') ?: PHPMailer::ENCRYPTION_SMTPS;
+        $this->mailer->Port       = getenv('SMTP_PORT') ?: 465;
 
         // Recipients
-        $this->mailer->setFrom('rhankbrguwdev@gmail.com', 'Tim El-Ngadu');
+        $this->mailer->setFrom(getenv('SMTP_FROM') ?: 'rhankbrguwdev@gmail.com', getenv('SMTP_FROM_NAME') ?: 'Tim El-Ngadu');
     }
 
     private function getEmailTemplate($title, $content, $actionText = null, $actionUrl = null) {
@@ -85,9 +87,9 @@ class EmailService {
 
             $this->mailer->send();
             return true;
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // Log error silently to not break JSON response
-            error_log("Email tidak dapat dikirim. Pesan Error: {$this->mailer->ErrorInfo}");
+            error_log("Email tidak dapat dikirim. Pesan Error: {$this->mailer->ErrorInfo} | Exception: {$e->getMessage()}");
             return false;
         }
     }

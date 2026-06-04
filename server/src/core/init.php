@@ -22,7 +22,9 @@ spl_autoload_register(function ($class) {
         $prefixes = [
             'Controllers\\' => '/../controllers/',
             'Services\\' => '/../services/',
-            'Repositories\\' => '/../repositories/'
+            'Repositories\\' => '/../repositories/',
+            'Constants\\' => '/../constants/',
+            'Components\\' => '/../components/'
         ];
         
         foreach ($prefixes as $p => $dir) {
@@ -45,6 +47,12 @@ spl_autoload_register(function ($class) {
         require $file;
     }
 });
+
+// Global Class Aliases for backward compatibility with procedural scripts
+class_alias('Components\Auth', 'Auth');
+class_alias('Components\Database', 'Database');
+class_alias('Components\EmailService', 'EmailService');
+class_alias('Components\NotificationManager', 'NotificationManager');
 
 // Global Exception Handler
 set_exception_handler(function (\Throwable $exception) {

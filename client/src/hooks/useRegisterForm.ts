@@ -1,143 +1,103 @@
-import { useState, type FormEvent, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ZodError } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { registerService } from "@/services/authService";
-import { RegisterSchema } from "@/lib/validators";
 import { getErrorMessage } from "@/lib/complaintUtils";
 import { useAuth } from "@/hooks/useAuth";
-
-type FormErrors = {
-  [key: string]: string | undefined;
-};
+import { registerSchema } from "@/lib/validators/auth";
+import type { RegisterFormValues } from "@/lib/validators/auth";
 
 export function useRegisterForm() {
-  const [formData, setFormData] = useState({
-    nik: "",
-    nama: "",
-    username: "",
-    email: "",
-    password: "",
-    telp: "",
-  });
-  const [otpData, setOtpData] = useState({ username: "", userType: "" });
-  const [otpCode, setOtpCode] = useState("");
-  const [step, setStep] = useState<"register" | "otp">("register");
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const navigate = useNavigate();
-  const { login } = useAuth(); // Import useAuth at the top or within
+ const [otpData, setOtpData] = useState({ username: "", userType: "" });
+ const [otpCode, setOtpCode] = useState("");
+ const [step, setStep] = useState<"register" | "otp">("register");
+ const [serverError, setServerError] = useState<string | null>(null);
+ const [isLoading, setIsLoading] = useState(false);
+ const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+ 
+ const navigate = useNavigate();
+ const { login } = useAuth();
 
-  useEffect(() => {
-    if (!showSuccessDialog) return;
+ const form = useForm<RegisterFormValues>({
+ resolver: zodResolver(registerSchema),
+ defaultValues: {
+ nik: "",
+ nama: "",
+ username: "",
+ email: "",
+ password: "",
+ telp: "",
+ },
+ });
 
-    const timer = setTimeout(() => {
-      navigate("/dashboard");
-    }, 2000);
+ useEffect(() => {
+ if (!showSuccessDialog) return;
+ const timer = setTimeout(() => {
+ navigate("/dashboard");
+ }, 2000);
+ return () => clearTimeout(timer);
+ }, [showSuccessDialog, navigate]);
 
-    return () => clearTimeout(timer);
-  }, [showSuccessDialog, navigate]);
+ const onSubmit = async (data: RegisterFormValues) => {
+ setIsLoading(true);
+ setServerError(null);
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { id, value } = e.target;
-      let filteredValue = value;
+ try {
+ const result = await registerService(data);
+ if (result.bypass_otp) {
+ login(result.user);
+ setShowSuccessDialog(true);
+ } else if (result.requires_otp) {
+ setOtpData({ username: result.username, userType: result.userType });
+ setStep("otp");
+ } else {
+ setShowSuccessDialog(true);
+ }
+ } catch (err) {
+ setServerError(getErrorMessage(err));
+ } finally {
+ setIsLoading(false);
+ }
+ };
 
-      switch (id) {
-        case "nik":
-          filteredValue = value.replace(/[^0-9]/g, "").slice(0, 16);
-          break;
-        case "telp":
-          filteredValue = value.replace(/[^0-9]/g, "").slice(0, 13);
-          break;
-        case "nama":
-          filteredValue = value.replace(/[^a-zA-Z\s]/g, "");
-          break;
-      }
+ const handleVerifyOtp = async (e: React.FormEvent) => {
+ e.preventDefault();
+ if (!otpCode.trim() || otpCode.length !== 6) {
+ setServerError("Kode OTP harus 6 digit.");
+ return;
+ }
+ setIsLoading(true);
+ setServerError(null);
 
-      setFormData((prev) => ({ ...prev, [id]: filteredValue }));
-      if (errors[id]) {
-        setErrors((prev) => ({ ...prev, [id]: undefined }));
-      }
-    },
-    [errors]
-  );
+ try {
+ const { verifyOtpService } = await import("@/services/authService");
+ const user = await verifyOtpService(otpData.username, otpCode, otpData.userType);
+ login(user);
+ setShowSuccessDialog(true);
+ } catch (err) {
+ setServerError(getErrorMessage(err));
+ } finally {
+ setIsLoading(false);
+ }
+ };
 
-  const handleRegister = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+ const handleDialogRedirect = () => {
+ setShowSuccessDialog(false);
+ navigate("/dashboard");
+ };
 
-    try {
-      const validatedData = RegisterSchema.parse(formData);
-      const result = await registerService(validatedData);
-      
-      if (result.bypass_otp) {
-        login(result.user);
-        setShowSuccessDialog(true);
-      } else if (result.requires_otp) {
-        setOtpData({ username: result.username, userType: result.userType });
-        setStep("otp");
-      } else {
-        setShowSuccessDialog(true);
-      }
-    } catch (err) {
-      if (err instanceof ZodError) {
-        const newErrors: FormErrors = {};
-        err.errors.forEach((error) => {
-          if (error.path[0]) {
-            newErrors[error.path[0]] = error.message;
-          }
-        });
-        setErrors(newErrors);
-      } else {
-        setErrors({ form: getErrorMessage(err) });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!otpCode.trim() || otpCode.length !== 6) {
-      setErrors({ form: "Kode OTP harus 6 digit." });
-      return;
-    }
-
-    setIsLoading(true);
-    setErrors({});
-
-    try {
-      const { verifyOtpService } = await import("@/services/authService");
-      const user = await verifyOtpService(otpData.username, otpCode, otpData.userType);
-      login(user);
-      setShowSuccessDialog(true);
-    } catch (err) {
-      setErrors({ form: getErrorMessage(err) });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDialogRedirect = () => {
-    setShowSuccessDialog(false);
-    navigate("/dashboard");
-  };
-
-  return {
-    formData,
-    otpCode,
-    setOtpCode,
-    step,
-    errors,
-    isLoading,
-    showSuccessDialog,
-    handleChange,
-    handleRegister,
-    handleVerifyOtp,
-    setShowSuccessDialog,
-    handleDialogRedirect,
-  };
+ return {
+ form,
+ otpCode,
+ setOtpCode,
+ step,
+ serverError,
+ isLoading,
+ showSuccessDialog,
+ onSubmit,
+ handleVerifyOtp,
+ setShowSuccessDialog,
+ handleDialogRedirect,
+ };
 }

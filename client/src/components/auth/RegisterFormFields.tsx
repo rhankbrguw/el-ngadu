@@ -1,139 +1,148 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/common/PasswordInput";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import { AUTH_STRINGS } from "@/lib/constants/auth";
+import {
+ FormField,
+ FormItem,
+ FormLabel,
+ FormControl,
+ FormMessage,
+} from "@/components/ui/form";
+import type { UseFormReturn } from "react-hook-form";
+import type { RegisterFormValues } from "@/lib/validators/auth";
 
-/**
- * Properties for the RegisterFormFields component.
- */
 interface RegisterFormFieldsProps {
-  /** The current values of the form data */
-  formData: {
-    nik: string;
-    nama: string;
-    username: string;
-    email: string;
-    password: string;
-    telp: string;
-  };
-  /** Validation errors for the form fields */
-  errors: Record<string, string | undefined>;
-  /** Indicates if the form is currently submitting */
-  isLoading: boolean;
-  /** Handler for input changes */
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+ form: UseFormReturn<RegisterFormValues>;
+ isLoading: boolean;
 }
 
-/**
- * Renders the input fields for the registration form.
- *
- * @param props - The properties for the component.
- * @returns The rendered form fields.
- */
 export function RegisterFormFields({
-  formData,
-  errors,
-  isLoading,
-  handleChange,
+ form,
+ isLoading,
 }: RegisterFormFieldsProps) {
-  return (
-    <>
-      <div className="grid gap-2">
-        <Label htmlFor="nik">{AUTH_STRINGS.NIK_LABEL}</Label>
-        <Input
-          id="nik"
-          placeholder={AUTH_STRINGS.NIK_PLACEHOLDER}
-          required
-          value={formData.nik}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.nik && <p className="text-xs text-destructive">{errors.nik}</p>}
-      </div>
+ return (
+ <>
+ <FormField
+ control={form.control}
+ name="nik"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>{AUTH_STRINGS.NIK_LABEL}</FormLabel>
+ <FormControl>
+ <Input
+ placeholder={AUTH_STRINGS.NIK_PLACEHOLDER}
+ disabled={isLoading}
+ {...field}
+ onChange={(e) => {
+ const val = e.target.value.replace(/[^0-9]/g, "").slice(0, 16);
+ field.onChange(val);
+ }}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-      <div className="grid gap-2">
-        <Label htmlFor="nama">{AUTH_STRINGS.NAME_LABEL}</Label>
-        <Input
-          id="nama"
-          placeholder={AUTH_STRINGS.NAME_PLACEHOLDER}
-          required
-          value={formData.nama}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.nama && (
-          <p className="text-xs text-destructive">{errors.nama}</p>
-        )}
-      </div>
+ <FormField
+ control={form.control}
+ name="nama"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>{AUTH_STRINGS.NAME_LABEL}</FormLabel>
+ <FormControl>
+ <Input
+ placeholder={AUTH_STRINGS.NAME_PLACEHOLDER}
+ disabled={isLoading}
+ {...field}
+ onChange={(e) => {
+ const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+ field.onChange(val);
+ }}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-      <div className="grid gap-2">
-        <Label htmlFor="username">{AUTH_STRINGS.USERNAME_LABEL}</Label>
-        <Input
-          id="username"
-          placeholder={AUTH_STRINGS.USERNAME_PLACEHOLDER}
-          required
-          value={formData.username}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.username && (
-          <p className="text-xs text-destructive">{errors.username}</p>
-        )}
-      </div>
+ <FormField
+ control={form.control}
+ name="username"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>{AUTH_STRINGS.USERNAME_LABEL}</FormLabel>
+ <FormControl>
+ <Input
+ placeholder={AUTH_STRINGS.USERNAME_PLACEHOLDER}
+ disabled={isLoading}
+ {...field}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="contoh@email.com"
-          required
-          value={formData.email}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.email && (
-          <p className="text-xs text-destructive">{errors.email}</p>
-        )}
-      </div>
+ <FormField
+ control={form.control}
+ name="email"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Email</FormLabel>
+ <FormControl>
+ <Input
+ type="email"
+ placeholder="contoh@gmail.com"
+ disabled={isLoading}
+ {...field}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-      <div className="grid gap-2">
-        <Label htmlFor="password">{AUTH_STRINGS.PASSWORD_LABEL}</Label>
-        <PasswordInput
-          id="password"
-          placeholder={AUTH_STRINGS.PASSWORD_PLACEHOLDER}
-          required
-          value={formData.password}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.password && (
-          <p className="text-xs text-destructive">{errors.password}</p>
-        )}
-      </div>
+ <FormField
+ control={form.control}
+ name="password"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>{AUTH_STRINGS.PASSWORD_LABEL}</FormLabel>
+ <FormControl>
+ <PasswordInput
+ placeholder={AUTH_STRINGS.PASSWORD_PLACEHOLDER}
+ disabled={isLoading}
+ {...field}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
 
-      <div className="grid gap-2">
-        <Label htmlFor="telp">{AUTH_STRINGS.TELP_LABEL}</Label>
-        <Input
-          id="telp"
-          type="tel"
-          placeholder={AUTH_STRINGS.TELP_PLACEHOLDER}
-          required
-          value={formData.telp}
-          onChange={handleChange}
-          disabled={isLoading}
-        />
-        {errors.telp && (
-          <p className="text-xs text-destructive">{errors.telp}</p>
-        )}
-      </div>
-
-      {errors.form && (
-        <p className="text-center text-sm font-medium text-destructive">
-          {errors.form}
-        </p>
-      )}
-    </>
-  );
+ <FormField
+ control={form.control}
+ name="telp"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>{AUTH_STRINGS.TELP_LABEL}</FormLabel>
+ <FormControl>
+ <PhoneInput
+ disabled={isLoading}
+ {...field}
+ onChange={(val) => {
+ const filtered = val.replace(/[^0-9]/g, "").slice(0, 15);
+ field.onChange(filtered);
+ }}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
+ </>
+ );
 }

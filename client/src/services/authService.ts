@@ -6,162 +6,139 @@ import type { ProfileEditPayload } from "@/lib/validators";
 import type { ChangePasswordPayload } from "@/lib/validators";
 
 export const registerService = async (
-  payload: RegisterPayload
-): Promise<any> => {
-  try {
-    const response = await api.post("/citizens/register", payload);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal melakukan registrasi."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal saat registrasi.");
-  }
+ payload: RegisterPayload
+): Promise<unknown> => {
+ try {
+ const response = await api.post("/citizens/register", payload);
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal melakukan registrasi."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal saat registrasi.");
+ }
 };
 
 export const loginService = async (
-  username: string,
-  password: string
-): Promise<any> => {
-  try {
-    const response = await api.post("/auth/unified-login", {
-      username,
-      password,
-    });
+ username: string,
+ password: string
+): Promise<unknown> => {
+ try {
+ const response = await api.post("/auth/unified-login", {
+ username,
+ password,
+ });
 
-    if (response.data.requires_otp) {
-        return response.data; // { requires_otp: true, userType: '...', username: '...' }
-    }
+ if (response.data.requires_otp) {
+ return response.data; // { requires_otp: true, userType: '...', username: '...' }
+ }
 
-    const userData = response.data.user;
+ const userData = response.data.user;
 
-    if (userData.nik) {
-      return {
-        ...userData,
-        userType: "masyarakat" as const,
-      };
-    } else if (userData.id_petugas) {
-      return {
-        ...userData,
-        userType: "petugas" as const,
-      };
-    }
+ if (userData.nik) {
+ return {
+ ...userData,
+ userType: "masyarakat" as const,
+ };
+ } else if (userData.id_petugas) {
+ return {
+ ...userData,
+ userType: "petugas" as const,
+ };
+ }
 
-    throw new Error("Invalid user data received.");
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Username atau password salah."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal saat login.");
-  }
+ throw new Error("Invalid user data received.");
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Username atau password salah."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal saat login.");
+ }
 };
 
 export const verifyOtpService = async (
-    username: string,
-    otp_code: string,
-    userType: string
+ username: string,
+ otp_code: string,
+ userType: string
 ): Promise<User> => {
-    try {
-        const response = await api.post("/auth/verify-otp", {
-            username,
-            otp_code,
-            userType
-        });
-        
-        const userData = response.data.user;
-        
-        if (userData.nik) {
-            return { ...userData, userType: "masyarakat" as const };
-        } else if (userData.id_petugas) {
-            return { ...userData, userType: "petugas" as const };
-        }
-        
-        throw new Error("Invalid user data received.");
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            throw new Error(error.response.data.error || "Gagal verifikasi OTP.");
-        }
-        throw new Error("Terjadi kesalahan tidak dikenal saat verifikasi OTP.");
-    }
+ try {
+ const response = await api.post("/auth/verify-otp", {
+ username,
+ otp_code,
+ userType
+ });
+ 
+ const userData = response.data.user;
+ 
+ if (userData.nik) {
+ return { ...userData, userType: "masyarakat" as const };
+ } else if (userData.id_petugas) {
+ return { ...userData, userType: "petugas" as const };
+ }
+ 
+ throw new Error("Invalid user data received.");
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(error.response.data.error || "Gagal verifikasi OTP.");
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal saat verifikasi OTP.");
+ }
 };
 
 export const getProfileService = async (): Promise<User | null> => {
-  try {
-    const response = await api.get("/auth/profile");
-    const userData = response.data.user;
+ try {
+ const response = await api.get("/auth/profile");
+ const userData = response.data.user;
 
-    if (!userData) return null;
+ if (!userData) return null;
 
-    if (userData.nik) {
-      return { ...userData, userType: "masyarakat" as const };
-    }
+ if (userData.nik) {
+ return { ...userData, userType: "masyarakat" as const };
+ }
 
-    if (userData.id_petugas) {
-      return { ...userData, userType: "petugas" as const };
-    }
+ if (userData.id_petugas) {
+ return { ...userData, userType: "petugas" as const };
+ }
 
-    return null;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      return null;
-    }
-    console.error("Gagal mengambil profil:", error);
-    return null;
-  }
+ return null;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response?.status === 401) {
+ return null;
+ }
+ console.error("Gagal mengambil profil:", error);
+ return null;
+ }
 };
 
 export const changePasswordService = async (
-  payload: Pick<ChangePasswordPayload, "old_password" | "new_password">
+ payload: Pick<ChangePasswordPayload, "old_password" | "new_password">
 ) => {
-  try {
-    const response = await api.post("/auth/change-password", payload);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal mengubah password.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.post("/auth/change-password", payload);
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(error.response.data.error || "Gagal mengubah password.");
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const updateProfileService = async (
-  payload: Partial<ProfileEditPayload>
+ payload: Partial<ProfileEditPayload>
 ) => {
-  try {
-    const response = await api.patch("/auth/update-profile", payload);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal memperbarui profil.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.patch("/auth/update-profile", payload);
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(error.response.data.error || "Gagal memperbarui profil.");
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
-export const forgotPasswordService = async (email: string) => {
-  try {
-    const response = await api.post("/auth/forgot-password", { email });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal mengirim link reset.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
-};
-
-export const resetPasswordService = async (password: string, token: string) => {
-  try {
-    const response = await api.post("/auth/reset-password", { password, token });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal mengatur ulang kata sandi.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
-};

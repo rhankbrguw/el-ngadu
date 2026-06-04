@@ -1,4 +1,9 @@
 <?php
+namespace Components;
+
+use PDO;
+use PDOException;
+
 class Database
 {
   private static $host = null;
@@ -13,7 +18,7 @@ class Database
       $db_driver = getenv('DB_DRIVER') ?: 'sqlite';
       
       if ($db_driver === 'sqlite') {
-          $db_path = __DIR__ . '/../../../el_ngadu.sqlite';
+          $db_path = __DIR__ . '/../../el_ngadu.sqlite';
           $dsn = "sqlite:" . $db_path;
           self::$username = null;
           self::$password = null;

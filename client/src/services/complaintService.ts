@@ -1,145 +1,145 @@
 import api from "@/lib/api";
 import axios from "axios";
 import type {
-  Pengaduan,
-  PengaduanDetail,
-  PengaduanWithPelapor,
-  PaginatedResponse,
-  UserStats,
+ Pengaduan,
+ PengaduanDetail,
+ PengaduanWithPelapor,
+ PaginatedResponse,
+ UserStats,
 } from "@/types";
 
 interface CreatePengaduanPayload {
-  judul: string;
-  isi: string;
-  kategori: string;
-  lokasi: string;
-  foto_bukti?: File;
+ judul: string;
+ isi: string;
+ kategori: string;
+ lokasi: string;
+ foto_bukti?: File;
 }
 
 export const createPengaduanService = async (
-  payload: CreatePengaduanPayload
+ payload: CreatePengaduanPayload
 ) => {
-  const formData = new FormData();
-  formData.append("judul", payload.judul);
-  formData.append("isi", payload.isi);
-  formData.append("kategori", payload.kategori);
-  formData.append("lokasi", payload.lokasi);
-  if (payload.foto_bukti) {
-    formData.append("foto_bukti", payload.foto_bukti);
-  }
+ const formData = new FormData();
+ formData.append("judul", payload.judul);
+ formData.append("isi", payload.isi);
+ formData.append("kategori", payload.kategori);
+ formData.append("lokasi", payload.lokasi);
+ if (payload.foto_bukti) {
+ formData.append("foto_bukti", payload.foto_bukti);
+ }
 
-  try {
-    const response = await api.post("/complaints", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal membuat pengaduan.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.post("/complaints", formData, {
+ headers: {
+ "Content-Type": "multipart/form-data",
+ },
+ });
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(error.response.data.error || "Gagal membuat pengaduan.");
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const getMyPengaduanService = async (
-  page = 1,
-  limit = 10
+ page = 1,
+ limit = 10
 ): Promise<PaginatedResponse<Pengaduan>> => {
-  try {
-    const response = await api.get<PaginatedResponse<Pengaduan>>(
-      `/complaints/mine?page=${page}&limit=${limit}`
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal mengambil riwayat pengaduan."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.get<PaginatedResponse<Pengaduan>>(
+ `/complaints/mine?page=${page}&limit=${limit}`
+ );
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal mengambil riwayat pengaduan."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const getAllPengaduanService = async (
-  page = 1,
-  limit = 10
+ page = 1,
+ limit = 10
 ): Promise<PaginatedResponse<PengaduanWithPelapor>> => {
-  try {
-    const response = await api.get<PaginatedResponse<PengaduanWithPelapor>>(
-      `/complaints?page=${page}&limit=${limit}`
-    );
-    return response.data; // Mengembalikan seluruh objek { pagination: ..., data: ... }
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal mengambil semua pengaduan."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.get<PaginatedResponse<PengaduanWithPelapor>>(
+ `/complaints?page=${page}&limit=${limit}`
+ );
+ return response.data; // Mengembalikan seluruh objek { pagination: ..., data: ... }
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal mengambil semua pengaduan."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const getComplaintDetailService = async (
-  id: string
+ id: string
 ): Promise<PengaduanDetail> => {
-  try {
-    const response = await api.get<PengaduanDetail>(`/complaints?id=${id}`);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal mengambil detail pengaduan."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.get<PengaduanDetail>(`/complaints?id=${id}`);
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal mengambil detail pengaduan."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const updateStatusPengaduanService = async (
-  id: string,
-  status: string
+ id: string,
+ status: string
 ) => {
-  try {
-    const response = await api.patch(`/complaints?id=${id}`, { status });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal memperbarui status pengaduan."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.patch(`/complaints?id=${id}`, { status });
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal memperbarui status pengaduan."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };
 
 export const searchPengaduanService = async (
-  query: string
+ query: string
 ): Promise<PengaduanWithPelapor[]> => {
-  try {
-    const response = await api.get<PengaduanWithPelapor[]>(
-      `/complaints?q=${query}`
-    );
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Gagal mencari pengaduan.");
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal saat mencari pengaduan.");
-  }
+ try {
+ const response = await api.get<PengaduanWithPelapor[]>(
+ `/complaints?q=${query}`
+ );
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(error.response.data.error || "Gagal mencari pengaduan.");
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal saat mencari pengaduan.");
+ }
 };
 
 export const getMyStatsService = async (): Promise<UserStats> => {
-  try {
-    const response = await api.get<UserStats>("/complaints/stats-mine");
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(
-        error.response.data.error || "Gagal mengambil statistik pengaduan."
-      );
-    }
-    throw new Error("Terjadi kesalahan tidak dikenal.");
-  }
+ try {
+ const response = await api.get<UserStats>("/complaints/stats-mine");
+ return response.data;
+ } catch (error) {
+ if (axios.isAxiosError(error) && error.response) {
+ throw new Error(
+ error.response.data.error || "Gagal mengambil statistik pengaduan."
+ );
+ }
+ throw new Error("Terjadi kesalahan tidak dikenal.");
+ }
 };

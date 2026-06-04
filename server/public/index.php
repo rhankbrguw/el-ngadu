@@ -1,253 +1,124 @@
 <?php
 
+if (php_sapi_name() === 'cli-server') {
+    $path = realpath(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    if ($path && is_file($path) && strpos($path, __DIR__) === 0) {
+        return false;
+    }
+}
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+// Load Environment Variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->safeLoad();
+
 require_once __DIR__ . '/../src/core/init.php';
 
-$allowed_origins = [
-    'https://el-ngadu.vercel.app',
-    'http://el-ngadu.test:5173'
-];
+// Auth session start
+require_once __DIR__ . '/../src/components/Auth.php';
+\Components\Auth::startSession();
 
-if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
-    header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
-}
+// Setup Router
+$router = new \Bramus\Router\Router();
 
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+// CORS Handling for all routes
+$router->options('/.*', function() {
     http_response_code(200);
     exit();
-}
+});
 
-require_once __DIR__ . '/../src/components/Auth.php';
-Auth::startSession();
+// JSON Header middleware
+$router->before('GET|POST|PUT|PATCH|DELETE', '/api/.*', function() {
+    header('Content-Type: application/json');
+});
 
-header('Content-Type: application/json');
+// Group API Routes
+$router->mount('/api', function() use ($router) {
+    
+    // Auth Routes
+    $router->mount('/auth', function() use ($router) {
+        $router->post('/login', 'Controllers\AuthController@login');
+        $router->post('/unified-login', 'Controllers\AuthController@unifiedLogin');
+        $router->post('/verify-otp', 'Controllers\AuthController@verifyOtp');
+        $router->post('/logout', 'Controllers\AuthController@logout');
+        $router->post('/forgot-password', 'Controllers\AuthPasswordController@forgotPassword');
+        $router->post('/reset-password', 'Controllers\AuthPasswordController@resetPassword');
+        $router->get('/profile', 'Controllers\AuthProfileController@getProfile');
+        $router->patch('/update-profile', 'Controllers\AuthProfileController@updateProfile');
+        $router->post('/change-password', 'Controllers\AuthPasswordController@changePassword');
+    });
 
-$request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$request_method = $_SERVER['REQUEST_METHOD'];
+    // Complaints Routes
+    $router->mount('/complaints', function() use ($router) {
+        $router->get('/', function() {
+            $controller = new \Controllers\ComplaintReadController();
+            if (isset($_GET['q'])) {
+                $controller->search();
+            } elseif (isset($_GET['id'])) {
+                $controller->getOne();
+            } else {
+                $controller->getAll();
+            }
+        });
+        $router->post('/', 'Controllers\ComplaintController@create');
+        $router->patch('/', 'Controllers\ComplaintController@update');
+        $router->delete('/', 'Controllers\ComplaintController@delete');
+        $router->get('/mine', 'Controllers\ComplaintReadController@getMine');
+        $router->get('/stats-mine', 'Controllers\ComplaintReadController@statsMine');
+    });
 
-switch ($request_uri) {
-    case '/api/complaints':
-        switch ($request_method) {
-            case 'GET':
-                if (isset($_GET['q'])) {
-                    require __DIR__ . '/../src/api/complaints/search.php';
-                } elseif (isset($_GET['id'])) {
-                    require __DIR__ . '/../src/api/complaints/read-one.php';
-                } else {
-                    require __DIR__ . '/../src/api/complaints/read-all.php';
-                }
-                break;
-            case 'POST':
-                require __DIR__ . '/../src/api/complaints/create.php';
-                break;
-            case 'PATCH':
-                require __DIR__ . '/../src/api/complaints/update.php';
-                break;
-            case 'DELETE':
-                require __DIR__ . '/../src/api/complaints/delete.php';
-                break;
-            default:
-                throw new \Core\BaseException('Metode tidak diizinkan untuk endpoint ini', 405);
-        }
-        break;
+    // Citizens Routes
+    $router->mount('/citizens', function() use ($router) {
+        $router->get('/', 'Controllers\CitizenController@getAll');
+        $router->post('/register', 'Controllers\CitizenRegistrationController@register');
+        $router->patch('/', 'Controllers\CitizenController@update');
+        $router->delete('/', 'Controllers\CitizenController@delete');
+        $router->get('/search', 'Controllers\CitizenController@search');
+    });
 
-    case '/api/notifications/read':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/notifications/read.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan GET', 405);}
-        break;
+    // Officers Routes
+    $router->mount('/officers', function() use ($router) {
+        $router->get('/', 'Controllers\OfficerController@readAll');
+        $router->post('/', 'Controllers\OfficerCreateController@create');
+        $router->patch('/', 'Controllers\OfficerController@update');
+        $router->delete('/', 'Controllers\OfficerController@delete');
+        $router->get('/search', 'Controllers\OfficerController@search');
+    });
 
-    case '/api/notifications/mark-as-read':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/notifications/mark-as-read.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
+    // Notifications Routes
+    $router->mount('/notifications', function() use ($router) {
+        $router->get('/read', 'Controllers\NotificationController@read');
+        $router->post('/mark-as-read', 'Controllers\NotificationController@markAsRead');
+        $router->post('/mark-all-as-read', 'Controllers\NotificationController@markAllAsRead');
+    });
 
-    case '/api/notifications/mark-all-as-read':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/notifications/mark-all-as-read.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
+    // Stats Routes
+    $router->mount('/stats', function() use ($router) {
+        $router->get('/', 'Controllers\StatsController@read');
+        $router->get('/admin', 'Controllers\StatsController@admin');
+    });
 
-    case '/api/stats':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/stats/read.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan GET', 405);}
-        break;
+    // Responses Routes
+    $router->post('/responses', 'Controllers\ResponseController@create');
 
-    case '/api/stats/admin':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/stats/admin.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
+    // Reports Routes
+    $router->get('/reports/generate', 'Controllers\ReportController@generate');
+});
 
-    case '/api/complaints/mine':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/complaints/read-mine.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan GET', 405);}
-        break;
+// Custom 404
+$router->set404(function() {
+    header('HTTP/1.1 404 Not Found');
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Endpoint tidak ditemukan'
+    ]);
+});
 
-    case '/api/complaints/stats-mine':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/complaints/stats-mine.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
-
-    case '/api/citizens':
-        switch ($request_method) {
-            case 'GET':
-                require __DIR__ . '/../src/api/citizens/read-all.php';
-                break;
-            case 'DELETE':
-                require __DIR__ . '/../src/api/citizens/delete.php';
-                break;
-            case 'PATCH':
-                require __DIR__ . '/../src/api/citizens/update.php';
-                break;
-            default:
-                throw new \Core\BaseException('Metode tidak diizinkan untuk endpoint ini', 405);
-        }
-        break;
-
-    case '/api/citizens/register':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/citizens/register.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/login':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/login.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/unified-login':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/unified-login.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/verify-otp':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/verify-otp.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/logout':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/logout.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/forgot-password':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/forgot-password.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/reset-password':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/reset-password.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/auth/profile':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/auth/profile.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan GET', 405);}
-        break;
-
-    case '/api/auth/update-profile':
-        if ($request_method === 'PATCH') {
-            require __DIR__ . '/../src/api/auth/update-profile.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
-
-    case '/api/auth/change-password':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/auth/change-password.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
-
-    case '/api/officers/login':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/officers/login.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/officers':
-        switch ($request_method) {
-            case 'GET':
-                require __DIR__ . '/../src/api/officers/read-all.php';
-                break;
-            case 'POST':
-                require __DIR__ . '/../src/api/officers/create.php';
-                break;
-            case 'PATCH':
-                require __DIR__ . '/../src/api/officers/update.php';
-                break;
-            case 'DELETE':
-                require __DIR__ . '/../src/api/officers/delete.php';
-                break;
-            default:
-                throw new \Core\BaseException('Metode tidak diizinkan untuk endpoint ini', 405);
-        }
-        break;
-
-    case '/api/responses':
-        if ($request_method === 'POST') {
-            require __DIR__ . '/../src/api/responses/create.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
-        break;
-
-    case '/api/reports/generate':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/reports/generate.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan, gunakan GET', 405);}
-        break;
-
-    case '/api/officers/search':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/officers/search.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
-
-    case '/api/citizens/search':
-        if ($request_method === 'GET') {
-            require __DIR__ . '/../src/api/citizens/search.php';
-        } else {
-            throw new \Core\BaseException('Metode tidak diizinkan.', 405);}
-        break;
-
-    default:
-        throw new \Core\NotFoundException('Endpoint tidak ditemukan');
-}
+// Run it!
+$router->run();

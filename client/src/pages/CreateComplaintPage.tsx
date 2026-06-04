@@ -10,28 +10,28 @@ import { CreateComplaintForm } from "@/components/complaints/CreateComplaintForm
  * Ensures the user is authenticated and authorized before rendering the form.
  */
 export default function CreateComplaintPage() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const navigate = useNavigate();
+ const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+ const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      navigate("/login", { replace: true });
-    }
-  }, [authLoading, isAuthenticated, navigate]);
+ useEffect(() => {
+ if (!authLoading && !isAuthenticated) {
+ navigate("/login", { replace: true });
+ }
+ }, [authLoading, isAuthenticated, navigate]);
 
-  if (authLoading) {
-    return <PageLoader />;
-  }
+ if (authLoading) {
+ return <PageLoader />;
+ }
 
-  if (!isAuthenticated || user?.userType !== "masyarakat") {
-    return <AccessDenied />;
-  }
+ if (!isAuthenticated || user?.userType !== "masyarakat") {
+ return <AccessDenied />;
+ }
 
-  return (
-    <div className="p-4 md:p-4">
-      <div className="mx-auto max-w-2xl">
-        <CreateComplaintForm />
-      </div>
-    </div>
-  );
+ return (
+ <div className="p-4 md:p-4">
+ <div className="mx-auto max-w-2xl">
+ <CreateComplaintForm />
+ </div>
+ </div>
+ );
 }

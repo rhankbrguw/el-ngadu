@@ -3,106 +3,117 @@ import { useAuth } from "@/hooks/useAuth";
 import { getMyStatsService } from "@/services/complaintService";
 import { getAdminStatsService } from "@/services/statsService";
 import type { UserStats, AdminStats } from "@/types";
-import { Loader2, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import { DASHBOARD_STRINGS } from "@/lib/constants/dashboard";
 import { MasyarakatStats, AdminStatsView } from "@/components/dashboard/DashboardStats";
 
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * Main dashboard page displaying user or admin statistics.
  * Fetches and presents relevant dashboard data based on user type.
  */
 export default function DashboardPage() {
-  const { user, isLoading: isAuthLoading } = useAuth();
+ const { user, isLoading: isAuthLoading } = useAuth();
 
-  const [stats, setStats] = useState<UserStats | AdminStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+ const [stats, setStats] = useState<UserStats | AdminStats | null>(null);
+ const [isLoading, setIsLoading] = useState(true);
+ const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isAuthLoading || !user) {
-      if (!isAuthLoading) setIsLoading(false);
-      return;
-    }
+ useEffect(() => {
+ if (isAuthLoading || !user) {
+ if (!isAuthLoading) setIsLoading(false);
+ return;
+ }
 
-    const fetchStats = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        if (user.userType === "masyarakat") {
-          const data = await getMyStatsService();
-          setStats(data);
-        } else if (user.userType === "petugas") {
-          // Baik admin maupun petugas mengambil stats admin (keseluruhan pengaduan)
-          const data = await getAdminStatsService();
-          setStats(data);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : DASHBOARD_STRINGS.ERROR_FETCH_STATS
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+ const fetchStats = async () => {
+ setIsLoading(true);
+ setError(null);
+ try {
+ if (user.userType === "masyarakat") {
+ const data = await getMyStatsService();
+ setStats(data);
+ } else if (user.userType === "petugas") {
+ // Baik admin maupun petugas mengambil stats admin (keseluruhan pengaduan)
+ const data = await getAdminStatsService();
+ setStats(data);
+ }
+ } catch (err) {
+ setError(
+ err instanceof Error ? err.message : DASHBOARD_STRINGS.ERROR_FETCH_STATS
+ );
+ } finally {
+ setIsLoading(false);
+ }
+ };
 
-    if (user.userType === "masyarakat" || user.userType === "petugas") {
-      fetchStats();
-    } else {
-      setIsLoading(false);
-    }
-  }, [user, isAuthLoading]);
+ if (user.userType === "masyarakat" || user.userType === "petugas") {
+ fetchStats();
+ } else {
+ setIsLoading(false);
+ }
+ }, [user, isAuthLoading]);
 
-  const renderGreeting = () => (
-    <div>
-      <h1 className="text-xl md:text-2xl font-bold">
-        {DASHBOARD_STRINGS.GREETING_WELCOME}{" "}
-        {user?.userType === "masyarakat"
-          ? user.nama
-          : user?.nama_petugas || DASHBOARD_STRINGS.GREETING_DEFAULT_USER}
-        !
-      </h1>
-      <p className="mt-1 text-sm sm:text-base text-muted-foreground">
-        {DASHBOARD_STRINGS.GREETING_SUMMARY}
-      </p>
-    </div>
-  );
+ const renderGreeting = () => (
+ <div>
+ <h1 className="text-xl md:text-2xl font-bold">
+ {DASHBOARD_STRINGS.GREETING_WELCOME}{" "}
+ {user?.userType === "masyarakat"
+ ? user.nama
+ : user?.nama_petugas || DASHBOARD_STRINGS.GREETING_DEFAULT_USER}
+ !
+ </h1>
+ <p className="mt-1 text-sm sm:text-base text-muted-foreground">
+ {DASHBOARD_STRINGS.GREETING_SUMMARY}
+ </p>
+ </div>
+ );
 
-  if (isAuthLoading || isLoading) {
-    return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+ if (isAuthLoading || isLoading) {
+ return (
+ <div className="space-y-4 sm:space-y-6">
+ <div>
+ <Skeleton className="h-8 w-3/4 sm:w-64" />
+ <Skeleton className="mt-2 h-4 w-full sm:w-96" />
+ </div>
+ <Skeleton className="h-32 w-full" />
+ <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+ <Skeleton className="h-24" />
+ <Skeleton className="h-24" />
+ <Skeleton className="h-24" />
+ <Skeleton className="h-24" />
+ </div>
+ </div>
+ );
+ }
 
-  return (
-    <div className="space-y-4 sm:space-y-6">
-      {renderGreeting()}
-      {error && (
-        <div className="p-4 text-center bg-destructive/10 rounded-lg text-sm text-destructive flex items-center justify-center gap-2">
-          <AlertCircle className="h-4 w-4" />
-          {error}
-        </div>
-      )}
+ return (
+ <div className="space-y-4 sm:space-y-6">
+ {renderGreeting()}
+ {error && (
+ <div className="p-4 text-center bg-destructive/10 rounded-lg text-sm text-destructive flex items-center justify-center gap-2">
+ <AlertCircle className="h-4 w-4" />
+ {error}
+ </div>
+ )}
 
-      {stats && user?.userType === "masyarakat" && (
-        <MasyarakatStats data={stats as UserStats} />
-      )}
+ {user && <QuickActions user={user} />}
 
-      {stats && user?.userType === "petugas" && (
-        <AdminStatsView data={stats as AdminStats} />
-      )}
-      
-      {user && <QuickActions user={user} />}
+ {stats && user?.userType === "masyarakat" && (
+ <MasyarakatStats data={stats as UserStats} />
+ )}
 
-      {user?.userType === "petugas" && user.level === "petugas" && (
-        <p className="text-sm sm:text-base text-muted-foreground pt-2 text-center">
-          {DASHBOARD_STRINGS.PETUGAS_INSTRUCTION}
-        </p>
-      )}
-    </div>
-  );
+ {stats && user?.userType === "petugas" && (
+ <AdminStatsView data={stats as AdminStats} />
+ )}
+
+ {user?.userType === "petugas" && user.level === "petugas" && (
+ <p className="text-sm sm:text-base text-muted-foreground pt-2 text-center">
+ {DASHBOARD_STRINGS.PETUGAS_INSTRUCTION}
+ </p>
+ )}
+ </div>
+ );
 }

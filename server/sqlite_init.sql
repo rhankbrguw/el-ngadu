@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS masyarakat (
   username VARCHAR(25) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   email VARCHAR(100),
-  telp VARCHAR(13) NOT NULL,
+  telp VARCHAR(20) NOT NULL,
   otp_code VARCHAR(10),
   otp_expires_at TIMESTAMP,
   reset_token VARCHAR(100),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS petugas (
   username VARCHAR(25) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   email VARCHAR(100),
-  telp VARCHAR(13) NOT NULL,
+  telp VARCHAR(20) NOT NULL,
   level VARCHAR(20) NOT NULL CHECK(level IN ('admin', 'petugas')),
   otp_code VARCHAR(10),
   otp_expires_at TIMESTAMP,
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   user_type VARCHAR(20) NOT NULL,
   title VARCHAR(100) NOT NULL,
   message TEXT NOT NULL,
+  link_url VARCHAR(255),
   is_read BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
