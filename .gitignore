@@ -1,0 +1,5 @@
+el_ngadu.sqlite
+client/node_modules/
+client/dist/
+server/uploads/
+.env
