@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export function Hero() {
  return (
@@ -9,12 +10,10 @@ export function Hero() {
  {/* Text Content - Centered on mobile/tablet, positioned slightly right on desktop */}
  <div className="text-center lg:text-left order-2 lg:order-1 space-y-3 lg:pl-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
  <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight">
- Suarakan Aspirasi, Wujudkan Perubahan.
+ {APP_MESSAGES.LANDING.HERO_TITLE}
  </h1>
  <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 delay-150 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
- El Ngadu adalah jembatan antara Anda dan pemerintah. Laporkan
- masalah, berikan masukan, dan pantau prosesnya dengan mudah dan
- transparan.
+ {APP_MESSAGES.LANDING.HERO_SUBTITLE}
  </p>
  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start max-w-lg mx-auto lg:mx-0 delay-300 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
  <Button
@@ -22,7 +21,7 @@ export function Hero() {
  size="lg"
  className="bg-secondary hover:bg-secondary/90 text-foreground text-base font-semibold px-5 py-4 flex-1 sm:flex-none transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-secondary/25"
  >
- <Link to="/register">Buat Pengaduan Sekarang</Link>
+ <Link to="/register">{APP_MESSAGES.LANDING.HERO_CTA}</Link>
  </Button>
  <Button
  asChild
@@ -30,7 +29,7 @@ export function Hero() {
  variant="outline"
  className="text-base font-semibold bg-card text-foreground hover:bg-accent dark:bg-transparent dark:hover:bg-card dark:hover:text-primary-foreground px-5 py-4 flex-1 sm:flex-none transition-all hover:scale-105 active:scale-95"
  >
- <a href="#alur">Pelajari Alur</a>
+ <a href="#alur">{APP_MESSAGES.LANDING.HERO_SECONDARY_CTA}</a>
  </Button>
  </div>
  </div>

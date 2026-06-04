@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
 import type { Masyarakat } from "@/types";
 import { formatDate } from "@/lib/complaintUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface CitizenCardsProps {
  masyarakatList: Masyarakat[];
@@ -53,9 +55,7 @@ export default function CitizenCards({
  onClick={() => onEdit(m)}
  className="w-full"
  >
- <Edit className="w-4 h-4 mr-2" />
- Ubah
- </Button>
+ <Edit className="w-4 h-4 mr-2" />{APP_MESSAGES.COMMON.EDIT}</Button>
  )}
  
  {onDelete && (
@@ -70,9 +70,7 @@ export default function CitizenCards({
  size="sm" 
  className="w-full"
  >
- <Trash2 className="w-4 h-4 mr-2" />
- Hapus
- </Button>
+ <Trash2 className="w-4 h-4 mr-2" />{APP_MESSAGES.COMMON.DELETE}</Button>
  </ConfirmationDialog>
  )}
  </div>

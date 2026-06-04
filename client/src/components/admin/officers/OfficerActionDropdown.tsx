@@ -8,6 +8,8 @@ import {
 import { MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
 import type { Petugas } from "@/types";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface OfficerActionDropdownProps {
  petugas: Petugas;
@@ -30,8 +32,7 @@ export default function OfficerActionDropdown({
  </DropdownMenuTrigger>
  <DropdownMenuContent align="end">
  <DropdownMenuItem onClick={() => onEdit(petugas)} className="gap-2">
- <Edit className="h-4 w-4" /> Ubah
- </DropdownMenuItem>
+ <Edit className="h-4 w-4" />{APP_MESSAGES.COMMON.EDIT}</DropdownMenuItem>
  <ConfirmationDialog
  title="Anda Yakin?"
  description={`Akun petugas dengan nama "${petugas.nama_petugas}" akan dihapus secara permanen.`}
@@ -42,8 +43,7 @@ export default function OfficerActionDropdown({
  onSelect={(e) => e.preventDefault()}
  className="text-destructive gap-2"
  >
- <Trash2 className="h-4 w-4" /> Hapus
- </DropdownMenuItem>
+ <Trash2 className="h-4 w-4" />{APP_MESSAGES.COMMON.DELETE}</DropdownMenuItem>
  </ConfirmationDialog>
  </DropdownMenuContent>
  </DropdownMenu>

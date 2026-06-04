@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Bell, CheckCheck, Loader2 } from "lucide-react";
 import type { Notification, Pagination } from "@/types";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface NotificationsProps {
  notifications: Notification[];
@@ -132,7 +134,7 @@ export default function Notifications({
  disabled={isLoadingMore}
  >
  {isLoadingMore ? (
- <><Loader2 className="h-3 w-3 mr-2 animate-spin" /> Memuat...</>
+ <><Loader2 className="h-3 w-3 mr-2 animate-spin" />{APP_MESSAGES.COMMON.LOADING}</>
  ) : "Muat lebih banyak"}
  </Button>
  </div>

@@ -1,5 +1,6 @@
 import { useManageOfficers } from "@/hooks/useManageOfficers";
 import { Skeleton } from "@/components/ui/skeleton";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Loader2, PlusCircle, ShieldCheck } from "lucide-react";
@@ -12,15 +13,15 @@ const PageHeader = ({ onAdd }: { onAdd: () => void }) => (
  <div className="flex items-center gap-4">
  <ShieldCheck className="h-7 w-7 text-primary" />
  <div className="space-y-1">
- <h2 className="text-xl font-bold tracking-tight">Manajemen Petugas</h2>
+ <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.OFFICER.TITLE}</h2>
  <p className="text-muted-foreground">
- Kelola data petugas dan admin sistem.
+ {APP_MESSAGES.OFFICER.DESC}
  </p>
  </div>
  </div>
  <Button onClick={onAdd} className="w-full sm:w-auto">
  <PlusCircle className="mr-2 h-4 w-4" />
- Tambah Petugas
+ {APP_MESSAGES.OFFICER.ADD}
  </Button>
  </div>
 );
@@ -44,16 +45,16 @@ const ErrorState = ({
  <div className="text-center p-5">
  <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-4" />
  <h3 className="text-lg font-semibold text-destructive mb-2">
- Gagal Memuat Data
+ {APP_MESSAGES.OFFICER.FAILED}
  </h3>
  <p className="text-sm text-muted-foreground mb-4">{error}</p>
- <Button onClick={onRetry}>Coba Lagi</Button>
+ <Button onClick={onRetry}>{APP_MESSAGES.OFFICER.RETRY}</Button>
  </div>
 );
 
 const EmptyState = () => (
  <div className="p-5 text-center text-muted-foreground">
- <p>Belum ada data petugas yang tersedia.</p>
+ <p>{APP_MESSAGES.OFFICER.EMPTY}</p>
  </div>
 );
 

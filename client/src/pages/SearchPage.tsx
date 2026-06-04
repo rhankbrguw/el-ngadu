@@ -1,6 +1,7 @@
 import type { Petugas, Masyarakat, PengaduanWithPelapor } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Loader2, Search } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import { AlertCircle, Search } from "lucide-react";
 import { useSearch } from "@/hooks/useSearch";
 import OfficerResults from "@/components/admin/officers/OfficerResults";
 import CitizenResults from "@/components/admin/citizens/CitizenResults";
@@ -20,7 +21,7 @@ const LoadingState = () => (
 const ErrorState = ({ message }: { message: string }) => (
  <div className="flex flex-col items-center justify-center py-12 text-center">
  <AlertCircle className="h-10 w-10 text-destructive mb-2" />
- <p className="font-semibold text-destructive">Gagal Melakukan Pencarian</p>
+ <p className="font-semibold text-destructive">{APP_MESSAGES.SEARCH.FAILED}</p>
  <p className="text-sm text-muted-foreground">{message}</p>
  </div>
 );
@@ -28,9 +29,9 @@ const ErrorState = ({ message }: { message: string }) => (
 const NoResultsState = ({ query }: { query: string }) => (
  <div className="flex flex-col items-center justify-center py-12 text-center">
  <Search className="h-10 w-10 text-muted-foreground mb-2" />
- <p className="font-semibold">Tidak Ada Hasil</p>
+ <p className="font-semibold">{APP_MESSAGES.SEARCH.NO_RESULTS}</p>
  <p className="text-sm text-muted-foreground">
- Tidak ditemukan hasil untuk pencarian{" "}
+ {APP_MESSAGES.SEARCH.NO_RESULTS_DESC}{" "}
  <span className="font-bold">"{query}"</span>.
  </p>
  </div>
@@ -39,9 +40,9 @@ const NoResultsState = ({ query }: { query: string }) => (
 const InitialState = () => (
  <div className="flex flex-col items-center justify-center py-12 text-center">
  <Search className="h-10 w-10 text-muted-foreground mb-2" />
- <p className="font-semibold">Mulai Mencari</p>
+ <p className="font-semibold">{APP_MESSAGES.SEARCH.START}</p>
  <p className="text-sm text-muted-foreground">
- Gunakan bilah pencarian di atas untuk menemukan data.
+ {APP_MESSAGES.SEARCH.START_DESC}
  </p>
  </div>
 );
@@ -69,7 +70,7 @@ export default function SearchPage() {
  default:
  return (
  <p className="text-center text-muted-foreground">
- Tipe pencarian tidak dikenal.
+ {APP_MESSAGES.SEARCH.UNKNOWN_TYPE}
  </p>
  );
  }
@@ -78,10 +79,10 @@ export default function SearchPage() {
  return (
  <div className="space-y-3">
  <div>
- <h1 className="text-xl font-bold">Hasil Pencarian</h1>
+ <h1 className="text-xl font-bold">{APP_MESSAGES.SEARCH.TITLE}</h1>
  {query && (
  <p className="text-muted-foreground mt-1">
- Menampilkan hasil untuk:{" "}
+ {APP_MESSAGES.SEARCH.SHOWING_RESULTS}{" "}
  <span className="font-semibold text-foreground">"{query}"</span>
  </p>
  )}

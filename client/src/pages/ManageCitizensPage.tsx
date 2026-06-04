@@ -1,5 +1,6 @@
 import { useManageCitizens } from "@/hooks/useManageCitizens";
 import { Skeleton } from "@/components/ui/skeleton";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Loader2, Users } from "lucide-react";
@@ -12,9 +13,9 @@ const PageHeader = () => (
  <div className="flex items-center gap-4 mb-4">
  <Users className="h-7 w-7 text-primary" />
  <div className="space-y-1">
- <h2 className="text-xl font-bold tracking-tight">Manajemen Masyarakat</h2>
+ <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.CITIZEN.TITLE}</h2>
  <p className="text-muted-foreground">
- Lihat dan kelola semua akun masyarakat yang terdaftar.
+ {APP_MESSAGES.CITIZEN.DESC}
  </p>
  </div>
  </div>
@@ -40,10 +41,10 @@ const ErrorState = ({
  <CardContent className="p-5 text-center">
  <AlertCircle className="mx-auto h-12 w-12 text-destructive mb-4" />
  <h3 className="text-lg font-semibold text-destructive mb-2">
- Gagal Memuat Data
+ {APP_MESSAGES.CITIZEN.FAILED}
  </h3>
  <p className="text-sm text-muted-foreground mb-4">{error}</p>
- <Button onClick={onRetry}>Coba Lagi</Button>
+ <Button onClick={onRetry}>{APP_MESSAGES.CITIZEN.RETRY}</Button>
  </CardContent>
  </Card>
 );
@@ -72,7 +73,7 @@ export default function ManageCitizensPage() {
  if (masyarakatList.length === 0) {
  return (
  <div className="p-5 text-center text-muted-foreground">
- <p>Belum ada akun masyarakat yang terdaftar.</p>
+ <p>{APP_MESSAGES.CITIZEN.EMPTY}</p>
  </div>
  );
  }

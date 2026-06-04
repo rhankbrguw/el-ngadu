@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export function Footer() {
  return (
@@ -10,7 +11,7 @@ export function Footer() {
  <img src="/assets/image.png" alt="Logo El Ngadu" className="h-10" />
  <span>El Ngadu</span>
  </Link>
- <p className="text-muted-foreground">Platform Pengaduan Masyarakat Online.</p>
+ <p className="text-muted-foreground">{APP_MESSAGES.LANDING.FOOTER_DESC}</p>
  </div>
  <div>
  <h3 className="font-semibold text-primary-foreground mb-4">Navigasi</h3>
@@ -30,7 +31,7 @@ export function Footer() {
  </div>
  </div>
  <div className="border-t border-border pt-6 text-center text-muted-foreground">
- <p>&copy; {new Date().getFullYear()} El Ngadu. Hak Cipta Dilindungi.</p>
+ <p>&copy; {new Date().getFullYear()} El Ngadu. {APP_MESSAGES.LANDING.COPYRIGHT}</p>
  </div>
  </div>
  </footer>

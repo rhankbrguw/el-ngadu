@@ -5,6 +5,8 @@ import type { Petugas } from "@/types";
 import { getLevelVariant, formatLevel } from "@/lib/officerUtils";
 import { Button } from "@/components/ui/button";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface OfficerCardsProps {
  petugasList: Petugas[];
@@ -57,9 +59,7 @@ export default function OfficerCards({
  onClick={() => onEdit(petugas)}
  className="w-full"
  >
- <Edit className="w-4 h-4 mr-2" />
- Ubah
- </Button>
+ <Edit className="w-4 h-4 mr-2" />{APP_MESSAGES.COMMON.EDIT}</Button>
  
  <ConfirmationDialog
  title="Anda Yakin?"
@@ -72,9 +72,7 @@ export default function OfficerCards({
  size="sm" 
  className="w-full"
  >
- <Trash2 className="w-4 h-4 mr-2" />
- Hapus
- </Button>
+ <Trash2 className="w-4 h-4 mr-2" />{APP_MESSAGES.COMMON.DELETE}</Button>
  </ConfirmationDialog>
  </div>
  )}

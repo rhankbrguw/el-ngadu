@@ -24,6 +24,8 @@ import {
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
 import type { Masyarakat } from "@/types";
 import { formatDate } from "@/lib/complaintUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
 
 interface CitizenTableProps {
  masyarakatList: Masyarakat[];
@@ -94,8 +96,7 @@ export default function CitizenTable({
  onClick={() => onEdit(m)}
  className="gap-2 cursor-pointer"
  >
- <Edit className="h-4 w-4" /> Ubah
- </DropdownMenuItem>
+ <Edit className="h-4 w-4" />{APP_MESSAGES.COMMON.EDIT}</DropdownMenuItem>
  )}
  {onDelete && (
  <ConfirmationDialog
@@ -108,8 +109,7 @@ export default function CitizenTable({
  onSelect={(e) => e.preventDefault()}
  className="text-destructive gap-2 cursor-pointer focus:text-destructive"
  >
- <Trash2 className="h-4 w-4" /> Hapus
- </DropdownMenuItem>
+ <Trash2 className="h-4 w-4" />{APP_MESSAGES.COMMON.DELETE}</DropdownMenuItem>
  </ConfirmationDialog>
  )}
  </DropdownMenuContent>
