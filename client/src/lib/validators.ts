@@ -25,6 +25,8 @@ export const RegisterSchema = z.object({
         "Username hanya boleh mengandung huruf, angka, titik, dan underscore",
     }),
 
+  email: z.string().email({ message: "Format email tidak valid" }),
+
   password: z
     .string()
     .min(8, { message: "Password minimal 8 karakter" })
@@ -89,12 +91,13 @@ export type ChangePasswordPayload = z.infer<typeof ChangePasswordSchema>;
 export const MasyarakatEditSchema = z.object({
   nama: z.string().min(3, { message: "Nama lengkap minimal 3 karakter." }),
   username: z.string().min(5, { message: "Username minimal 5 karakter." }),
+  email: z.string().email({ message: "Format email tidak valid." }).optional().or(z.literal("")),
   telp: z.string().min(10, { message: "Nomor telepon minimal 10 digit." }),
 });
 
 export type MasyarakatEditPayload = z.infer<typeof MasyarakatEditSchema>;
 
-export const ProfileeEditSchema = z.object({
+export const ProfileEditSchema = z.object({
   nama: z
     .string()
     .min(3, { message: "Nama lengkap minimal 3 karakter." })
@@ -104,6 +107,7 @@ export const ProfileeEditSchema = z.object({
     .min(3, { message: "Nama petugas minimal 3 karakter." })
     .optional(),
   username: z.string().min(5, { message: "Username minimal 5 karakter." }),
+  email: z.string().email({ message: "Format email tidak valid." }).optional().or(z.literal("")),
   telp: z
     .string()
     .min(1, { message: "Nomor telepon wajib diisi." })
@@ -112,4 +116,4 @@ export const ProfileeEditSchema = z.object({
     }),
 });
 
-export type ProfileeEditPayload = z.infer<typeof ProfileeEditSchema>;
+export type ProfileEditPayload = z.infer<typeof ProfileEditSchema>;

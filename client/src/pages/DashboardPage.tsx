@@ -8,6 +8,8 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { DASHBOARD_STRINGS } from "@/lib/constants/dashboard";
 import { MasyarakatStats, AdminStatsView } from "@/components/dashboard/DashboardStats";
 
+import { QuickActions } from "@/components/dashboard/QuickActions";
+
 /**
  * Main dashboard page displaying user or admin statistics.
  * Fetches and presents relevant dashboard data based on user type.
@@ -32,7 +34,8 @@ export default function DashboardPage() {
         if (user.userType === "masyarakat") {
           const data = await getMyStatsService();
           setStats(data);
-        } else if (user.userType === "petugas" && user.level === "admin") {
+        } else if (user.userType === "petugas") {
+          // Baik admin maupun petugas mengambil stats admin (keseluruhan pengaduan)
           const data = await getAdminStatsService();
           setStats(data);
         }
@@ -45,10 +48,7 @@ export default function DashboardPage() {
       }
     };
 
-    if (
-      user.userType === "masyarakat" ||
-      (user.userType === "petugas" && user.level === "admin")
-    ) {
+    if (user.userType === "masyarakat" || user.userType === "petugas") {
       fetchStats();
     } else {
       setIsLoading(false);
@@ -64,7 +64,7 @@ export default function DashboardPage() {
           : user?.nama_petugas || DASHBOARD_STRINGS.GREETING_DEFAULT_USER}
         !
       </h1>
-      <p className="mt-1 text-muted-foreground">
+      <p className="mt-1 text-sm sm:text-base text-muted-foreground">
         {DASHBOARD_STRINGS.GREETING_SUMMARY}
       </p>
     </div>
@@ -72,14 +72,14 @@ export default function DashboardPage() {
 
   if (isAuthLoading || isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
+      <div className="flex h-[50vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 sm:space-y-6">
       {renderGreeting()}
       {error && (
         <div className="p-4 text-center bg-destructive/10 rounded-lg text-sm text-destructive flex items-center justify-center gap-2">
@@ -88,21 +88,21 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {stats &&
-        user?.userType === "masyarakat" &&
-        <MasyarakatStats data={stats as UserStats} />}
-        
-      {stats &&
-        user?.userType === "petugas" &&
-        user.level === "admin" &&
-        <AdminStatsView data={stats as AdminStats} />}
+      {stats && user?.userType === "masyarakat" && (
+        <MasyarakatStats data={stats as UserStats} />
+      )}
+
+      {stats && user?.userType === "petugas" && (
+        <AdminStatsView data={stats as AdminStats} />
+      )}
+      
+      {user && <QuickActions user={user} />}
 
       {user?.userType === "petugas" && user.level === "petugas" && (
-        <p className="text-muted-foreground pt-4">
+        <p className="text-sm sm:text-base text-muted-foreground pt-2 text-center">
           {DASHBOARD_STRINGS.PETUGAS_INSTRUCTION}
         </p>
       )}
     </div>
   );
 }
-

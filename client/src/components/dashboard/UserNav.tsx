@@ -61,7 +61,7 @@ export default function UserNav({ user, profileProgress, onLogout }: UserNavProp
         <DropdownMenuSeparator />
         <div className="px-2 py-2">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs">Profile</span>
+            <span className="text-xs">Profil</span>
             <span className="text-xs text-muted-foreground">{profileProgress}%</span>
           </div>
           <Progress value={profileProgress} className="h-2" />
@@ -70,15 +70,11 @@ export default function UserNav({ user, profileProgress, onLogout }: UserNavProp
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={() => navigate("/dashboard/profile")}>
             <UserIcon className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>Profil</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => navigate("/dashboard/settings")}>
             <Settings className="mr-2 h-4 w-4" />
             <span>Pengaturan</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => navigate("/dashboard/help")}>
-            <HelpCircle className="mr-2 h-4 w-4" />
-            <span>Bantuan</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

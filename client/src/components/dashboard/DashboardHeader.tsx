@@ -92,7 +92,6 @@ export default function DashboardHeader({
         </SheetTrigger>
         <MobileSheet
           navItems={navItems}
-          userLevel={user?.level}
           onLogout={handleLogout}
         />
       </Sheet>

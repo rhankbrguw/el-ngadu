@@ -11,6 +11,8 @@ import type {
 interface CreatePengaduanPayload {
   judul: string;
   isi: string;
+  kategori: string;
+  lokasi: string;
   foto_bukti?: File;
 }
 
@@ -20,6 +22,8 @@ export const createPengaduanService = async (
   const formData = new FormData();
   formData.append("judul", payload.judul);
   formData.append("isi", payload.isi);
+  formData.append("kategori", payload.kategori);
+  formData.append("lokasi", payload.lokasi);
   if (payload.foto_bukti) {
     formData.append("foto_bukti", payload.foto_bukti);
   }

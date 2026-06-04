@@ -10,6 +10,8 @@ export interface Pengaduan {
   judul: string;
   isi: string;
   status: "diajukan" | "diproses" | "selesai";
+  kategori: string | null;
+  lokasi: string | null;
   foto_bukti: string | null;
   created_at: string;
   nik_masyarakat: string;
@@ -24,6 +26,7 @@ export interface Masyarakat {
   nik: string;
   nama: string;
   username: string;
+  email?: string;
   telp: string;
   created_at: string;
 }
@@ -32,6 +35,7 @@ export interface Petugas {
   id_petugas: number;
   nama_petugas: string;
   username: string;
+  email?: string;
   telp: string;
   level: "admin" | "petugas";
 }
@@ -68,6 +72,7 @@ export interface Report {
   id: number;
   judul: string;
   isi: string;
+  kategori?: string;
   status: "diajukan" | "diproses" | "selesai";
   tgl_pengaduan: string;
   nik_pelapor: string;

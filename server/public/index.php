@@ -4,6 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/core/init.php';
 
 $allowed_origins = [
@@ -144,9 +145,30 @@ switch ($request_uri) {
             throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
         break;
 
+    case '/api/auth/verify-otp':
+        if ($request_method === 'POST') {
+            require __DIR__ . '/../src/api/auth/verify-otp.php';
+        } else {
+            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
+        break;
+
     case '/api/auth/logout':
         if ($request_method === 'POST') {
             require __DIR__ . '/../src/api/auth/logout.php';
+        } else {
+            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
+        break;
+
+    case '/api/auth/forgot-password':
+        if ($request_method === 'POST') {
+            require __DIR__ . '/../src/api/auth/forgot-password.php';
+        } else {
+            throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
+        break;
+
+    case '/api/auth/reset-password':
+        if ($request_method === 'POST') {
+            require __DIR__ . '/../src/api/auth/reset-password.php';
         } else {
             throw new \Core\BaseException('Metode tidak diizinkan, gunakan POST', 405);}
         break;

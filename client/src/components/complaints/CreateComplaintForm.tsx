@@ -5,7 +5,7 @@ import { createPengaduanService } from "@/services/complaintService";
 import { useAuth } from "@/hooks/useAuth";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { getErrorMessage } from "@/lib/complaintUtils";
-import { PENGADUAN_STRINGS } from "@/lib/constants/complaints";
+import { PENGADUAN_STRINGS, KATEGORI_PENGADUAN } from "@/lib/constants/complaints";
 
 import { FileUploadInput } from "@/components/complaints/FileUploadInput";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, AlertCircle } from "lucide-react";
 
 /**
@@ -21,6 +22,8 @@ import { Loader2, AlertCircle } from "lucide-react";
  */
 export function CreateComplaintForm() {
   const [judul, setJudul] = useState("");
+  const [kategori, setKategori] = useState("");
+  const [lokasi, setLokasi] = useState("");
   const [isi, setIsi] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +55,8 @@ export function CreateComplaintForm() {
     try {
       await createPengaduanService({
         judul,
+        kategori,
+        lokasi,
         isi,
         foto_bukti: file || undefined,
       });
@@ -66,6 +71,8 @@ export function CreateComplaintForm() {
     }
   };
 
+  const isFormValid = judul.trim() && kategori && lokasi.trim() && isi.trim();
+
   return (
     <Card className="border shadow-sm">
       <form onSubmit={handleSubmit}>
@@ -77,8 +84,8 @@ export function CreateComplaintForm() {
             {PENGADUAN_STRINGS.FORM_DESCRIPTION}
           </CardDescription>
         </CardHeader>
-        <CardContent className="-mt-2 space-y-3 p-4">
-          <div className="space-y-2">
+        <CardContent className="-mt-2 space-y-3 p-4 sm:p-5">
+          <div className="space-y-1.5">
             <Label htmlFor="judul">{PENGADUAN_STRINGS.LABEL_JUDUL}</Label>
             <Input
               id="judul"
@@ -90,7 +97,36 @@ export function CreateComplaintForm() {
               required
             />
           </div>
-          <div className="space-y-2">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="kategori">{PENGADUAN_STRINGS.LABEL_KATEGORI}</Label>
+              <Select value={kategori} onValueChange={setKategori} disabled={isLoading} required>
+                <SelectTrigger id="kategori">
+                  <SelectValue placeholder={PENGADUAN_STRINGS.PLACEHOLDER_KATEGORI} />
+                </SelectTrigger>
+                <SelectContent>
+                  {KATEGORI_PENGADUAN.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="lokasi">{PENGADUAN_STRINGS.LABEL_LOKASI}</Label>
+              <Input
+                id="lokasi"
+                type="text"
+                placeholder={PENGADUAN_STRINGS.PLACEHOLDER_LOKASI}
+                value={lokasi}
+                onChange={(e) => setLokasi(e.target.value)}
+                disabled={isLoading}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
             <Label htmlFor="isi">{PENGADUAN_STRINGS.LABEL_ISI}</Label>
             <Textarea
               id="isi"
@@ -98,12 +134,12 @@ export function CreateComplaintForm() {
               value={isi}
               onChange={(e) => setIsi(e.target.value)}
               disabled={isLoading}
-              rows={6}
+              rows={5}
               required
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label>{PENGADUAN_STRINGS.LABEL_FOTO}</Label>
             <FileUploadInput
               file={file}
@@ -130,16 +166,14 @@ export function CreateComplaintForm() {
             </div>
           )}
         </CardContent>
-        <CardFooter className="px-4 pb-6">
+        <CardFooter className="px-4 sm:px-5 pb-6">
           <Button
             type="submit"
             className="w-full"
-            disabled={isLoading || !judul.trim() || !isi.trim()}
+            disabled={isLoading || !isFormValid}
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading
-              ? PENGADUAN_STRINGS.BTN_SUBMIT_LOADING
-              : PENGADUAN_STRINGS.BTN_SUBMIT}
+            {isLoading ? PENGADUAN_STRINGS.BTN_SUBMIT_LOADING : PENGADUAN_STRINGS.BTN_SUBMIT}
           </Button>
         </CardFooter>
       </form>

@@ -75,7 +75,7 @@ export function useComplaintDetail() {
         tgl_tanggapan: new Date().toISOString(),
       };
       setPengaduan((prev) =>
-        prev ? { ...prev, tanggapan: newResponse } : null
+        prev ? { ...prev, tanggapan: newResponse, status: "selesai" } : null
       );
       setIsiResponse("");
     } catch (err) {

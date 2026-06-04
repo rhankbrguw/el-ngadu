@@ -19,6 +19,6 @@ export const AUTH_STRINGS = {
   ALREADY_HAVE_ACCOUNT: "Sudah punya akun? ",
   LOGIN_LINK: "Masuk di sini",
   SUCCESS_TITLE: "Registrasi Berhasil!",
-  SUCCESS_DESC: "Akun Anda telah berhasil dibuat. Silakan lanjut untuk masuk.",
-  CONTINUE_TO_LOGIN: "Lanjut ke Login",
+  SUCCESS_DESC: "Akun Anda telah berhasil diverifikasi. Mengalihkan ke dashboard...",
+  CONTINUE_TO_DASHBOARD: "Masuk ke Dashboard",
 } as const;

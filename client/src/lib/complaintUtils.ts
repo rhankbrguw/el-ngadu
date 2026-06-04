@@ -7,9 +7,9 @@ export const getStatusVariant = (
 ): "secondary" | "default" | "success" | "destructive" => {
   switch (status) {
     case "diajukan":
-      return "secondary";
-    case "diproses":
       return "default";
+    case "diproses":
+      return "secondary";
     case "selesai":
       return "success";
     default:

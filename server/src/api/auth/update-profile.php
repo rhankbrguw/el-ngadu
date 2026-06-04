@@ -49,6 +49,11 @@ if (isset($input['telp'])) {
   $fields[] = 'telp = ?';
   $params[] = trim($input['telp']);
 }
+if (isset($input['email'])) {
+  $fields[] = 'email = ?';
+  $params[] = trim($input['email']);
+  $session_update_data['email'] = trim($input['email']);
+}
 
 if (empty($fields)) {
   throw new \Core\ValidationException(\Core\Messages::ERR_TIDAK_ADA_DATA_YANG_DIKIRIM_UNTUK_DIPERB);

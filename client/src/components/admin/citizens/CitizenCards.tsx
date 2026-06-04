@@ -1,22 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Phone,
-  User as UserIcon,
-  Fingerprint,
-  MoreHorizontal,
-  Trash2,
-  Edit,
-} from "lucide-react";
+import { Phone, User as UserIcon, Fingerprint, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog";
 import type { Masyarakat } from "@/types";
-import { formatDate } from "@/lib/complaintUtils"; // <-- Perubahan di sini
+import { formatDate } from "@/lib/complaintUtils";
 
 interface CitizenCardsProps {
   masyarakatList: Masyarakat[];
@@ -29,69 +16,65 @@ export default function CitizenCards({
   onDelete,
   onEdit,
 }: CitizenCardsProps) {
-
-
   return (
     <div className="grid gap-4 md:hidden">
       {masyarakatList.map((m) => (
         <Card key={m.nik}>
-          <CardContent className="p-4 flex justify-between items-start">
-            <div className="space-y-3 flex-1 min-w-0">
-              <div className="font-semibold flex items-center gap-2">
+          <CardContent className="flex flex-col h-full justify-between">
+            <div>
+              <div className="mb-2 flex items-start justify-between">
+                <span className="text-sm font-semibold flex items-center gap-1">
+                  <Fingerprint className="h-4 w-4 text-muted-foreground" />
+                  {m.nik}
+                </span>
+              </div>
+              
+              <h3 className="mb-2 break-words text-base font-semibold flex items-center gap-2">
                 <UserIcon className="h-4 w-4 text-muted-foreground" />
                 {m.nama}
-              </div>
-              <div className="text-sm text-muted-foreground space-y-2 pl-6">
-                <p>@{m.username}</p>
-                <p className="flex items-center gap-2">
-                  <Fingerprint className="h-4 w-4" />
-                  {m.nik}
-                </p>
-                <p className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
+              </h3>
+              
+              <div className="mb-4 space-y-1 text-xs text-muted-foreground">
+                <p>Username: <strong>@{m.username}</strong></p>
+                <p className="flex items-center gap-1">
+                  <Phone className="h-3 w-3" />
                   {m.telp}
                 </p>
+                <p>Terdaftar: {formatDate(m.created_at)}</p>
               </div>
-              <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
-                Terdaftar: {formatDate(m.created_at)}
-              </p>
             </div>
+            
             {(onDelete || onEdit) && (
-              <div className="ml-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
+              <div className="grid grid-cols-2 gap-2 mt-auto pt-3 border-t">
+                {onEdit && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => onEdit(m)}
+                    className="w-full"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Ubah
+                  </Button>
+                )}
+                
+                {onDelete && (
+                  <ConfirmationDialog
+                    title="Anda Yakin?"
+                    description={`Akun masyarakat dengan nama "${m.nama}" akan dihapus secara permanen.`}
+                    onConfirm={() => onDelete(m.nik, m.nama)}
+                    confirmText="Ya, Hapus"
+                  >
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      className="w-full"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Hapus
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {onEdit && (
-                      <DropdownMenuItem
-                        onClick={() => onEdit(m)}
-                        className="gap-2 cursor-pointer"
-                      >
-                        <Edit className="h-4 w-4" />
-                        Ubah
-                      </DropdownMenuItem>
-                    )}
-                    {onDelete && (
-                      <ConfirmationDialog
-                        title="Anda Yakin?"
-                        description={`Akun "${m.nama}" akan dihapus.`}
-                        onConfirm={() => onDelete(m.nik, m.nama)}
-                        confirmText="Ya, Hapus"
-                      >
-                        <DropdownMenuItem
-                          onSelect={(e) => e.preventDefault()}
-                          className="text-destructive gap-2 cursor-pointer focus:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Hapus
-                        </DropdownMenuItem>
-                      </ConfirmationDialog>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </ConfirmationDialog>
+                )}
               </div>
             )}
           </CardContent>

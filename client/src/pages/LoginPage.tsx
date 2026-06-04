@@ -24,12 +24,16 @@ import { CheckCircle, Loader2 } from "lucide-react";
 export default function LoginPage() {
   const {
     formData,
+    otpCode,
+    setOtpCode,
+    step,
     error,
     isLoading,
     showSuccessDialog,
     setShowSuccessDialog,
     handleChange,
     handleLogin,
+    handleVerifyOtp
   } = useLogin();
 
   return (
@@ -44,68 +48,117 @@ export default function LoginPage() {
               Masukkan data diri anda untuk melanjutkan
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleLogin} noValidate>
-            <CardContent className="space-y-3 sm:space-y-3 p-4 sm:p-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-sm">
-                  Username
-                </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Masukkan username anda"
-                  required
-                  value={formData.username}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  autoComplete="username"
-                  className="h-10 text-sm"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm">
-                  Password
-                </Label>
-                <PasswordInput
-                  id="password"
-                  placeholder="Masukkan password anda"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  disabled={isLoading}
-                  autoComplete="current-password"
-                  className="h-10 text-sm"
-                />
-              </div>
-              {error && (
-                <div
-                  role="alert"
-                  className="rounded-md border border-destructive/20 bg-destructive/10 p-2.5 font-medium text-destructive text-sm"
-                >
-                  {error}
+          {step === "login" ? (
+            <form onSubmit={handleLogin} noValidate>
+              <CardContent className="space-y-3 sm:space-y-3 p-4 sm:p-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="username" className="text-sm">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="Masukkan username anda"
+                    required
+                    value={formData.username}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    autoComplete="username"
+                    className="h-10 text-sm"
+                  />
                 </div>
-              )}
-            </CardContent>
-            <CardFooter className="flex flex-col gap-3 p-4 sm:p-5">
-              <Button
-                type="submit"
-                className="w-full h-10 text-sm font-semibold"
-                disabled={isLoading}
-              >
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isLoading ? "Memproses..." : "Masuk"}
-              </Button>
-              <p className="text-sm text-center text-muted-foreground">
-                Belum punya akun?{" "}
-                <Link
-                  to="/register"
-                  className="font-medium underline hover:text-primary"
+                <div className="space-y-1.5">
+                  <Label htmlFor="password" className="text-sm">
+                    Password
+                  </Label>
+                  <PasswordInput
+                    id="password"
+                    placeholder="Masukkan password anda"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                    autoComplete="current-password"
+                    className="h-10 text-sm"
+                  />
+                  <div className="flex justify-end pt-0.5">
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs font-medium text-muted-foreground hover:text-primary hover:underline"
+                    >
+                      Lupa Password?
+                    </Link>
+                  </div>
+                </div>
+                {error && (
+                  <div
+                    role="alert"
+                    className="rounded-md border border-destructive/20 bg-destructive/10 p-2.5 font-medium text-destructive text-sm"
+                  >
+                    {error}
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="flex flex-col gap-3 px-4 pb-4 pt-2 sm:px-5 sm:pb-5 sm:pt-2">
+                <Button
+                  type="submit"
+                  className="w-full h-10 text-sm font-semibold"
+                  disabled={isLoading}
                 >
-                  Daftar di sini
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading ? "Memproses..." : "Masuk"}
+                </Button>
+                <p className="text-sm text-center text-muted-foreground">
+                  Belum punya akun?{" "}
+                  <Link
+                    to="/register"
+                    className="font-medium underline hover:text-primary"
+                  >
+                    Daftar di sini
+                  </Link>
+                </p>
+              </CardFooter>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} noValidate>
+              <CardContent className="space-y-3 sm:space-y-3 p-4 sm:p-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="otpCode" className="text-sm text-center block mb-2">
+                    Kode OTP telah dikirim ke email Anda.
+                  </Label>
+                  <Input
+                    id="otpCode"
+                    type="text"
+                    placeholder="Masukkan 6 digit OTP"
+                    required
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
+                    disabled={isLoading}
+                    className="h-10 text-center tracking-[0.5em] font-bold text-lg placeholder:tracking-normal placeholder:font-normal placeholder:text-sm"
+                  />
+                </div>
+                {error && (
+                  <div
+                    role="alert"
+                    className="rounded-md border border-destructive/20 bg-destructive/10 p-2.5 font-medium text-destructive text-sm"
+                  >
+                    {error}
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="flex flex-col gap-3 px-4 pb-4 pt-2 sm:px-5 sm:pb-5 sm:pt-2">
+                <Button
+                  type="submit"
+                  className="w-full h-10 text-sm font-semibold"
+                  disabled={isLoading}
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading ? "Memverifikasi..." : "Verifikasi OTP"}
+                </Button>
+              </CardFooter>
+            </form>
+          )}
         </Card>
       </div>
 

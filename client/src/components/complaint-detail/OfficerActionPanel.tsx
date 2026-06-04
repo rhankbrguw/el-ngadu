@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Edit, Send, CheckCircle } from "lucide-react";
-import ConfirmationDialog from "@/components/common/ConfirmationDialog";
+import { Loader2, Edit, Send } from "lucide-react";
 
 interface OfficerActionPanelProps {
   pengaduan: PengaduanDetail;
@@ -33,7 +32,7 @@ export function OfficerActionPanel({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Edit className="h-4 w-4" /> Ubah Status
+            <Edit className="h-4 w-4" /> Tindak Lanjuti
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -45,7 +44,7 @@ export function OfficerActionPanel({
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              "Proses Pengaduan Ini"
+              "Proses Laporan Ini"
             )}
           </Button>
         </CardContent>
@@ -59,12 +58,12 @@ export function OfficerActionPanel({
         <form onSubmit={onResponseSubmit}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Send className="h-4 w-4" /> Beri Response
+              <Send className="h-4 w-4" /> Berikan Tanggapan Akhir
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Tulis tanggapan Anda di sini..."
+              placeholder="Tulis solusi atau tindakan yang telah diambil..."
               rows={5}
               value={isiResponse}
               onChange={(e) => onIsiResponseChange(e.target.value)}
@@ -80,43 +79,11 @@ export function OfficerActionPanel({
               {isSubmitting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                "Kirim Response"
+                "Beri Tanggapan & Selesaikan"
               )}
             </Button>
           </CardFooter>
         </form>
-      </Card>
-    );
-  }
-
-  if (pengaduan.status === "diproses" && pengaduan.tanggapan) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CheckCircle className="h-4 w-4" /> Selesaikan Pengaduan
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ConfirmationDialog
-            title="Selesaikan Pengaduan?"
-            description="Tindakan ini akan mengubah status pengaduan menjadi 'selesai' dan tidak dapat diubah kembali."
-            onConfirm={() => onStatusChange("selesai")}
-            confirmText="Ya, Tandai Selesai"
-          >
-            <Button
-              variant="outline"
-              disabled={isSubmitting}
-              className="w-full"
-            >
-              {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Tutup & Selesaikan Report"
-              )}
-            </Button>
-          </ConfirmationDialog>
-        </CardContent>
       </Card>
     );
   }

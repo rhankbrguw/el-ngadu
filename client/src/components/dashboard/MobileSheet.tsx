@@ -1,8 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from "@/hooks/useTheme";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { SheetContent } from "@/components/ui/sheet";
 import { HelpCircle, LogOut, Moon, Sun } from "lucide-react";
 import type { User, NavItem } from "@/types";
@@ -10,15 +8,11 @@ import type { User, NavItem } from "@/types";
 // Perbarui interface props, hapus isDarkMode dan onToggleTheme
 interface MobileSheetProps {
   navItems: NavItem[];
-  user: User | null;
-  profileProgress: number;
   onLogout: () => void;
 }
 
 export default function MobileSheet({
   navItems,
-  user,
-  profileProgress,
   onLogout,
 }: MobileSheetProps) {
   const navigate = useNavigate();
@@ -26,11 +20,6 @@ export default function MobileSheet({
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const getDisplayName = () => {
-    if (!user) return "User";
-    return user.userType === "masyarakat" ? user.nama : user.nama_petugas;
   };
 
   return (
@@ -47,29 +36,6 @@ export default function MobileSheet({
           />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">ElNgadu</span>
         </Link>
-
-        <div className="mb-4 p-3 bg-muted rounded-lg">
-          <div className="flex items-center gap-3 mb-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={`https://api.dicebear.com/8.x/initials/svg?seed=${
-                  user?.username || "user"
-                }`}
-                alt={user?.username}
-              />
-              <AvatarFallback>
-                {user?.username?.substring(0, 2).toUpperCase() || "US"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <p className="text-sm font-medium">{getDisplayName()}</p>
-              <p className="text-xs text-muted-foreground">
-                Profile {profileProgress}% lengkap
-              </p>
-            </div>
-          </div>
-          <Progress value={profileProgress} className="h-2" />
-        </div>
 
         {navItems.map((item) => (
           <NavLink

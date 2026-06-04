@@ -3,7 +3,13 @@ CREATE TABLE IF NOT EXISTS masyarakat (
   nama VARCHAR(35) NOT NULL,
   username VARCHAR(25) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
+  email VARCHAR(100),
   telp VARCHAR(13) NOT NULL,
+  otp_code VARCHAR(10),
+  otp_expires_at TIMESTAMP,
+  reset_token VARCHAR(100),
+  reset_expires_at TIMESTAMP,
+  is_verified BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -12,8 +18,14 @@ CREATE TABLE IF NOT EXISTS petugas (
   nama_petugas VARCHAR(35) NOT NULL,
   username VARCHAR(25) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
+  email VARCHAR(100),
   telp VARCHAR(13) NOT NULL,
   level VARCHAR(20) NOT NULL CHECK(level IN ('admin', 'petugas')),
+  otp_code VARCHAR(10),
+  otp_expires_at TIMESTAMP,
+  reset_token VARCHAR(100),
+  reset_expires_at TIMESTAMP,
+  is_verified BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -22,6 +34,8 @@ CREATE TABLE IF NOT EXISTS pengaduan (
   nik_masyarakat CHAR(16) NOT NULL,
   judul VARCHAR(255) NOT NULL,
   isi TEXT NOT NULL,
+  kategori VARCHAR(50),
+  lokasi VARCHAR(255),
   foto_bukti VARCHAR(255),
   status VARCHAR(20) NOT NULL DEFAULT 'diajukan',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -47,7 +61,3 @@ CREATE TABLE IF NOT EXISTS notifications (
   is_read BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- Insert Default Admin (Password: password123)
-INSERT INTO petugas (nama_petugas, username, password, telp, level) 
-VALUES ('Super Admin', 'admin', '$2y$12$zn6jUMecjOMiO8V8dFyPU.Ob45icHuaerruK4wHjLuG3WnTHu750a', '08123456789', 'admin');

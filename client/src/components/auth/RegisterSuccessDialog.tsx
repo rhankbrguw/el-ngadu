@@ -55,7 +55,7 @@ export function RegisterSuccessDialog({
         </DialogHeader>
         <DialogFooter className="sm:justify-center">
           <Button type="button" onClick={onContinue}>
-            {AUTH_STRINGS.CONTINUE_TO_LOGIN}
+            {AUTH_STRINGS.CONTINUE_TO_DASHBOARD}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -39,6 +39,8 @@ try {
             'id' => $result['id'],
             'judul' => $result['judul'],
             'isi' => $result['isi'],
+            'kategori' => $result['kategori'],
+            'lokasi' => $result['lokasi'],
             'status' => $result['status'],
             'foto_bukti' => $result['foto_bukti'],
             'created_at' => $result['created_at'],

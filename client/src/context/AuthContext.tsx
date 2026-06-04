@@ -5,7 +5,7 @@ import {
   type ReactNode,
   type FC,
 } from "react";
-import { getProfileeService } from "@/services/authService";
+import { getProfileService } from "@/services/authService";
 import type { User } from "@/types";
 
 interface AuthContextType {
@@ -40,7 +40,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           return;
         }
 
-        const userData = await getProfileeService();
+        const userData = await getProfileService();
         if (userData) {
           setUser(userData);
         } else {

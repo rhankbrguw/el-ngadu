@@ -17,6 +17,8 @@ try {
             p.id,
             p.judul,
             p.isi,
+            p.kategori,
+            p.lokasi,
             p.status,
             p.created_at AS tgl_pengaduan,
             m.nik AS nik_pelapor,

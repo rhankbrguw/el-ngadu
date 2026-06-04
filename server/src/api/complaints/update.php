@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../components/Auth.php';
 require_once __DIR__ . '/../../components/Database.php';
 require_once __DIR__ . '/../../components/NotificationManager.php';
+require_once __DIR__ . '/../../components/EmailService.php';
 
 Auth::startSession();
 
@@ -28,8 +29,7 @@ $pdo = Database::connect();
 try {
     $pdo->beginTransaction();
 
-    // Ensure complaint exists before updating
-    $stmt_check = $pdo->prepare("SELECT nik_masyarakat FROM pengaduan WHERE id = ?");
+    $stmt_check = $pdo->prepare("SELECT p.nik_masyarakat, p.judul, m.nama, m.email FROM pengaduan p JOIN masyarakat m ON p.nik_masyarakat = m.nik WHERE p.id = ?");
     $stmt_check->execute([$id_pengaduan]);
     $pengaduan = $stmt_check->fetch();
 
@@ -46,6 +46,16 @@ try {
     $link = "/dashboard/history/" . $id_pengaduan;
 
     NotificationManager::create($pdo, $nik_masyarakat, 'masyarakat', $message, $link);
+    
+    if (!empty($pengaduan['email'])) {
+        $emailService = new \Components\EmailService();
+        $emailTitle = "Status Pengaduan Diperbarui";
+        $emailContent = "<p>Halo <strong>" . htmlspecialchars($pengaduan['nama']) . "</strong>,</p>";
+        $emailContent .= "<p>Status laporan pengaduan Anda dengan judul <strong>\"" . htmlspecialchars($pengaduan['judul']) . "\"</strong> telah diperbarui menjadi <strong>" . strtoupper(htmlspecialchars($new_status)) . "</strong>.</p>";
+        $emailContent .= "<p>Terima kasih telah menggunakan layanan El-Ngadu.</p>";
+        $actionUrl = "https://el-ngadu.vercel.app/dashboard/history/" . $id_pengaduan; // Adjust domain if needed
+        $emailService->sendEmail($pengaduan['email'], "Status Pengaduan: " . strtoupper($new_status), $emailTitle, $emailContent, "Lihat Detail Pengaduan", $actionUrl);
+    }
 
     $pdo->commit();
 

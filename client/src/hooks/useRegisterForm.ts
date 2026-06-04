@@ -1,9 +1,10 @@
-import { useState, type FormEvent, useCallback } from "react";
+import { useState, type FormEvent, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ZodError } from "zod";
 import { registerService } from "@/services/authService";
 import { RegisterSchema } from "@/lib/validators";
 import { getErrorMessage } from "@/lib/complaintUtils";
+import { useAuth } from "@/hooks/useAuth";
 
 type FormErrors = {
   [key: string]: string | undefined;
@@ -14,13 +15,28 @@ export function useRegisterForm() {
     nik: "",
     nama: "",
     username: "",
+    email: "",
     password: "",
     telp: "",
   });
+  const [otpData, setOtpData] = useState({ username: "", userType: "" });
+  const [otpCode, setOtpCode] = useState("");
+  const [step, setStep] = useState<"register" | "otp">("register");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // Import useAuth at the top or within
+
+  useEffect(() => {
+    if (!showSuccessDialog) return;
+
+    const timer = setTimeout(() => {
+      navigate("/dashboard");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [showSuccessDialog, navigate]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +70,17 @@ export function useRegisterForm() {
 
     try {
       const validatedData = RegisterSchema.parse(formData);
-      await registerService(validatedData);
-      setShowSuccessDialog(true);
+      const result = await registerService(validatedData);
+      
+      if (result.bypass_otp) {
+        login(result.user);
+        setShowSuccessDialog(true);
+      } else if (result.requires_otp) {
+        setOtpData({ username: result.username, userType: result.userType });
+        setStep("otp");
+      } else {
+        setShowSuccessDialog(true);
+      }
     } catch (err) {
       if (err instanceof ZodError) {
         const newErrors: FormErrors = {};
@@ -73,18 +98,45 @@ export function useRegisterForm() {
     }
   };
 
+  const handleVerifyOtp = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!otpCode.trim() || otpCode.length !== 6) {
+      setErrors({ form: "Kode OTP harus 6 digit." });
+      return;
+    }
+
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      const { verifyOtpService } = await import("@/services/authService");
+      const user = await verifyOtpService(otpData.username, otpCode, otpData.userType);
+      login(user);
+      setShowSuccessDialog(true);
+    } catch (err) {
+      setErrors({ form: getErrorMessage(err) });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDialogRedirect = () => {
     setShowSuccessDialog(false);
-    navigate("/login");
+    navigate("/dashboard");
   };
 
   return {
     formData,
+    otpCode,
+    setOtpCode,
+    step,
     errors,
     isLoading,
     showSuccessDialog,
     handleChange,
     handleRegister,
+    handleVerifyOtp,
     setShowSuccessDialog,
     handleDialogRedirect,
   };

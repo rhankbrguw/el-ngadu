@@ -17,9 +17,9 @@ $user_data = null;
 
 try {
   if ($user_type === 'masyarakat') {
-    $sql = "SELECT nik, nama, username, telp FROM masyarakat WHERE nik = ?";
+    $sql = "SELECT nik, nama, username, telp, email FROM masyarakat WHERE nik = ?";
   } elseif ($user_type === 'petugas') {
-    $sql = "SELECT id_petugas, nama_petugas, username, telp, level FROM petugas WHERE id_petugas = ?";
+    $sql = "SELECT id_petugas, nama_petugas, username, telp, level, email FROM petugas WHERE id_petugas = ?";
   } else {
     throw new Exception("Tipe user tidak valid dalam sesi.");
   }

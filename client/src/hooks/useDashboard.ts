@@ -11,7 +11,7 @@ import {
   navItemsMasyarakat,
   navItemsAdmin,
 } from "@/lib/constants";
-import { calculateProfileeProgress } from "@/lib/utils";
+import { calculateProfileProgress } from "@/lib/utils";
 
 export function useDashboard() {
   const { user, logout } = useAuth();
@@ -22,7 +22,7 @@ export function useDashboard() {
   const [notifPagination, setNotifPagination] = useState<Pagination | null>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const profileProgress = useMemo(() => calculateProfileeProgress(user), [user]);
+  const profileProgress = useMemo(() => calculateProfileProgress(user), [user]);
 
   useEffect(() => {
     if (user?.userType === "petugas") {

@@ -52,7 +52,7 @@ export function exportToCsv<T extends object>(
   URL.revokeObjectURL(url);
 }
 
-export const calculateProfileeProgress = (user: User | null): number => {
+export const calculateProfileProgress = (user: User | null): number => {
   if (!user) return 0;
 
   let totalFields = 0;

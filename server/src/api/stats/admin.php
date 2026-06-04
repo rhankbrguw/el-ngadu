@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../components/Database.php';
 
 Auth::startSession();
 
-if (!Auth::isLoggedIn() || $_SESSION['level'] !== 'admin') {
+if (!Auth::isLoggedIn() || !in_array($_SESSION['level'], ['admin', 'petugas'])) {
   throw new \Core\UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK_HANYA_ADMIN_YANG_BISA_MENG);
 }
 

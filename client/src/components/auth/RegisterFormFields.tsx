@@ -13,6 +13,7 @@ interface RegisterFormFieldsProps {
     nik: string;
     nama: string;
     username: string;
+    email: string;
     password: string;
     telp: string;
   };
@@ -78,6 +79,22 @@ export function RegisterFormFields({
         />
         {errors.username && (
           <p className="text-xs text-destructive">{errors.username}</p>
+        )}
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="contoh@email.com"
+          required
+          value={formData.email}
+          onChange={handleChange}
+          disabled={isLoading}
+        />
+        {errors.email && (
+          <p className="text-xs text-destructive">{errors.email}</p>
         )}
       </div>
 
