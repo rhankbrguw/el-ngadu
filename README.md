@@ -15,7 +15,7 @@ A full-stack digital governance application that streamlines complaint submissio
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 - **Citizen Portal:** Submit detailed complaints with multimedia support, track case status in real-time, and receive official responses.
 - **Officer Workstation:** Manage, filter, and respond to cases utilizing structured workflows and a complete audit trail.
@@ -25,7 +25,7 @@ A full-stack digital governance application that streamlines complaint submissio
 
 ---
 
-## 🏗 Tech Stack
+## Tech Stack
 
 | Layer | Technologies |
 |---|---|
@@ -35,7 +35,7 @@ A full-stack digital governance application that streamlines complaint submissio
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js v18+
@@ -77,7 +77,7 @@ npm run dev
 
 ---
 
-## 📂 Project Architecture
+## Project Architecture
 
 ```text
 el-ngadu/
@@ -102,6 +102,6 @@ el-ngadu/
 
 ---
 
-## 📜 License
+## License
 
 Created for academic purposes. Not licensed for public or commercial use without prior authorization.
