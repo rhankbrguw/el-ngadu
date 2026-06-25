@@ -4,7 +4,7 @@ import { Hero } from "@/components/landing/Hero";
 import { Stats } from "@/components/landing/Stats";
 import { AboutSection } from "@/components/landing/AboutSection";
 import { FlowSection } from "@/components/landing/FlowSection";
-import { ContactSection } from "@/components/landing/ContactSection";
+import { HubungiKamiSection } from "@/components/landing/HubungiKamiSection";
 import { Footer } from "@/components/landing/Footer";
 
 export default function LandingPage() {
@@ -25,7 +25,7 @@ export default function LandingPage() {
 
  const elementPosition = targetElement.getBoundingClientRect().top;
  const offsetPosition =
- elementPosition + window.pageYOffset - navbarHeight - 20; // 20px offset tambahan
+ elementPosition + window.pageYOffset - navbarHeight - 20;
 
  window.scrollTo({
  top: offsetPosition,
@@ -50,9 +50,10 @@ export default function LandingPage() {
  <Stats />
  <AboutSection />
  <FlowSection />
- <ContactSection />
+ <HubungiKamiSection />
  </main>
  <Footer />
  </div>
  );
 }
+

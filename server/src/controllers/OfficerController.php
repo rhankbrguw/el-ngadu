@@ -85,7 +85,7 @@ class OfficerController {
         
         $this->officerService->updateOfficer($id, $data);
         
-        Response::json(['message' => 'Data petugas berhasil diperbarui']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_OFFICER]);
     }
     
     /**
@@ -107,7 +107,7 @@ class OfficerController {
         
         $this->officerService->deleteOfficer($id);
         
-        Response::json(['message' => 'Akun petugas berhasil dihapus']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_DELETE_OFFICER]);
     }
     
     /**

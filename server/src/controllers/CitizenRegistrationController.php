@@ -46,7 +46,7 @@ class CitizenRegistrationController {
             
             Response::json([
                 'bypass_otp' => true,
-                'message' => 'Setup Wizard berhasil! Anda telah masuk sebagai Admin.',
+                'message' => \Constants\AppMessages::SUCCESS_SETUP_WIZARD,
                 'user' => $result['user']
             ]);
         } else {
@@ -54,7 +54,7 @@ class CitizenRegistrationController {
                 'requires_otp' => true,
                 'username' => $result['username'],
                 'userType' => $result['userType'],
-                'message' => 'Registrasi berhasil. Silakan cek email Anda untuk OTP.'
+                'message' => \Constants\AppMessages::SUCCESS_REGISTER
             ]);
         }
     }

@@ -56,4 +56,23 @@ class AppMessages {
     public const EMAIL_TITLE_OTP = 'Kode OTP Login Anda';
     public const EMAIL_SUBJECT_OTP = 'Kode OTP Login El-Ngadu';
     public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: #0f172a; color: #eab308; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
+
+    public const SUCCESS_LOGIN = "Login berhasil.";
+    public const SUCCESS_VERIFY_OTP = "Verifikasi OTP berhasil.";
+    public const SUCCESS_LOGOUT = "Logout berhasil.";
+    public const SUCCESS_FORGOT_PWD = "Jika email Anda terdaftar, tautan reset password telah dikirimkan.";
+    public const SUCCESS_RESET_PWD = "Kata sandi berhasil diubah. Silakan login.";
+    public const SUCCESS_UPDATE_PWD = "Password berhasil diperbarui.";
+    public const SUCCESS_UPDATE_PROFILE = "Profil berhasil diperbarui.";
+    public const SUCCESS_UPDATE_CITIZEN = "Data masyarakat berhasil diperbarui.";
+    public const SUCCESS_DELETE_CITIZEN = "Akun masyarakat berhasil dihapus.";
+    public const SUCCESS_SETUP_WIZARD = "Setup Wizard berhasil! Anda telah masuk sebagai Admin.";
+    public const SUCCESS_REGISTER = "Registrasi berhasil. Silakan cek email Anda untuk OTP.";
+    public const SUCCESS_UPDATE_COMPLAINT_STATUS = "Status pengaduan berhasil diubah.";
+    public const ERR_NO_NOTIF = "Tidak ada notifikasi baru untuk ditandai.";
+    public const SUCCESS_UPDATE_OFFICER = "Data petugas berhasil diperbarui";
+    public const SUCCESS_DELETE_OFFICER = "Akun petugas berhasil dihapus";
+    public const SUCCESS_CREATE_OFFICER = "Akun petugas baru berhasil dibuat.";
+    public const SUCCESS_SEND_RESPONSE = "Tanggapan berhasil dikirim.";
+
 }

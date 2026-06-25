@@ -81,7 +81,7 @@ class CitizenController {
 
         $this->citizenService->update($nik, $data);
         
-        Response::json(['message' => 'Data masyarakat berhasil diperbarui.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_CITIZEN]);
     }
 
     /**
@@ -98,7 +98,7 @@ class CitizenController {
         
         $this->citizenService->delete($nik);
         
-        Response::json(['message' => 'Akun masyarakat berhasil dihapus.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_DELETE_CITIZEN]);
     }
 
     /**

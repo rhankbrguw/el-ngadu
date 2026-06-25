@@ -13,7 +13,7 @@ const contactInfo = [
  { icon: <Mail className="h-6 w-6 text-foreground" />, title: "Email", content: "fahmicucian@gmail.com" },
 ];
 
-export function ContactSection() {
+export function HubungiKamiSection() {
  return (
  <section id="kontak" className="py-16 bg-card ">
  <div className="container mx-auto px-4">

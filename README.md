@@ -20,6 +20,7 @@ A full-stack digital governance application that streamlines complaint submissio
 - **Citizen Portal:** Submit detailed complaints with multimedia support, track case status in real-time, and receive official responses.
 - **Officer Workstation:** Manage, filter, and respond to cases utilizing structured workflows and a complete audit trail.
 - **Admin Dashboard:** Full system oversight, comprehensive role-based access control (RBAC), and statistical CSV/PDF data exports.
+- **AI Support Assistant:** Built-in floating chat widget powered by Google Gemini AI for instant user guidance.
 - **Modern UI/UX:** Fully responsive design with semantic light/dark modes, smooth micro-animations, and accessible components.
 - **Robust Security:** JWT-based stateless authentication, OTP verification, rigorous request validation, and global exception handling.
 
@@ -57,7 +58,11 @@ sqlite3 el_ngadu.sqlite < sqlite_init.sql
 cd server/public
 php -S localhost:8000
 ```
-2. *(Optional)* Copy `server/.env.example` to `server/.env` to configure custom database/JWT secrets.
+2. Copy `server/.env.example` to `server/.env` to configure your environment variables:
+```bash
+cp server/.env.example server/.env
+```
+Ensure you provide a valid `GEMINI_API_KEY` in the `.env` file to enable the AI Support feature.
 
 ### 3. Frontend Configuration
 1. Navigate to the client directory and install dependencies:

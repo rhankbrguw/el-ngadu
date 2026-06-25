@@ -22,16 +22,27 @@ export function NavbarMobile({ isMenuOpen, setIsMenuOpen }: NavbarMobileProps) {
  <div className="md:hidden pb-4">
  <div className="bg-card rounded-lg p-4 shadow-xl border border-border">
  <div className="flex flex-col space-y-3">
- {LINKS.map((link) => (
- <a
- key={link.href}
- href={link.href}
- onClick={() => setIsMenuOpen(false)}
- className="block text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium py-2 px-2 rounded-md hover:bg-accent"
- >
- {link.label}
- </a>
- ))}
+ {LINKS.map((link) => 
+  link.href.startsWith("#") ? (
+  <a
+  key={link.href}
+  href={link.href}
+  onClick={() => setIsMenuOpen(false)}
+  className="block text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium py-2 px-2 rounded-md hover:bg-accent"
+  >
+  {link.label}
+  </a>
+  ) : (
+  <Link
+  key={link.href}
+  to={link.href}
+  onClick={() => setIsMenuOpen(false)}
+  className="block text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium py-2 px-2 rounded-md hover:bg-accent"
+  >
+  {link.label}
+  </Link>
+  )
+  )}
  <div className="border-t border-border pt-6 flex flex-col space-y-3">
  <Button
  asChild

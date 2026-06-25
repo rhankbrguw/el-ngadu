@@ -66,7 +66,7 @@ class AuthController {
         Auth::login($result['user'], $result['type']);
         
         Response::json([
-            'message' => 'Login berhasil.',
+            'message' => \Constants\AppMessages::SUCCESS_LOGIN,
             'user' => $result['user']
         ]);
     }
@@ -90,7 +90,7 @@ class AuthController {
         unset($public_user['password'], $public_user['otp_code'], $public_user['otp_expires_at'], $public_user['reset_token'], $public_user['reset_expires_at']);
 
         Response::json([
-            'message' => 'Verifikasi OTP berhasil.',
+            'message' => \Constants\AppMessages::SUCCESS_VERIFY_OTP,
             'user' => $public_user
         ]);
     }
@@ -101,6 +101,6 @@ class AuthController {
      */
     public function logout(): void {
         Auth::logout();
-        Response::json(['message' => 'Logout berhasil.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_LOGOUT]);
     }
 }

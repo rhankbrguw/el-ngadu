@@ -74,6 +74,8 @@ export const APP_MESSAGES = {
     CONFIRM_PASSWORD: "Konfirmasi Kata Sandi",
     OLD_PASSWORD: "Kata Sandi Lama",
     USERNAME: "Username",
+        FORGOT_PASSWORD_DESC: "Masukkan alamat email yang terdaftar pada akun Anda",
+    RESET_PASSWORD_DESC: "Masukkan kata sandi baru Anda",
     FORGOT_PASSWORD_LINK: "Lupa Password?",
     REGISTER_LINK: "Daftar di sini"
   },
@@ -84,6 +86,15 @@ export const APP_MESSAGES = {
     TOTAL_OFFICERS: "Total Petugas",
     TOTAL_COMPLAINTS: "Total Pengaduan",
     QUICK_ACTIONS: "Aksi Cepat"
+  },
+  SUPPORT: {
+    TITLE: "Bantuan AI",
+    DESC: "Customer Support El-Ngadu siap membantu pertanyaan Anda.",
+    INPUT_PLACEHOLDER: "Tulis pertanyaan Anda di sini...",
+    SEND: "Kirim",
+    WAITING: "Mengetik...",
+    DEFAULT_GREETING: "Halo! Saya Customer Support AI El-Ngadu. Ada yang bisa saya bantu hari ini mengenai layanan kami?",
+    ERROR: "Maaf, terjadi kesalahan teknis saat menghubungi sistem. Silakan coba lagi nanti."
   },
   LANDING: {
     HERO_TITLE: "Suarakan Aspirasi, Wujudkan Perubahan.",
@@ -102,6 +113,7 @@ export const APP_MESSAGES = {
   },
   COMPLAINT: {
     MANAGE_TITLE: "Kelola Pengaduan",
+    MANAGE_DESC: "Daftar semua pengaduan yang masuk dari masyarakat.",
     PROCESS_ACTION: "Tindak Lanjuti",
     RESPOND_ACTION: "Berikan Tanggapan Akhir",
     PHOTO_EVIDENCE: "Bukti Foto",
@@ -126,6 +138,7 @@ export const APP_MESSAGES = {
   },
   HELP: {
     TITLE: "Bantuan",
-    GUIDE: "Panduan"
+    GUIDE: "Panduan",
+    GUIDE_DESC: "Setiap pengaduan yang masuk akan diverifikasi dan ditanggapi oleh petugas atau admin yang berwenang. Anda akan menerima notifikasi setiap kali ada tanggapan atau perubahan status.",
   }
 };

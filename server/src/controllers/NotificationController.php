@@ -39,7 +39,7 @@ class NotificationController {
             } else {
                 Response::json([
                     'success' => true,
-                    'message' => 'Tidak ada notifikasi baru untuk ditandai.'
+                    'message' => \Constants\AppMessages::ERR_NO_NOTIF
                 ]);
             }
         } catch (\PDOException $e) {

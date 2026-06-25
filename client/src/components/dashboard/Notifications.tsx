@@ -13,7 +13,7 @@ import {
 import { Bell, CheckCheck, Loader2 } from "lucide-react";
 import type { Notification, Pagination } from "@/types";
 import { APP_MESSAGES } from "@/lib/constants/messages";
-
+import { timeAgo } from "@/lib/utils";
 
 interface NotificationsProps {
  notifications: Notification[];
@@ -25,25 +25,6 @@ interface NotificationsProps {
  onMarkAllAsRead: () => void;
 }
 
-const timeAgo = (date: string): string => {
-  // Ensure the date is treated as UTC if it comes from SQLite CURRENT_TIMESTAMP
-  const utcDate = date.endsWith('Z') ? date : date.replace(' ', 'T') + 'Z';
-  let seconds = Math.floor(
-    (new Date().getTime() - new Date(utcDate).getTime()) / 1000
-  );
-  if (seconds < 0) seconds = 0; // Prevent negative time due to slight sync issues
- let interval = seconds / 31536000;
- if (interval > 1) return Math.floor(interval) + " tahun lalu";
- interval = seconds / 2592000;
- if (interval > 1) return Math.floor(interval) + " bulan lalu";
- interval = seconds / 86400;
- if (interval > 1) return Math.floor(interval) + " hari lalu";
- interval = seconds / 3600;
- if (interval > 1) return Math.floor(interval) + " jam lalu";
- interval = seconds / 60;
- if (interval > 1) return Math.floor(interval) + " menit lalu";
- return Math.floor(seconds) + " detik lalu";
-};
 
 export default function Notifications({
  notifications,

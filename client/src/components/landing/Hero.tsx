@@ -35,8 +35,8 @@ export function Hero() {
  </div>
 
  {/* Image - Centered on mobile/tablet, positioned slightly left on desktop */}
- <div className="flex justify-center lg:justify-start order-1 lg:order-2 lg:pr-8 animate-in fade-in zoom-in-95 duration-1000 delay-200 fill-mode-both">
- <div className="w-full max-w-sm md:max-w-md lg:max-w-md relative group">
+ <div className="flex justify-center lg:justify-start order-1 lg:order-2 lg:pr-8 animate-in fade-in zoom-in-95 duration-1000 delay-200 fill-mode-both mb-8 lg:mb-0">
+ <div className="w-40 sm:w-52 md:w-72 lg:w-80 xl:w-96 relative group mx-auto lg:mx-0">
  <div className="absolute -inset-1 bg-gradient-to-r from-secondary to-primary rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
  <img
  src="/assets/image.png"

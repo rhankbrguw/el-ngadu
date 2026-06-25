@@ -26,6 +26,7 @@ server/.env
 
 # Editor / OS
 .vscode/
+.agent/
 .idea/
 .DS_Store
 *.log

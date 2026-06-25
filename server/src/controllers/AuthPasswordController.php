@@ -23,7 +23,7 @@ class AuthPasswordController {
         }
         
         $this->service->forgotPassword(trim($input['email']));
-        Response::json(['message' => 'Jika email Anda terdaftar, tautan reset password telah dikirimkan.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_FORGOT_PWD]);
     }
 
     public function resetPassword(): void {
@@ -33,7 +33,7 @@ class AuthPasswordController {
         }
         
         $this->service->resetPassword(trim($input['token']), $input['password']);
-        Response::json(['message' => 'Kata sandi berhasil diubah. Silakan login.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_RESET_PWD]);
     }
 
     public function changePassword(): void {
@@ -51,6 +51,6 @@ class AuthPasswordController {
         }
         
         $this->service->changePassword(Auth::getUserId(), Auth::getUserType(), $input['old_password'], $input['new_password']);
-        Response::json(['message' => 'Password berhasil diperbarui.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_PWD]);
     }
 }

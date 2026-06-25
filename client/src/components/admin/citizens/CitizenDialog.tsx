@@ -75,7 +75,7 @@ export default function CitizenDialog({
 
  return (
  <Dialog open={isOpen} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-[425px]">
+ <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
  <DialogHeader>
  <DialogTitle>Ubah Data Masyarakat</DialogTitle>
  </DialogHeader>

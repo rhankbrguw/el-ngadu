@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
@@ -21,18 +22,41 @@ import HelpPage from "@/pages/HelpPage";
 import SettingsPage from "@/pages/SettingsPage";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
+const PublicAnimatedLayout = () => {
+  const location = useLocation();
+  return (
+    <div className="grid w-full min-h-screen">
+      <AnimatePresence>
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="col-start-1 row-start-1 w-full min-h-screen"
+        >
+          <Outlet />
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
+
 export default function App() {
  return (
  <>
  <Routes>
- {/* Public Routes */}
- <Route path="/" element={<LandingPage />} />
- <Route path="/login" element={<LoginPage />} />
- <Route path="/register" element={<RegisterPage />} />
- <Route path="/forgot-password" element={<ForgotPasswordPage />} />
- <Route path="/reset-password" element={<ResetPasswordPage />} />
+ {/* Public Routes with Animation */}
+ <Route element={<PublicAnimatedLayout />}>
+   <Route path="/" element={<LandingPage />} />
+   <Route path="/login" element={<LoginPage />} />
+   <Route path="/register" element={<RegisterPage />} />
+   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+   <Route path="/reset-password" element={<ResetPasswordPage />} />
+   <Route path="*" element={<NotFoundPage />} />
+ </Route>
 
- {/* Protected Routes */}
+ {/* Protected Routes (Animations handled in DashboardLayout) */}
  <Route
  path="/dashboard"
  element={
@@ -65,7 +89,7 @@ export default function App() {
  element={<ManageCitizensPage />}
  />
  </Route>
- </Route>
+  </Route>
 
  {/* Alias / Fallback Routes */}
  <Route
@@ -81,7 +105,6 @@ export default function App() {
  element={<Navigate to="/dashboard/manage-complaints" replace />}
  />
 
- <Route path="*" element={<NotFoundPage />} />
  </Routes>
  <Toaster richColors position="top-right" />
  </>

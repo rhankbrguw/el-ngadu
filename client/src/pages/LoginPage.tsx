@@ -25,10 +25,10 @@ export default function LoginPage() {
  <Card className="w-full max-w-sm md:max-w-md overflow-hidden">
  <CardHeader className="text-center">
  <CardTitle className="text-xl sm:text-xl font-bold">
- Selamat Datang Kembali!
+ {APP_MESSAGES.AUTH.LOGIN_TITLE || "Selamat Datang Kembali!"}
  </CardTitle>
  <CardDescription className="mt-1 text-sm">
- Masukkan data diri anda untuk melanjutkan
+ {APP_MESSAGES.AUTH.LOGIN_DESC || "Masukkan data diri anda untuk melanjutkan"}
  </CardDescription>
  </CardHeader>
  
@@ -62,7 +62,7 @@ export default function LoginPage() {
  </div>
  <DialogTitle className="text-base">{APP_MESSAGES.AUTH.LOGIN_SUCCESS}</DialogTitle>
  <DialogDescription className="text-sm">
- Anda akan diarahkan dalam sesaat...
+ {APP_MESSAGES.AUTH.LOGIN_REDIRECT || "Anda akan diarahkan dalam sesaat..."}
  </DialogDescription>
  </DialogHeader>
  </DialogContent>

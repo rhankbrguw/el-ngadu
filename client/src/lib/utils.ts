@@ -78,7 +78,24 @@ export const calculateProfileProgress = (user: User | null): number => {
  });
  }
 
- if (totalFields === 0) return 100;
+  if (totalFields === 0) return 100;
 
- return Math.round((filledFields / totalFields) * 100);
+  return Math.round((filledFields / totalFields) * 100);
+};
+
+export const timeAgo = (date: string): string => {
+  const utcDate = date.endsWith('Z') ? date : date.replace(' ', 'T') + 'Z';
+  let seconds = Math.floor((new Date().getTime() - new Date(utcDate).getTime()) / 1000);
+  if (seconds < 0) seconds = 0;
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + " tahun lalu";
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + " bulan lalu";
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + " hari lalu";
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + " jam lalu";
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + " menit lalu";
+  return Math.floor(seconds) + " detik lalu";
 };

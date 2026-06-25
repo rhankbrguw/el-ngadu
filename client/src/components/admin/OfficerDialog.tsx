@@ -101,7 +101,7 @@ export default function OfficerDialog({
 
  return (
  <Dialog open={isOpen} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-[425px]">
+ <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
  <OfficerDialogHeader isEditMode={isEditMode} />
  <OfficerDialogForm
  form={form}

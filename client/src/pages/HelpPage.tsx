@@ -27,7 +27,7 @@ const faqItems = [
  value: "item-3",
  question: "Siapa saja yang bisa menanggapi pengaduan saya?",
  answer:
- "Setiap pengaduan yang masuk akan diverifikasi dan ditanggapi oleh petugas atau admin yang berwenang. Anda akan menerima notifikasi setiap kali ada tanggapan atau perubahan status.",
+ APP_MESSAGES.HELP.GUIDE_DESC,
  icon: <ShieldCheck className="h-5 w-5 text-primary/80" />,
  },
  {

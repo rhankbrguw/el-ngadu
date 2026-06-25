@@ -18,16 +18,27 @@ export function NavbarDesktop() {
  return (
  <>
  <div className="hidden md:flex items-center space-x-8">
- {LINKS.map((link) => (
- <a
- key={link.href}
- href={link.href}
- className="text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium relative group"
- >
- {link.label}
- <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary/80 transition-all duration-200 group-hover:w-full"></span>
- </a>
- ))}
+  {LINKS.map((link) => 
+  link.href.startsWith("#") ? (
+  <a
+  key={link.href}
+  href={link.href}
+  className="text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium relative group"
+  >
+  {link.label}
+  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary/80 transition-all duration-200 group-hover:w-full"></span>
+  </a>
+  ) : (
+  <Link
+  key={link.href}
+  to={link.href}
+  className="text-muted-foreground hover:text-secondary/80 transition-colors duration-200 font-medium relative group"
+  >
+  {link.label}
+  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary/80 transition-all duration-200 group-hover:w-full"></span>
+  </Link>
+  )
+  )}
  </div>
 
  <div className="hidden lg:flex items-center space-x-3">

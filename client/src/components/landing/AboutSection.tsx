@@ -32,9 +32,9 @@ export function AboutSection() {
  ))}
  </ul>
  </div>
- <div className="order-1 md:order-2 flex justify-center">
- <img src="/assets/image.png" alt="Tentang El Ngadu" className="max-w-md w-full h-auto rounded-lg shadow-xl" />
- </div>
+  <div className="order-1 md:order-2 flex justify-center mb-8 md:mb-0">
+  <img src="/assets/image.png" alt="Tentang El Ngadu" className="w-40 sm:w-52 md:w-72 lg:w-80 xl:w-96 h-auto rounded-lg shadow-xl" />
+  </div>
  </div>
  </div>
  </section>

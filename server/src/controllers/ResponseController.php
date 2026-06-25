@@ -47,6 +47,6 @@ class ResponseController {
 
         $this->responseService->createResponse($idPengaduan, $isiTanggapan, $idPetugas);
 
-        Response::json(['message' => 'Tanggapan berhasil dikirim.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_SEND_RESPONSE]);
     }
 }

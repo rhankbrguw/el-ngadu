@@ -108,6 +108,11 @@ $router->mount('/api', function() use ($router) {
 
     // Reports Routes
     $router->get('/reports/generate', 'Controllers\ReportController@generate');
+
+    // Support AI Routes
+    $router->mount('/support', function() use ($router) {
+        $router->post('/chat', 'Controllers\SupportController@chat');
+    });
 });
 
 // Custom 404

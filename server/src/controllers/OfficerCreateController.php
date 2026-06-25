@@ -49,6 +49,6 @@ class OfficerCreateController {
         
         $this->officerService->createOfficer($validation->getValidData());
         
-        Response::json(['message' => 'Akun petugas baru berhasil dibuat.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_CREATE_OFFICER]);
     }
 }

@@ -38,6 +38,6 @@ class AuthProfileController {
             $_SESSION[$key] = $value;
         }
         
-        Response::json(['message' => 'Profil berhasil diperbarui.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_PROFILE]);
     }
 }

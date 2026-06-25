@@ -35,7 +35,7 @@ export function RegisterForm() {
 
  return (
  <>
- <Card className="w-full max-w-md">
+ <Card className="w-full max-w-sm md:max-w-md">
  <CardHeader className="text-center">
  <CardTitle className="text-xl">{AUTH_STRINGS.REGISTER_TITLE}</CardTitle>
  <CardDescription>

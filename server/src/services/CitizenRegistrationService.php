@@ -48,15 +48,12 @@ class CitizenRegistrationService {
                 $updateOtp->execute([$otp_code, $otp_expires, $data['username']]);
 
                 $emailService = new EmailService();
-                $emailTitle = "Kode Verifikasi Anda";
-                $emailContent = "<p>Halo <strong>" . htmlspecialchars($data['nama']) . "</strong>,</p>";
-                $emailContent .= "<p>Gunakan kode OTP berikut untuk melanjutkan. Kode ini berlaku selama <strong>5 menit</strong>.</p>";
-                $emailContent .= "<div style='text-align: center; margin: 30px 0;'>
-                                    <span style='background-color: #0f172a; color: #eab308; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px;'>" . $otp_code . "</span>
-                                  </div>";
-                $emailContent .= "<p>Jika Anda tidak merasa melakukan tindakan ini, abaikan email ini.</p>";
-
-                $emailService->sendEmail($data['email'], "Kode OTP El-Ngadu", $emailTitle, $emailContent);
+                $emailService->sendEmail(
+                    $data['email'],
+                    \Constants\AppMessages::EMAIL_SUBJECT_OTP,
+                    \Constants\AppMessages::EMAIL_TITLE_OTP,
+                    sprintf(\Constants\AppMessages::EMAIL_CONTENT_OTP, htmlspecialchars($data['nama']), $otp_code)
+                );
 
                 return [
                     'is_admin' => false,

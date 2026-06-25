@@ -57,12 +57,12 @@ class ComplaintController {
         if (empty(trim($input['status'] ?? ''))) throw new ValidationException("Status tidak boleh kosong");
 
         $this->service->updateStatus($_GET['id'], $input['status']);
-        Response::json(['message' => 'Status pengaduan berhasil diubah.']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_COMPLAINT_STATUS]);
     }
 
     public function delete(): void {
         if (!isset($_GET['id'])) throw new ValidationException("ID wajib");
         $this->service->deleteComplaint($_GET['id']);
-        Response::json(['message' => 'Pengaduan berhasil dihapus']);
+        Response::json(['message' => \Constants\AppMessages::SUCCESS_COMPLAINT_DELETED]);
     }
 }
