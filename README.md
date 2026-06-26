@@ -41,7 +41,7 @@ A full-stack digital governance application that streamlines complaint submissio
 ### Prerequisites
 - Node.js v18+
 - PHP 8.1+
-- Composer (Optional)
+- Composer
 - Git
 
 ### 1. Database Setup
@@ -53,9 +53,14 @@ sqlite3 el_ngadu.sqlite < sqlite_init.sql
 ```
 
 ### 2. Backend Configuration
-1. Start your PHP server pointing to the `server/public` directory. If using PHP's built-in server:
+1. Install PHP dependencies using Composer:
 ```bash
-cd server/public
+cd server
+composer install
+```
+2. Start your PHP server pointing to the `server/public` directory. If using PHP's built-in server:
+```bash
+cd public
 php -S localhost:8000
 ```
 2. Copy `server/.env.example` to `server/.env` to configure your environment variables:
