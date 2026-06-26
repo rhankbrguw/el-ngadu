@@ -20,10 +20,6 @@ class AuthController {
         $this->authService = new AuthService();
     }
 
-    /**
-     * Handle legacy login
-     * Route: POST /api/auth/login
-     */
     public function login(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         if (empty($input['username']) || empty($input['password'])) {
@@ -35,10 +31,6 @@ class AuthController {
         Response::success(\Core\Messages::AUTH_LOGIN_SUCCESS, ['user' => $result['public_user']]);
     }
 
-    /**
-     * Handle unified login for both citizens and officers
-     * Route: POST /api/auth/unified-login
-     */
     public function unifiedLogin(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         
@@ -71,10 +63,6 @@ class AuthController {
         ]);
     }
 
-    /**
-     * Handle OTP Verification
-     * Route: POST /api/auth/verify-otp
-     */
     public function verifyOtp(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         if (!isset($input['username'], $input['otp_code'], $input['userType'])) {
@@ -95,10 +83,6 @@ class AuthController {
         ]);
     }
 
-    /**
-     * Handle Logout
-     * Route: POST /api/auth/logout
-     */
     public function logout(): void {
         Auth::logout();
         Response::json(['message' => \Constants\AppMessages::SUCCESS_LOGOUT]);

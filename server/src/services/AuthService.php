@@ -31,14 +31,6 @@ class AuthService {
         throw new \Core\ValidationException(\Core\Messages::AUTH_USER_NOT_FOUND);
     }
 
-    /**
-     * Authenticate user and handle OTP logic
-     *
-     * @param string $username
-     * @param string $password
-     * @return array Response data containing auth status or OTP requirement
-     * @throws BaseException
-     */
     public function unifiedLogin(string $username, string $password): array {
         $pdo = Database::connect();
         

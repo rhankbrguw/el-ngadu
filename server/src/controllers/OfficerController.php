@@ -32,10 +32,6 @@ class OfficerController {
         }
     }
 
-    /**
-     * Get all officers with pagination
-     * Route: GET /api/officers
-     */
     public function readAll(): void {
         $this->requireAdmin();
         
@@ -47,10 +43,6 @@ class OfficerController {
         Response::json($result);
     }
     
-    /**
-     * Update an existing officer
-     * Route: PUT /api/officers?id={id}
-     */
     public function update(): void {
         $this->requireAdmin();
         
@@ -88,10 +80,6 @@ class OfficerController {
         Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_OFFICER]);
     }
     
-    /**
-     * Delete an existing officer
-     * Route: DELETE /api/officers?id={id}
-     */
     public function delete(): void {
         $this->requireAdmin();
         
@@ -110,10 +98,6 @@ class OfficerController {
         Response::json(['message' => \Constants\AppMessages::SUCCESS_DELETE_OFFICER]);
     }
     
-    /**
-     * Search officers by name or username
-     * Route: GET /api/officers/search?q={query}
-     */
     public function search(): void {
         $this->requireAdmin();
         
