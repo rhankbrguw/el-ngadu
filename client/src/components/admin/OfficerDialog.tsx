@@ -13,23 +13,13 @@ import { PETUGAS_DIALOG_STRINGS } from "@/lib/constants/admin";
 import { OfficerDialogHeader } from "./OfficerDialogHeader";
 import { OfficerDialogForm } from "./OfficerDialogForm";
 
-/**
- * Props for the OfficerDialog component.
- */
 interface OfficerDialogProps {
- /** The petugas data to edit, or null if adding a new one */
  petugasToEdit?: Petugas | null;
- /** Indicates whether the dialog is open */
  isOpen: boolean;
- /** Callback fired when the dialog's open state changes */
  onOpenChange: (open: boolean) => void;
- /** Callback fired upon successful form submission */
  onSuccess: () => void;
 }
 
-/**
- * Dialog component for adding or editing a Petugas.
- */
 export default function OfficerDialog({
  petugasToEdit,
  isOpen,

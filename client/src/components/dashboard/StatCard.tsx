@@ -3,26 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-/**
- * Props for the StatCard component.
- */
 export interface StatCardProps {
- /** The title of the statistic */
  title: string;
- /** The numerical value to display */
  value: number;
- /** The icon to display alongside the title */
  icon: React.ReactNode;
- /** Optional href to make the card clickable */
  href?: string;
 }
-
-/**
- * A reusable component to display a single statistic in a card format.
- *
- * @param props - The properties for the StatCard component.
- * @returns A rendered card displaying the statistic.
- */
 export const StatCard = ({ title, value, icon, href }: StatCardProps) => {
  const CardContentWrapper = (
  <Card className={cn(

@@ -10,24 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { AUTH_STRINGS } from "@/lib/constants/auth";
 
-/**
- * Properties for the RegisterSuccessDialog component.
- */
 interface RegisterSuccessDialogProps {
- /** Controls the visibility of the dialog */
  open: boolean;
- /** Callback to change the open state of the dialog */
  onOpenChange: (open: boolean) => void;
- /** Callback when the user clicks the continue button */
  onContinue: () => void;
 }
-
-/**
- * Displays a success dialog after a successful registration.
- *
- * @param props - The properties for the component.
- * @returns The rendered success dialog.
- */
 export function RegisterSuccessDialog({
  open,
  onOpenChange,

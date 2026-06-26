@@ -23,21 +23,11 @@ import { Loader2 } from "lucide-react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { PETUGAS_DIALOG_STRINGS } from "@/lib/constants/admin";
 
-/**
- * Props for the OfficerDialogForm component.
- */
 interface OfficerDialogFormProps {
- /** The initialized hook form instance for PetugasPayload */
  form: UseFormReturn<PetugasPayload>;
- /** Callback fired when the form is submitted */
  onSubmit: (data: PetugasPayload) => Promise<void>;
- /** Indicates whether the form is in edit mode */
  isEditMode: boolean;
 }
-
-/**
- * Form component for adding or editing a Petugas.
- */
 export function OfficerDialogForm({
  form,
  onSubmit,
