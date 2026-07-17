@@ -1,16 +1,8 @@
-import { APP_MESSAGES } from "@/lib/constants/messages";
 import { useState, type FormEvent } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { resetPasswordService } from "@/services/passwordResetService";
 import { Button } from "@/components/ui/button";
-import {
- Card,
- CardContent,
- CardDescription,
- CardFooter,
- CardHeader,
- CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";

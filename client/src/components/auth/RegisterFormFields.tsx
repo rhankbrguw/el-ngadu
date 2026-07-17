@@ -3,13 +3,7 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { PhoneInput } from "@/components/ui/PhoneInput";
 import { AUTH_STRINGS } from "@/lib/constants/auth";
-import {
- FormField,
- FormItem,
- FormLabel,
- FormControl,
- FormMessage,
-} from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import type { UseFormReturn } from "react-hook-form";
 import type { RegisterFormValues } from "@/lib/validators/auth";
 import { APP_MESSAGES } from "@/lib/constants/messages";
@@ -97,7 +91,7 @@ export function RegisterFormFields({
  <FormControl>
  <Input
  type="email"
- placeholder="contoh@gmail.com"
+ placeholder={AUTH_STRINGS.EMAIL_PLACEHOLDER}
  disabled={isLoading}
  {...field}
  />

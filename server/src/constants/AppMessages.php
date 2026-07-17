@@ -53,9 +53,12 @@ class AppMessages {
     public const ERR_INVALID_OTP = 'Kode OTP salah atau sudah kedaluwarsa.';
     public const ERR_EMAIL_NOT_SET = 'Email belum diatur untuk akun ini. Tidak dapat mengirim OTP.';
     
+    public const COLOR_DARK = '#0f172a';
+    public const COLOR_PRIMARY = '#eab308';
+    
     public const EMAIL_TITLE_OTP = 'Kode OTP Login Anda';
     public const EMAIL_SUBJECT_OTP = 'Kode OTP Login El-Ngadu';
-    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: #0f172a; color: #eab308; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
+    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: ' . self::COLOR_DARK . '; color: ' . self::COLOR_PRIMARY . '; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
 
     public const SUCCESS_LOGIN = "Login berhasil.";
     public const SUCCESS_VERIFY_OTP = "Verifikasi OTP berhasil.";

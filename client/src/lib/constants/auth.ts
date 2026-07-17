@@ -10,6 +10,7 @@ export const AUTH_STRINGS = {
  NAME_PLACEHOLDER: "Nama sesuai KTP",
  USERNAME_LABEL: "Username",
  USERNAME_PLACEHOLDER: "Buat username unik",
+ EMAIL_PLACEHOLDER: "contoh@gmail.com",
  PASSWORD_LABEL: "Password",
  PASSWORD_PLACEHOLDER: "Minimal 8 karakter",
  TELP_LABEL: "Nomor Telepon",

@@ -71,6 +71,10 @@ class ComplaintService {
     private function handleFileUpload(?array $file): ?string {
         if (!$file || $file['error'] !== UPLOAD_ERR_OK) return null;
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
+        if (!in_array($ext, $allowed, true)) {
+            throw new \Core\ValidationException(\Constants\AppMessages::ERR_FILE_FORMAT);
+        }
         $name = uniqid('img_', true) . '.' . $ext;
         $dir = __DIR__ . '/../../public/uploads/';
         if (!is_dir($dir)) mkdir($dir, 0777, true);

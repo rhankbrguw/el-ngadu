@@ -36,11 +36,12 @@ class AuthPasswordService {
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$token, $expires, $user['id']]);
         
-        $resetLink = "http://localhost:5173/reset-password?token=" . $token;
+        $appUrl = $_ENV['APP_URL'] ?? 'http://localhost:5173';
+        $resetLink = rtrim($appUrl, '/') . "/reset-password?token=" . $token;
         $content = "<p>Halo <strong>" . htmlspecialchars($user['nama']) . "</strong>,</p>
                     <p>Klik tombol di bawah ini untuk mengatur kata sandi baru:</p>
                     <div style='text-align: center; margin: 30px 0;'>
-                        <a href='{$resetLink}' style='background-color: #eab308; color: #0f172a; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Reset Password</a>
+                        <a href='{$resetLink}' style='background-color: " . \Constants\AppMessages::COLOR_PRIMARY . "; color: " . \Constants\AppMessages::COLOR_DARK . "; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Reset Password</a>
                     </div>";
         
         (new EmailService())->sendEmail($email, "Reset Password El-Ngadu", "Reset Password Anda", $content);

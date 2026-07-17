@@ -56,7 +56,7 @@ export default function SupportChatWidget({ isOpen, onClose }: SupportChatWidget
       
       const aiMsg: Message = { id: (Date.now() + 1).toString(), role: "ai", content: reply };
       setMessages((prev) => [...prev, aiMsg]);
-    } catch (error) {
+    } catch {
       const errorMsg: Message = { id: (Date.now() + 1).toString(), role: "ai", content: APP_MESSAGES.SUPPORT.ERROR };
       setMessages((prev) => [...prev, errorMsg]);
     } finally {

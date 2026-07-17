@@ -4,8 +4,7 @@ import {
   History,
   Users,
   ShieldCheck,
-  BarChart3,
-  Bot
+  BarChart3
 } from "lucide-react";
 import type { NavItem } from "@/types";
 
