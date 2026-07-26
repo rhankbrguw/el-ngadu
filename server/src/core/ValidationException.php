@@ -1,10 +1,10 @@
 <?php
 namespace Core;
 class ValidationException extends BaseException {
-    protected $statusCode = 400;
+    protected $statusCode = 422;
     private $validationErrors = [];
     public function __construct(string $message = "", array $errors = []) {
-        parent::__construct($message ?: Messages::ERROR_VALIDATION);
+        parent::__construct($message ?: \Constants\AppMessages::ERR_VALIDATION_FAILED);
         $this->validationErrors = $errors;
     }
     public function getValidationErrors(): array {
