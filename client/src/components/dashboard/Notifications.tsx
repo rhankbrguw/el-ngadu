@@ -88,7 +88,7 @@ export default function Notifications({
  )}
  </DropdownMenuLabel>
  <DropdownMenuSeparator />
- <div className="max-h-[60vh] overflow-y-auto pb-2">
+ <div className="max-h-dropdown overflow-y-auto pb-2">
  {notifications.length > 0 ? (
  <>
  {notifications.map((notification) => (

@@ -4,41 +4,42 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Bell } from "lucide-react";
 import { toast } from "sonner";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export function NotificationSettings() {
- const [emailNotif, setEmailNotif] = useState(true);
- const [pushNotif, setPushNotif] = useState(false);
+ const [isEmailNotifEnabled, setIsEmailNotifEnabled] = useState(true);
+ const [isPushNotifEnabled, setIsPushNotifEnabled] = useState(false);
 
  useEffect(() => {
- setEmailNotif(localStorage.getItem("elngadu_email_notif") !== "false");
- setPushNotif(localStorage.getItem("elngadu_push_notif") === "true");
+ setIsEmailNotifEnabled(localStorage.getItem("elngadu_email_notif") !== "false");
+ setIsPushNotifEnabled(localStorage.getItem("elngadu_push_notif") === "true");
  }, []);
 
  const handleEmailChange = (checked: boolean) => {
- setEmailNotif(checked);
+ setIsEmailNotifEnabled(checked);
  localStorage.setItem("elngadu_email_notif", String(checked));
- toast.success("Pengaturan Email disimpan.");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.EMAIL_SETTINGS_SAVED);
  };
 
  const handlePushChange = async (checked: boolean) => {
  if (checked) {
  if (!("Notification" in window)) {
- toast.error("Browser tidak mendukung Web Push Notifications.");
+ toast.error(APP_MESSAGES.TOAST_MESSAGES.BROWSER_NO_PUSH);
  return;
  }
  const permission = await Notification.requestPermission();
  if (permission === "granted") {
- setPushNotif(true);
+ setIsPushNotifEnabled(true);
  localStorage.setItem("elngadu_push_notif", "true");
  new Notification("El-Ngadu", { body: "Push Notifikasi aktif!" });
- toast.success("Push Notifications diaktifkan.");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.PUSH_ENABLED);
  } else {
- toast.error("Izin Push Notifications ditolak oleh browser.");
+ toast.error(APP_MESSAGES.TOAST_MESSAGES.PUSH_DENIED);
  }
  } else {
- setPushNotif(false);
+ setIsPushNotifEnabled(false);
  localStorage.setItem("elngadu_push_notif", "false");
- toast.success("Push Notifications dinonaktifkan.");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.PUSH_DISABLED);
  }
  };
 
@@ -58,7 +59,7 @@ export function NotificationSettings() {
  Terima pembaruan via email.
  </span>
  </div>
- <Switch id="email-notifications" checked={emailNotif} onCheckedChange={handleEmailChange} />
+ <Switch id="email-notifications" checked={isEmailNotifEnabled} onCheckedChange={handleEmailChange} />
  </div>
  <div className="flex items-center justify-between space-x-2">
  <div className="flex flex-col space-y-1">
@@ -67,7 +68,7 @@ export function NotificationSettings() {
  Terima pemberitahuan langsung di peramban web Anda.
  </span>
  </div>
- <Switch id="push-notifications" checked={pushNotif} onCheckedChange={handlePushChange} />
+ <Switch id="push-notifications" checked={isPushNotifEnabled} onCheckedChange={handlePushChange} />
  </div>
  </CardContent>
  </Card>

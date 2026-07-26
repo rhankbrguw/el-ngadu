@@ -9,9 +9,10 @@ interface ComplaintCardsProps {
 }
 
 export default function ComplaintCards({ pengaduanList }: ComplaintCardsProps) {
+ const list = Array.isArray(pengaduanList) ? pengaduanList : [];
  return (
  <div className="grid gap-4 md:hidden">
- {pengaduanList.map((item, index) => (
+ {list.map((item, index) => (
  <Card key={`${item.id}-${index}`}>
  <CardContent className="p-4">
  <div className="mb-2 flex items-start justify-between">

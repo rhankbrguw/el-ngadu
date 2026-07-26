@@ -4,6 +4,7 @@ import type { User } from "@/types";
 import type { RegisterPayload } from "@/lib/validators";
 import type { ProfileEditPayload } from "@/lib/validators";
 import type { ChangePasswordPayload } from "@/lib/validators";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export const registerService = async (
  payload: RegisterPayload
@@ -14,10 +15,10 @@ export const registerService = async (
  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
  throw new Error(
- error.response.data.error || "Gagal melakukan registrasi."
+ error.response.data.error || APP_MESSAGES.AUTH.REGISTER_FAILED
  );
  }
- throw new Error("Terjadi kesalahan tidak dikenal saat registrasi.");
+ throw new Error(APP_MESSAGES.AUTH.REGISTER_UNKNOWN_ERROR);
  }
 };
 
@@ -40,23 +41,23 @@ export const loginService = async (
  if (userData.nik) {
  return {
  ...userData,
- userType: "masyarakat" as const,
+ userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat",
  };
  } else if (userData.id_petugas) {
  return {
  ...userData,
- userType: "petugas" as const,
+ userType: APP_MESSAGES.ROLES.OFFICER as "petugas",
  };
  }
 
- throw new Error("Invalid user data received.");
+ throw new Error(APP_MESSAGES.AUTH.INVALID_USER_DATA);
  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
  throw new Error(
- error.response.data.error || "Username atau password salah."
+ error.response.data.error || APP_MESSAGES.AUTH.LOGIN_FAILED
  );
  }
- throw new Error("Terjadi kesalahan tidak dikenal saat login.");
+ throw new Error(APP_MESSAGES.AUTH.LOGIN_UNKNOWN_ERROR);
  }
 };
 
@@ -75,17 +76,17 @@ export const verifyOtpService = async (
  const userData = response.data.user;
  
  if (userData.nik) {
- return { ...userData, userType: "masyarakat" as const };
+ return { ...userData, userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat" };
  } else if (userData.id_petugas) {
- return { ...userData, userType: "petugas" as const };
+ return { ...userData, userType: APP_MESSAGES.ROLES.OFFICER as "petugas" };
  }
  
- throw new Error("Invalid user data received.");
+ throw new Error(APP_MESSAGES.AUTH.INVALID_USER_DATA);
  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
- throw new Error(error.response.data.error || "Gagal verifikasi OTP.");
+ throw new Error(error.response.data.error || APP_MESSAGES.AUTH.OTP_VERIFY_FAILED);
  }
- throw new Error("Terjadi kesalahan tidak dikenal saat verifikasi OTP.");
+ throw new Error(APP_MESSAGES.AUTH.OTP_UNKNOWN_ERROR);
  }
 };
 
@@ -97,19 +98,20 @@ export const getProfileService = async (): Promise<User | null> => {
  if (!userData) return null;
 
  if (userData.nik) {
- return { ...userData, userType: "masyarakat" as const };
+ return { ...userData, userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat" };
  }
 
  if (userData.id_petugas) {
- return { ...userData, userType: "petugas" as const };
+ return { ...userData, userType: APP_MESSAGES.ROLES.OFFICER as "petugas" };
  }
 
  return null;
  } catch (error) {
  if (axios.isAxiosError(error) && error.response?.status === 401) {
+ // justification: 401 Unauthorized means the user's session has expired or they are not logged in. Returning null handles this expected auth state gracefully.
  return null;
  }
- console.error("Gagal mengambil profil:", error);
+ void error;
  return null;
  }
 };
@@ -122,9 +124,9 @@ export const changePasswordService = async (
  return response.data;
  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
- throw new Error(error.response.data.error || "Gagal mengubah password.");
+ throw new Error(error.response.data.error || APP_MESSAGES.AUTH.CHANGE_PASSWORD_FAILED);
  }
- throw new Error("Terjadi kesalahan tidak dikenal.");
+ throw new Error(APP_MESSAGES.AUTH.UNKNOWN_ERROR);
  }
 };
 
@@ -136,9 +138,8 @@ export const updateProfileService = async (
  return response.data;
  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
- throw new Error(error.response.data.error || "Gagal memperbarui profil.");
+ throw new Error(error.response.data.error || APP_MESSAGES.AUTH.UPDATE_PROFILE_FAILED);
  }
- throw new Error("Terjadi kesalahan tidak dikenal.");
+ throw new Error(APP_MESSAGES.AUTH.UNKNOWN_ERROR);
  }
 };
-

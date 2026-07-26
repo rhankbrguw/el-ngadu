@@ -21,27 +21,28 @@ interface OfficerTableProps {
 }
 
 export default function OfficerTable({
- petugasList,
- onEdit,
- onDelete,
+  petugasList,
+  onEdit,
+  onDelete,
 }: OfficerTableProps) {
- return (
- <div className="hidden md:block overflow-x-auto">
- <Table>
- <TableHeader>
- <TableRow>
- <TableHead className="text-center">{APP_MESSAGES.OFFICER.NAME}</TableHead>
- <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
- <TableHead className="text-center">{APP_MESSAGES.AUTH.EMAIL_LABEL}</TableHead>
- <TableHead className="text-center">{APP_MESSAGES.COMMON.PHONE}</TableHead>
- <TableHead className="text-center">{APP_MESSAGES.OFFICER.LEVEL}</TableHead>
- {onEdit && onDelete && (
- <TableHead className="text-center w-[100px]">{APP_MESSAGES.COMMON.ACTION}</TableHead>
- )}
- </TableRow>
- </TableHeader>
- <TableBody>
- {petugasList.map((petugas) => (
+  const list = Array.isArray(petugasList) ? petugasList : [];
+  return (
+    <div className="hidden md:block overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-center">{APP_MESSAGES.OFFICER.NAME}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.AUTH.EMAIL_LABEL}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.COMMON.PHONE}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.OFFICER.LEVEL}</TableHead>
+            {onEdit && onDelete && (
+              <TableHead className="text-center w-24">{APP_MESSAGES.COMMON.ACTION}</TableHead>
+            )}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {list.map((petugas) => (
  <TableRow key={petugas.id_petugas}>
  <TableCell className="text-center font-medium">
  <div className="inline-flex items-center justify-center gap-1.5">

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
  createContext,
  useState,
@@ -47,7 +48,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
  localStorage.removeItem('user_data');
  }
  } catch (error) {
- console.error("Verifikasi sesi gagal:", error);
+ void error; // Intentional silent fail for session check
  setUser(null);
  localStorage.removeItem('user_data');
  } finally {

@@ -49,7 +49,7 @@ el-ngadu/
 | ------------------ | ------ | --------------------------------- |
 | `VALIDATION_ERROR` | 422    | Input validation failed           |
 | `UNAUTHENTICATED`  | 401    | Missing or invalid token          |
-| `UNAUTHORIZED`     | 403    | Insufficient permissions          |
+| `FORBIDDEN`        | 403    | Insufficient permissions          |
 | `NOT_FOUND`        | 404    | Resource does not exist           |
 | `CONFLICT`         | 409    | Duplicate or constraint violation |
 | `INTERNAL_ERROR`   | 500    | Unexpected failure                |

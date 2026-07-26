@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
-import { getReportService } from "@/services/reportService";
-import { useFetchData } from "@/hooks/useFetchData";
+import { useReports } from "@/hooks/useReports";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { handleExportCSV, handleExportPDF } from "@/components/reports/reportExportUtils";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertCircle, FileSpreadsheet, Download, FileText } from "lucide-react";
 import { ReportTable } from "@/components/reports/ReportTable";
@@ -11,20 +11,14 @@ import { REPORT_STRINGS } from "@/lib/constants/reports";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ReportsPage() {
- const {
- data: laporanList,
- isLoading,
- error,
- refetch,
- } = useFetchData(getReportService);
-
- const [filterStatus, setFilterStatus] = useState("all");
-
- const filteredData = useMemo(() => {
- if (!laporanList) return [];
- if (filterStatus === "all") return laporanList;
- return laporanList.filter(item => item.status === filterStatus);
- }, [laporanList, filterStatus]);
+  const {
+    filteredData,
+    filterStatus,
+    setFilterStatus,
+    isLoading,
+    error,
+    refetch,
+  } = useReports();
 
 
  const renderContent = () => {
@@ -88,8 +82,8 @@ export default function ReportsPage() {
  
  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
  <Select value={filterStatus} onValueChange={setFilterStatus}>
- <SelectTrigger className="w-full sm:w-[150px]">
- <SelectValue placeholder="Filter Status" />
+ <SelectTrigger className="w-full sm:w-report-select">
+ <SelectValue placeholder={APP_MESSAGES.SEARCH.FILTER_STATUS} />
  </SelectTrigger>
  <SelectContent>
  <SelectItem value="all">{REPORT_STRINGS.FILTER_STATUS_ALL}</SelectItem>
@@ -105,14 +99,18 @@ export default function ReportsPage() {
  <span className="sm:hidden">CSV</span>
  </Button>
 
- <Button onClick={() => handleExportPDF(filteredData)} disabled={filteredData.length === 0} className="w-full sm:w-auto">
- <FileText className="mr-2 h-4 w-4" />
- <span className="hidden sm:inline">{REPORT_STRINGS.BTN_PDF}</span>
- <span className="sm:hidden">PDF</span>
- </Button>
- </div>
- </div>
- {renderContent()}
- </div>
- );
+        <Button onClick={() => handleExportPDF(filteredData)} disabled={filteredData.length === 0} className="w-full sm:w-auto">
+          <FileText className="mr-2 h-4 w-4" />
+          <span className="hidden sm:inline">{REPORT_STRINGS.BTN_PDF}</span>
+          <span className="sm:hidden">PDF</span>
+        </Button>
+      </div>
+    </div>
+    <Card>
+      <CardContent className="p-0">
+        {renderContent()}
+      </CardContent>
+    </Card>
+  </div>
+);
 }

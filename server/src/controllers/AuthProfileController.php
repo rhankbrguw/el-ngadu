@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Core\Response;
 use Core\UnauthorizedException;
+use Constants\AppMessages;
 use Components\Auth;
 use Services\AuthProfileService;
 
@@ -18,17 +19,17 @@ class AuthProfileController {
     public function getProfile(): void {
         Auth::startSession();
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::ERR_ANDA_HARUS_LOGIN_UNTUK_MENGAKSES_SUMBER ?? "Harus login");
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
         
-        $user = $this->service->getProfile(Auth::getUserId(), Auth::getUserType());
-        Response::json(['user' => $user]);
+        $user = $this->service->getProfile((string)Auth::getUserId(), (string)Auth::getUserType());
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, ['user' => $user]);
     }
 
     public function updateProfile(): void {
         Auth::startSession();
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::ERR_ANDA_HARUS_LOGIN_UNTUK_MELAKUKAN_TINDAKA ?? "Harus login");
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
         
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -38,6 +39,6 @@ class AuthProfileController {
             $_SESSION[$key] = $value;
         }
         
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_PROFILE]);
+        Response::success(\Constants\AppMessages::SUCCESS_UPDATE_PROFILE);
     }
 }

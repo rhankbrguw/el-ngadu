@@ -38,27 +38,23 @@ export default function CitizenTable({
  onDelete,
  onEdit,
 }: CitizenTableProps) {
+ const list = Array.isArray(masyarakatList) ? masyarakatList : [];
  return (
  <div className="hidden md:block overflow-x-auto">
  <Table>
  <TableHeader>
  <TableRow>
- <TableHead className="text-center">{APP_MESSAGES.COMMON.NAME}</TableHead>
+ <TableHead className="text-center">NIK</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.CITIZEN.NAME}</TableHead>
  <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
- <TableHead className="text-center hidden lg:table-cell text-center">
- NIK
- </TableHead>
- <TableHead className="text-center hidden lg:table-cell text-center">
- Telepon
- </TableHead>
- <TableHead className="text-center">{APP_MESSAGES.COMMON.REGISTER_DATE}</TableHead>
- {(onDelete || onEdit) && (
- <TableHead className="text-center w-[100px]">{APP_MESSAGES.COMMON.ACTION}</TableHead>
+ <TableHead className="text-center">{APP_MESSAGES.COMMON.PHONE}</TableHead>
+ {onEdit && onDelete && (
+ <TableHead className="text-center w-24">{APP_MESSAGES.COMMON.ACTION}</TableHead>
  )}
  </TableRow>
  </TableHeader>
- <TableBody>
- {masyarakatList.map((m) => (
+        <TableBody>
+          {list.map((m) => (
  <TableRow key={m.nik}>
  <TableCell className="text-center font-medium">
  <div className="inline-flex items-center justify-center gap-1.5">

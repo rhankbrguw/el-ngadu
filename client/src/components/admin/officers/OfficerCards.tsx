@@ -15,13 +15,14 @@ interface OfficerCardsProps {
 }
 
 export default function OfficerCards({
- petugasList,
- onEdit,
- onDelete,
+  petugasList,
+  onEdit,
+  onDelete,
 }: OfficerCardsProps) {
- return (
- <div className="grid gap-4 md:hidden">
- {petugasList.map((petugas) => (
+  const list = Array.isArray(petugasList) ? petugasList : [];
+  return (
+    <div className="grid gap-4 md:hidden">
+      {list.map((petugas) => (
  <Card key={petugas.id_petugas}>
  <CardContent className="flex flex-col h-full justify-between">
  <div>

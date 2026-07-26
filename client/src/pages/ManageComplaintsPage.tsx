@@ -1,6 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
-import { getAllPengaduanService } from "@/services/complaintService";
-import type { PengaduanWithPelapor, Pagination } from "@/types";
+import { useManageComplaints } from "@/hooks/useManageComplaints";
 import {
  Card,
  CardContent,
@@ -15,29 +13,14 @@ import { APP_MESSAGES } from "@/lib/constants/messages";
 
 
 export default function ManageComplaintsPage() {
- const [pengaduan, setPengaduan] = useState<PengaduanWithPelapor[]>([]);
- const [pagination, setPagination] = useState<Pagination | null>(null);
- const [currentPage, setCurrentPage] = useState(1);
- const [isLoading, setIsLoading] = useState(true);
- const [error, setError] = useState<string | null>(null);
+ const {
+   pengaduan,
+   pagination,
+   setCurrentPage,
+   isLoading,
+   error
+ } = useManageComplaints();
  const isDesktop = useMediaQuery("(min-width: 768px)");
-
- const fetchPengaduan = useCallback(async (page: number) => {
- setIsLoading(true);
- try {
- const response = await getAllPengaduanService(page);
- setPengaduan(response.data);
- setPagination(response.pagination);
- } catch (err) {
- setError(err instanceof Error ? err.message : "Gagal memuat data.");
- } finally {
- setIsLoading(false);
- }
- }, []);
-
- useEffect(() => {
- fetchPengaduan(currentPage);
- }, [fetchPengaduan, currentPage]);
 
  if (isLoading || isDesktop === null) {
  return (
@@ -60,28 +43,39 @@ export default function ManageComplaintsPage() {
  );
  }
 
- return (
- <div className="space-y-3">
- <div className="flex items-center gap-4 mb-4">
- <ClipboardList className="h-7 w-7 text-primary" />
- <div className="space-y-1">
- <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.COMPLAINT.MANAGE_TITLE}</h2>
- <p className="text-muted-foreground">
- Daftar semua pengaduan yang masuk dari masyarakat.
- </p>
- </div>
- </div>
- <Card>
- <CardContent className="p-0">
- {/* Render satu komponen saja berdasarkan ukuran layar */}
- {isDesktop ? (
- <ComplaintTable pengaduanList={pengaduan} />
- ) : (
- <div className="p-4">
- <ComplaintCards pengaduanList={pengaduan} />
- </div>
- )}
- </CardContent>
+  const renderContent = () => {
+    if (pengaduan.length === 0) {
+      return (
+        <div className="p-8 text-center flex flex-col items-center justify-center">
+          <ClipboardList className="h-10 w-10 text-muted-foreground mb-3 opacity-50" />
+          <p className="text-muted-foreground font-medium">{APP_MESSAGES.COMPLAINT.EMPTY || "Tidak ada data pengaduan."}</p>
+        </div>
+      );
+    }
+    return isDesktop ? (
+      <ComplaintTable pengaduanList={pengaduan} />
+    ) : (
+      <div className="p-4">
+        <ComplaintCards pengaduanList={pengaduan} />
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-4 mb-4">
+        <ClipboardList className="h-7 w-7 text-primary" />
+        <div className="space-y-1">
+          <h2 className="text-xl font-bold tracking-tight">{APP_MESSAGES.COMPLAINT.MANAGE_TITLE}</h2>
+          <p className="text-muted-foreground">
+            Daftar semua pengaduan yang masuk dari masyarakat.
+          </p>
+        </div>
+      </div>
+      <Card>
+        <CardContent className="p-0">
+          {renderContent()}
+        </CardContent>
  <DataTablePagination
  pagination={pagination}
  onPageChange={setCurrentPage}

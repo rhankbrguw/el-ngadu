@@ -22,28 +22,18 @@ class NotificationController {
         Auth::startSession();
 
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::ERR_ANDA_HARUS_LOGIN_UNTUK_MELAKUKAN_TINDAKA ?? 'Harus login.');
+            throw new UnauthorizedException(\Constants\AppMessages::ERR_UNAUTHORIZED);
         }
 
         $userId = Auth::getUserId();
         $userType = Auth::getUserType();
 
-        try {
-            $rowCount = $this->notificationService->markAllAsRead($userId, $userType);
+        $rowCount = $this->notificationService->markAllAsRead($userId, $userType);
 
-            if ($rowCount > 0) {
-                Response::json([
-                    'success' => true,
-                    'message' => $rowCount . ' notifikasi telah berhasil ditandai dibaca.'
-                ]);
-            } else {
-                Response::json([
-                    'success' => true,
-                    'message' => \Constants\AppMessages::ERR_NO_NOTIF
-                ]);
-            }
-        } catch (\PDOException $e) {
-            throw new BaseException('Gagal memperbarui notifikasi: ' . $e->getMessage(), 500);
+        if ($rowCount > 0) {
+            Response::success(sprintf(\Constants\AppMessages::NOTIF_MARKED_READ, $rowCount));
+        } else {
+            Response::success(\Constants\AppMessages::ERR_NO_NOTIF);
         }
     }
 
@@ -51,7 +41,7 @@ class NotificationController {
         Auth::startSession();
 
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::AUTH_UNAUTHORIZED ?? 'Harus login.');
+            throw new UnauthorizedException(\Constants\AppMessages::ERR_UNAUTHORIZED);
         }
 
         $input = json_decode(file_get_contents("php://input"), true) ?? [];
@@ -62,22 +52,18 @@ class NotificationController {
         $validation->validate();
 
         if ($validation->fails()) {
-            throw new ValidationException(\Core\Messages::ERROR_VALIDATION ?? 'Validation Error', $validation->errors()->firstOfAll());
+            throw new ValidationException(\Constants\AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
         }
 
         $userId = Auth::getUserId();
         $notificationId = (int)$validation->getValidData()['notification_id'];
 
-        try {
-            $success = $this->notificationService->markAsRead($notificationId, $userId);
+        $success = $this->notificationService->markAsRead($notificationId, $userId);
 
-            if ($success) {
-                Response::success("Notification marked as read.");
-            } else {
-                throw new NotFoundException("Notification not found.");
-            }
-        } catch (\PDOException $e) {
-            throw new BaseException(\Core\Messages::ERROR_SERVER ?? 'Server Error', 500);
+        if ($success) {
+            Response::success(\Constants\AppMessages::NOTIF_SINGLE_MARKED_READ);
+        } else {
+            throw new NotFoundException(\Constants\AppMessages::ERR_ACCOUNT_NOT_FOUND);
         }
     }
 
@@ -85,7 +71,7 @@ class NotificationController {
         Auth::startSession();
 
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::AUTH_UNAUTHORIZED ?? 'Harus login.');
+            throw new UnauthorizedException(\Constants\AppMessages::ERR_UNAUTHORIZED);
         }
 
         $userId = Auth::getUserId();
@@ -93,11 +79,7 @@ class NotificationController {
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $limit = 10;
 
-        try {
-            $result = $this->notificationService->getNotifications($userId, $userType, $page, $limit);
-            Response::json($result);
-        } catch (\PDOException $e) {
-            throw new BaseException(\Core\Messages::ERROR_SERVER ?? 'Server Error', 500);
-        }
+        $result = $this->notificationService->getNotifications($userId, $userType, $page, $limit);
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
     }
 }

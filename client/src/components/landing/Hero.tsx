@@ -6,7 +6,7 @@ export function Hero() {
  return (
  <section className="bg-primary text-primary-foreground py-5 md:py-12 lg:py-16">
  <div className="container mx-auto px-4 max-w-7xl">
- <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center min-h-[500px] lg:min-h-[450px]">
+ <div className="grid lg:grid-cols-2 gap-5 lg:gap-12 items-center min-h-hero-mobile lg:min-h-hero">
  {/* Text Content - Centered on mobile/tablet, positioned slightly right on desktop */}
  <div className="text-center lg:text-left order-2 lg:order-1 space-y-3 lg:pl-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
  <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight">

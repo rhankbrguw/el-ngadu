@@ -2,36 +2,37 @@
 
 namespace Services;
 
-use Components\Database;
+use Repositories\ResponseRepository;
+use Repositories\ComplaintRepository;
 use Components\NotificationManager;
 use Components\EmailService;
 use Core\BaseException;
 use Constants\AppMessages;
 
 class ResponseService {
+    private ResponseRepository $repository;
+    
+    public function __construct() {
+        $this->repository = new ResponseRepository();
+    }
+    
     public function createResponse(int $idPengaduan, string $isiTanggapan, string $idPetugas): void {
-        $pdo = Database::connect();
-
         try {
-            $pdo->beginTransaction();
+            $this->repository->beginTransaction();
 
-            $sql_insert = "INSERT INTO tanggapan (id_pengaduan, id_petugas, isi_tanggapan) VALUES (?, ?, ?)";
-            $stmt_insert = $pdo->prepare($sql_insert);
-            $stmt_insert->execute([$idPengaduan, $idPetugas, $isiTanggapan]);
+            $this->repository->createResponse($idPengaduan, $idPetugas, $isiTanggapan);
 
-            $sql_update = "UPDATE pengaduan SET status = 'selesai' WHERE id = ?";
-            $stmt_update = $pdo->prepare($sql_update);
-            $stmt_update->execute([$idPengaduan]);
+            // Since ComplaintRepository isn't made yet, we can do this via ComplaintRepository later or via ResponseRepository
+            // Better to keep it in ResponseRepository for this specific transaction or do a query
+            $this->repository->updateComplaintStatus($idPengaduan, 'selesai');
 
-            $stmt_get_nik = $pdo->prepare("SELECT p.nik_masyarakat, p.judul, m.nama, m.email FROM pengaduan p JOIN masyarakat m ON p.nik_masyarakat = m.nik WHERE p.id = ?");
-            $stmt_get_nik->execute([$idPengaduan]);
-            $pengaduan = $stmt_get_nik->fetch(\PDO::FETCH_ASSOC);
+            $pengaduan = $this->repository->getComplaintDetailsForResponse($idPengaduan);
 
             if ($pengaduan) {
                 $nik_masyarakat = $pengaduan['nik_masyarakat'];
                 $message = sprintf(AppMessages::NOTIF_RESPONSE_NEW, $idPengaduan);
                 $link = "/dashboard/history/" . $idPengaduan;
-                NotificationManager::create($pdo, $nik_masyarakat, 'masyarakat', $message, $link);
+                NotificationManager::create($this->repository->getPdo(), $nik_masyarakat, 'masyarakat', $message, $link);
 
                 if (!empty($pengaduan['email'])) {
                     $emailService = new EmailService();
@@ -43,11 +44,9 @@ class ResponseService {
                 }
             }
 
-            $pdo->commit();
+            $this->repository->commit();
         } catch (\Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
+            $this->repository->rollBack();
             throw new BaseException(AppMessages::ERR_DB_SAVE_RESPONSE . ': ' . $e->getMessage(), 500);
         }
     }

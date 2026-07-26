@@ -42,7 +42,7 @@ export function OfficerBasicFields({ control }: { control: Control<PetugasPayloa
  <FormItem>
  <FormLabel>{APP_MESSAGES.AUTH.EMAIL_LABEL}</FormLabel>
  <FormControl>
- <Input type="email" placeholder="contoh@gmail.com" {...field} />
+ <Input type="email" placeholder={PETUGAS_DIALOG_STRINGS.PLACEHOLDER_EMAIL} {...field} />
  </FormControl>
  <FormMessage />
  </FormItem>

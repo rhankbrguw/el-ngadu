@@ -3,6 +3,8 @@ namespace Components;
 
 use PDO;
 use PDOException;
+use Constants\AppMessages;
+use Core\BaseException;
 
 class NotificationManager
 {
@@ -13,18 +15,18 @@ class NotificationManager
    * @param string $user_type 'masyarakat' or 'petugas'.
    * @param string $message The notification message.
    * @param string|null $link_url An optional URL for the notification.
-   * @return bool True on success, false on failure.
+   * @return bool True on success.
    */
   public static function create(PDO $db, string $user_identifier, string $user_type, string $message, ?string $link_url = null): bool
   {
-    $title = "Pemberitahuan Sistem";
+    $title = AppMessages::NOTIF_DEFAULT_TITLE;
     $sql = "INSERT INTO notifications (user_id, user_type, title, message, link_url) VALUES (?, ?, ?, ?, ?)";
     try {
       $stmt = $db->prepare($sql);
       $stmt->execute([$user_identifier, $user_type, $title, $message, $link_url]);
       return true;
     } catch (PDOException $e) {
-      return false;
+      throw new BaseException(AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
     }
   }
 }

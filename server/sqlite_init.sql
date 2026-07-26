@@ -62,3 +62,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   is_read BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Insert Default Admin (Password: password123)
+INSERT OR IGNORE INTO petugas (nama_petugas, username, password, telp, level, is_verified) 
+VALUES ('Super Admin', 'admin', '$2y$12$zn6jUMecjOMiO8V8dFyPU.Ob45icHuaerruK4wHjLuG3WnTHu750a', '08123456789', 'admin', 1);

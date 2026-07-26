@@ -2,14 +2,17 @@
 namespace Controllers;
 
 use Core\Response;
+use Core\UnauthorizedException;
+use Core\ValidationException;
 use Services\GeminiService;
+use Constants\AppMessages;
 
 class SupportController
 {
-    public function chat()
+    public function chat(): void
     {
         if (!\Components\Auth::isLoggedIn()) {
-            return Response::error(\Core\Messages::AUTH_UNAUTHORIZED, 401);
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
 
         $data = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -22,16 +25,12 @@ class SupportController
         $validation->validate();
         
         if ($validation->fails()) {
-            return Response::error(\Core\Messages::ERR_INPUT_TIDAK_VALID, 422, $validation->errors()->toArray());
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->toArray());
         }
 
-        try {
-            $gemini = new GeminiService();
-            $reply = $gemini->chat($data['message']);
+        $gemini = new GeminiService();
+        $reply = $gemini->chat($data['message']);
 
-            return Response::success('Berhasil mendapatkan respon', ['reply' => $reply]);
-        } catch (\Exception $e) {
-            return Response::error($e->getMessage(), 500);
-        }
+        Response::success(AppMessages::SUCCESS_GET_SUPPORT_REPLY, ['reply' => $reply]);
     }
 }

@@ -1,6 +1,5 @@
-import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { forgotPasswordService } from "@/services/passwordResetService";
+import { useForgotPassword } from "@/hooks/useForgotPassword";
 import { Button } from "@/components/ui/button";
 import {
  Card,
@@ -11,37 +10,19 @@ import {
  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import { getErrorMessage } from "@/lib/complaintUtils";
 
 export default function ForgotPasswordPage() {
- const [email, setEmail] = useState("");
- const [error, setError] = useState<string | null>(null);
- const [successMsg, setSuccessMsg] = useState<string | null>(null);
- const [isLoading, setIsLoading] = useState(false);
-
- const handleSubmit = async (e: FormEvent) => {
- e.preventDefault();
-
- if (!email.trim()) {
- setError("Email tidak boleh kosong.");
- return;
- }
-
- setIsLoading(true);
- setError(null);
- setSuccessMsg(null);
-
- try {
- const response = await forgotPasswordService(email);
- setSuccessMsg(response.message);
- } catch (err) {
- setError(getErrorMessage(err));
- } finally {
- setIsLoading(false);
- }
- };
+ const {
+  email,
+  setEmail,
+  error,
+  successMsg,
+  isLoading,
+  handleSubmit,
+ } = useForgotPassword();
 
  return (
  <div className="flex min-h-screen items-center justify-center bg-background p-4 ">
@@ -63,7 +44,7 @@ export default function ForgotPasswordPage() {
  <Input
  id="email"
  type="email"
- placeholder="contoh@email.com"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_EMAIL}
  required
  value={email}
  onChange={(e) => setEmail(e.target.value)}

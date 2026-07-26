@@ -1,8 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getMyPengaduanService } from "@/services/complaintService";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Pengaduan, Pagination } from "@/types";
+import { useComplaintHistory } from "@/hooks/useComplaintHistory";
 import {
  Card,
  CardContent,
@@ -19,29 +17,15 @@ import { APP_MESSAGES } from "@/lib/constants/messages";
 
 
 export default function ComplaintHistoryPage() {
- const [pengaduan, setPengaduan] = useState<Pengaduan[]>([]);
- const [pagination, setPagination] = useState<Pagination | null>(null);
- const [isLoading, setIsLoading] = useState(true);
- const [error, setError] = useState<string | null>(null);
- const [currentPage, setCurrentPage] = useState(1);
-
- const fetchPengaduan = useCallback(async (page: number) => {
- setIsLoading(true);
- setError(null);
- try {
- const response = await getMyPengaduanService(page, 10);
- setPengaduan(response.data);
- setPagination(response.pagination);
- } catch (err) {
- setError(err instanceof Error ? err.message : "Gagal memuat data.");
- } finally {
- setIsLoading(false);
- }
- }, []);
-
- useEffect(() => {
- fetchPengaduan(currentPage);
- }, [fetchPengaduan, currentPage]);
+ const {
+  pengaduan,
+  pagination,
+  isLoading,
+  error,
+  currentPage,
+  setCurrentPage,
+  fetchPengaduan
+ } = useComplaintHistory();
 
  const renderContent = () => {
  if (isLoading) {

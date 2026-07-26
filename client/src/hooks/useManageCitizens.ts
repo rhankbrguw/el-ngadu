@@ -3,10 +3,14 @@ import { toast } from "sonner";
 import {
  getMasyarakatService,
  deleteMasyarakatService,
+ updateMasyarakatService,
 } from "@/services/citizenService";
 import type { Masyarakat, Pagination } from "@/types";
 import { useMediaQuery } from "@/hooks/utils/use-media-query";
 import { getErrorMessage } from "@/lib/complaintUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
+import type { MasyarakatEditPayload } from "@/lib/validators/profile";
 
 export function useManageCitizens() {
  const [masyarakatList, setMasyarakatList] = useState<Masyarakat[]>([]);
@@ -50,10 +54,10 @@ export function useManageCitizens() {
  fetchMasyarakat(currentPage); // Fetch ulang data setelah sukses
  };
 
- const handleDeleteMasyarakat = async (nik: string, nama: string) => {
+ const handleDeleteMasyarakat = async (nik: string) => {
  try {
  await deleteMasyarakatService(nik);
- toast.success(`Akun masyarakat "${nama}" berhasil dihapus.`);
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.SUCCESS_DELETE_CITIZEN);
  if (masyarakatList.length === 1 && currentPage > 1) {
  setCurrentPage((prev) => prev - 1);
  } else {
@@ -63,6 +67,10 @@ export function useManageCitizens() {
  toast.error(getErrorMessage(err));
  }
  };
+
+ const updateMasyarakat = async (nik: string, data: MasyarakatEditPayload) => {
+    await updateMasyarakatService(nik, data);
+  };
 
  const handlePageChange = useCallback((page: number) => {
  setCurrentPage(page);
@@ -81,6 +89,7 @@ export function useManageCitizens() {
  handleDeleteMasyarakat,
  handleOpenEditDialog,
  handleDialogSuccess,
+ updateMasyarakat,
  refetch: () => fetchMasyarakat(currentPage),
  };
 }

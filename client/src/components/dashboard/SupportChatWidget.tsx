@@ -1,68 +1,33 @@
-import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Send, Bot, User, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import api from "@/lib/api";
-
-interface Message {
-  id: string;
-  role: "user" | "ai";
-  content: string;
-}
+import { useSupportChat, type ChatMessageItem } from "@/hooks/useSupportChat";
 
 interface SupportChatWidgetProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+function ChatMessage({ msg }: { msg: ChatMessageItem }) {
+  return (
+    <div className={`flex gap-2 max-w-[90%] ${msg.role === "user" ? "ml-auto flex-row-reverse" : ""}`}>
+      <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${msg.role === "ai" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+        {msg.role === "ai" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
+      </div>
+      <div className={`rounded-2xl p-3 shadow-sm text-sm ${msg.role === "user" ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-card border border-border rounded-tl-none"}`}>
+        <div className={`whitespace-pre-wrap leading-relaxed ${msg.role === "ai" ? "text-justify" : "text-left"}`}>
+          {msg.content}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SupportChatWidget({ isOpen, onClose }: SupportChatWidgetProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "ai",
-      content: APP_MESSAGES.SUPPORT.DEFAULT_GREETING,
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current && isOpen) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth"
-      });
-    }
-  }, [messages, isLoading, isOpen]);
-
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = input.trim();
-    setInput("");
-    
-    const newUserMsg: Message = { id: Date.now().toString(), role: "user", content: userMessage };
-    setMessages((prev) => [...prev, newUserMsg]);
-    setIsLoading(true);
-
-    try {
-      const response = await api.post("/support/chat", { message: userMessage });
-      const reply = response.data.reply;
-      
-      const aiMsg: Message = { id: (Date.now() + 1).toString(), role: "ai", content: reply };
-      setMessages((prev) => [...prev, aiMsg]);
-    } catch {
-      const errorMsg: Message = { id: (Date.now() + 1).toString(), role: "ai", content: APP_MESSAGES.SUPPORT.ERROR };
-      setMessages((prev) => [...prev, errorMsg]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { messages, input, setInput, isLoading, scrollRef, handleSend } = useSupportChat(isOpen);
 
   return (
     <AnimatePresence>
@@ -72,7 +37,7 @@ export default function SupportChatWidget({ isOpen, onClose }: SupportChatWidget
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="fixed bottom-24 right-6 w-[90vw] sm:w-[400px] h-[500px] max-h-[70vh] z-50 flex flex-col shadow-2xl rounded-2xl overflow-hidden border border-border"
+          className="fixed bottom-24 right-6 w-11/12 sm:w-96 h-96 max-h-full z-50 flex flex-col shadow-2xl rounded-2xl overflow-hidden border border-border"
         >
           <Card className="flex-1 flex flex-col h-full rounded-none border-none">
             <CardHeader className="bg-primary text-primary-foreground py-3 px-4 flex flex-row items-center justify-between rounded-none shadow-sm z-10">
@@ -100,16 +65,7 @@ export default function SupportChatWidget({ isOpen, onClose }: SupportChatWidget
             <CardContent className="flex-1 overflow-y-auto p-3 bg-muted/30" ref={scrollRef}>
               <div className="space-y-4">
                 {messages.map((msg) => (
-                  <div key={msg.id} className={`flex gap-2 max-w-[90%] ${msg.role === "user" ? "ml-auto flex-row-reverse" : ""}`}>
-                    <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${msg.role === "ai" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-                      {msg.role === "ai" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
-                    </div>
-                    <div className={`rounded-2xl p-3 shadow-sm text-sm ${msg.role === "user" ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-card border border-border rounded-tl-none"}`}>
-                      <div className={`whitespace-pre-wrap leading-relaxed ${msg.role === "ai" ? "text-justify" : "text-left"}`}>
-                        {msg.content}
-                      </div>
-                    </div>
-                  </div>
+                  <ChatMessage key={msg.id} msg={msg} />
                 ))}
                 {isLoading && (
                   <div className="flex gap-2 max-w-[90%]">

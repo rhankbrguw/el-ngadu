@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerService } from "@/services/authService";
+import { registerService, verifyOtpService } from "@/services/authService";
 import { getErrorMessage } from "@/lib/complaintUtils";
 import { useAuth } from "@/hooks/useAuth";
 import { registerSchema } from "@/lib/validators/auth";
@@ -71,7 +71,6 @@ export function useRegisterForm() {
  setServerError(null);
 
  try {
- const { verifyOtpService } = await import("@/services/authService");
  const user = await verifyOtpService(otpData.username, otpCode, otpData.userType);
  login(user);
  setShowSuccessDialog(true);

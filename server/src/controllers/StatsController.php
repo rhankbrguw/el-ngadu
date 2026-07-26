@@ -5,8 +5,10 @@ namespace Controllers;
 use Components\Auth;
 use Core\Response;
 use Core\UnauthorizedException;
-use Core\BaseException;
+use Core\ForbiddenException;
 use Services\StatsService;
+use Constants\AppMessages;
+use Constants\Roles;
 
 class StatsController {
     private StatsService $statsService;
@@ -15,27 +17,23 @@ class StatsController {
         $this->statsService = new StatsService();
     }
 
-    public function admin(): void {
+    public function getAdminStats(): void {
         Auth::startSession();
 
-        if (!Auth::isLoggedIn() || !in_array($_SESSION['level'] ?? '', ['admin', 'petugas'])) {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK_HANYA_ADMIN_YANG_BISA_MENG ?? 'Akses ditolak.');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
 
-        try {
-            $stats = $this->statsService->getAdminStats();
-            Response::json($stats);
-        } catch (\PDOException $e) {
-            throw new BaseException('Gagal mengambil data statistik admin: ' . $e->getMessage(), 500);
+        if (!in_array($_SESSION['level'] ?? '', [Roles::ADMIN, Roles::PETUGAS], true)) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
+
+        $stats = $this->statsService->getAdminStats();
+        Response::success(AppMessages::SUCCESS_OPERATION, $stats);
     }
 
-    public function read(): void {
-        try {
-            $stats = $this->statsService->getPublicStats();
-            Response::json($stats);
-        } catch (\PDOException $e) {
-            throw new BaseException('Gagal mengambil data statistik: ' . $e->getMessage(), 500);
-        }
+    public function getPublicStats(): void {
+        $stats = $this->statsService->getPublicStats();
+        Response::success(AppMessages::SUCCESS_OPERATION, $stats);
     }
 }

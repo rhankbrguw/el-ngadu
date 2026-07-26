@@ -73,7 +73,7 @@ export default function ProfilePage() {
  </div>
 
  <Tabs defaultValue="info" className="w-full">
- <TabsList className="grid w-full grid-cols-2 sm:w-[400px]">
+ <TabsList className="grid w-full grid-cols-2 sm:w-form">
  <TabsTrigger value="info" className="gap-2">
  <Info className="h-4 w-4 hidden sm:block" /> Profil
  </TabsTrigger>

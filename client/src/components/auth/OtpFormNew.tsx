@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { otpSchema } from "@/lib/validators/auth";
 import type { OtpFormValues } from "@/lib/validators/auth";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 interface OtpFormProps {
  onSubmit: (data: OtpFormValues) => void;
@@ -39,7 +40,7 @@ export function OtpForm({ onSubmit, isLoading, error }: OtpFormProps) {
  </Label>
  <Input
  id="otpCode"
- placeholder="Masukkan 6 digit OTP"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_OTP}
  disabled={isLoading}
  maxLength={6}
  className="h-12 text-center tracking-[0.5em] font-bold text-xl placeholder:tracking-normal placeholder:font-normal placeholder:text-sm"

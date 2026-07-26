@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { getMyStatsService } from "@/services/complaintService";
-import { getAdminStatsService } from "@/services/statsService";
+import { useDashboard } from "@/hooks/useDashboard";
 import type { UserStats, AdminStats } from "@/types";
 import { AlertCircle } from "lucide-react";
 
@@ -16,45 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton";
  * Fetches and presents relevant dashboard data based on user type.
  */
 export default function DashboardPage() {
- const { user, isLoading: isAuthLoading } = useAuth();
-
- const [stats, setStats] = useState<UserStats | AdminStats | null>(null);
- const [isLoading, setIsLoading] = useState(true);
- const [error, setError] = useState<string | null>(null);
-
- useEffect(() => {
- if (isAuthLoading || !user) {
- if (!isAuthLoading) setIsLoading(false);
- return;
- }
-
- const fetchStats = async () => {
- setIsLoading(true);
- setError(null);
- try {
- if (user.userType === "masyarakat") {
- const data = await getMyStatsService();
- setStats(data);
- } else if (user.userType === "petugas") {
- // Baik admin maupun petugas mengambil stats admin (keseluruhan pengaduan)
- const data = await getAdminStatsService();
- setStats(data);
- }
- } catch (err) {
- setError(
- err instanceof Error ? err.message : DASHBOARD_STRINGS.ERROR_FETCH_STATS
- );
- } finally {
- setIsLoading(false);
- }
- };
-
- if (user.userType === "masyarakat" || user.userType === "petugas") {
- fetchStats();
- } else {
- setIsLoading(false);
- }
- }, [user, isAuthLoading]);
+  const { user, stats, isStatsLoading, statsError } = useDashboard();
+  const isLoading = isStatsLoading;
+  const error = statsError;
+  const isAuthLoading = !user && isLoading;
 
  const renderGreeting = () => (
  <div>

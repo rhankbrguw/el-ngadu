@@ -12,6 +12,8 @@ import {
  navItemsAdmin,
 } from "@/lib/constants";
 import { calculateProfileProgress } from "@/lib/utils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+import { useDashboardStats } from "./useDashboardStats";
 
 export function useDashboard() {
  const { user, logout } = useAuth();
@@ -91,7 +93,7 @@ export function useDashboard() {
  setUnreadCount((prev) => Math.max(0, prev - 1));
  api
  .post("/notifications/mark-as-read", { notification_id: id })
- .catch((err) => console.error(err));
+ .catch((err) => { void err; });
  };
 
  const handleMarkAllAsRead = async () => {
@@ -100,9 +102,9 @@ export function useDashboard() {
  setUnreadCount(0);
  try {
  await markAllNotificationsAsReadService();
- toast.success("Semua notifikasi telah ditandai dibaca.");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.SUCCESS_MARK_ALL_READ);
  } catch (error) {
- console.error("Error marking all as read:", error);
+ void error;
  toast.error(
  error instanceof Error ? error.message : "Gagal menandai notifikasi."
  );
@@ -114,24 +116,29 @@ export function useDashboard() {
  try {
  await api.post("/auth/logout");
  } catch (error) {
- console.error("Gagal logout dari server:", error);
+ void error; // Intentional silent fail for logout
  } finally {
  logout();
  navigate("/login", { replace: true });
  }
  };
 
- return {
- user,
- navItems,
- notifications,
- unreadCount,
- notifPagination,
- isLoadingMore,
- profileProgress,
- handleLoadMoreNotif,
- markNotificationAsRead,
- handleMarkAllAsRead,
- handleLogout,
- };
+  const { stats, isStatsLoading, statsError } = useDashboardStats(user);
+
+  return {
+    user,
+    navItems,
+    notifications,
+    unreadCount,
+    notifPagination,
+    isLoadingMore,
+    profileProgress,
+    stats,
+    isStatsLoading,
+    statsError,
+    handleLoadMoreNotif,
+    markNotificationAsRead,
+    handleMarkAllAsRead,
+    handleLogout,
+  };
 }

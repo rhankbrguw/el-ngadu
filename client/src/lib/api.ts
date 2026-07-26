@@ -10,8 +10,14 @@ api.interceptors.response.use(
     // Unwrap the new API envelope for success
     if (response.data && response.data.success === true) {
       if (response.data.data !== undefined) {
-        // We keep the message attached just in case some legacy code needs response.data.message
-        return { ...response, data: { ...response.data.data, message: response.data.message } };
+        const payload = response.data.data;
+        if (Array.isArray(payload)) {
+          return { ...response, data: payload };
+        }
+        if (typeof payload === "object" && payload !== null) {
+          return { ...response, data: { ...payload, message: response.data.message } };
+        }
+        return { ...response, data: payload };
       }
     }
     return response;

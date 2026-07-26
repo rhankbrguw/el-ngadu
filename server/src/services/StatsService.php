@@ -2,24 +2,20 @@
 
 namespace Services;
 
-use Components\Database;
+use Repositories\StatsRepository;
 
 class StatsService {
+    private StatsRepository $repository;
+    
+    public function __construct() {
+        $this->repository = new StatsRepository();
+    }
+    
     public function getAdminStats(): array {
-        $pdo = Database::connect();
-        
-        $pengaduanSql = "
-            SELECT
-                COUNT(CASE WHEN status = 'diajukan' THEN 1 END) AS diajukan,
-                COUNT(CASE WHEN status = 'diproses' THEN 1 END) AS diproses,
-                COUNT(CASE WHEN status = 'selesai' THEN 1 END) AS selesai
-            FROM pengaduan
-        ";
-        $pengaduanStmt = $pdo->query($pengaduanSql);
-        $pengaduanStats = $pengaduanStmt->fetch(\PDO::FETCH_ASSOC);
+        $pengaduanStats = $this->repository->getPengaduanStats();
 
-        $masyarakatCount = (int)$pdo->query("SELECT COUNT(*) FROM masyarakat")->fetchColumn();
-        $petugasCount = (int)$pdo->query("SELECT COUNT(*) FROM petugas")->fetchColumn();
+        $masyarakatCount = $this->repository->getCount('masyarakat');
+        $petugasCount = $this->repository->getCount('petugas');
 
         return [
             'pengaduan_diajukan' => (int)$pengaduanStats['diajukan'],
@@ -31,11 +27,9 @@ class StatsService {
     }
 
     public function getPublicStats(): array {
-        $pdo = Database::connect();
-        
-        $total = (int)$pdo->query("SELECT COUNT(*) FROM pengaduan")->fetchColumn();
-        $proses = (int)$pdo->query("SELECT COUNT(*) FROM pengaduan WHERE status = 'diproses'")->fetchColumn();
-        $selesai = (int)$pdo->query("SELECT COUNT(*) FROM pengaduan WHERE status = 'selesai'")->fetchColumn();
+        $total = $this->repository->getCount('pengaduan');
+        $proses = $this->repository->getCountByStatus('pengaduan', 'status', 'diproses');
+        $selesai = $this->repository->getCountByStatus('pengaduan', 'status', 'selesai');
 
         return [
             'total' => $total,

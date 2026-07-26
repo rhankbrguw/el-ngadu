@@ -9,6 +9,7 @@ import Notifications from "./Notifications";
 import UserNav from "./UserNav";
 import type { User, Notification, NavItem, Pagination } from "@/types";
 import { APP_MESSAGES } from "@/lib/constants/messages";
+import { DASHBOARD_STRINGS } from "@/lib/constants/dashboard";
 
 
 interface DashboardHeaderProps {
@@ -54,15 +55,15 @@ export default function DashboardHeader({
  setSearchQuery("");
  }
 
- if (location.pathname.includes("/manage-officers")) {
- setSearchPlaceholder("Cari petugas...");
- setSearchContext("petugas");
- } else if (location.pathname.includes("/manage-citizens")) {
- setSearchPlaceholder("Cari masyarakat...");
- setSearchContext("masyarakat");
- } else {
- setSearchPlaceholder("Cari pengaduan...");
- setSearchContext("pengaduan");
+  if (location.pathname.includes("/manage-officers")) {
+  setSearchPlaceholder(DASHBOARD_STRINGS.SEARCH_PLACEHOLDER_OFFICER);
+  setSearchContext("petugas");
+  } else if (location.pathname.includes("/manage-citizens")) {
+  setSearchPlaceholder(DASHBOARD_STRINGS.SEARCH_PLACEHOLDER_CITIZEN);
+  setSearchContext("masyarakat");
+  } else {
+  setSearchPlaceholder(DASHBOARD_STRINGS.SEARCH_PLACEHOLDER_COMPLAINT);
+  setSearchContext("pengaduan");
  }
  }, [location.pathname, searchParams]);
 
@@ -106,7 +107,7 @@ export default function DashboardHeader({
  placeholder={searchPlaceholder}
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full rounded-lg bg-background pl-8 md:w-[250px] lg:w-[336px]"
+ className="w-full rounded-lg bg-background pl-8 md:w-64 lg:w-80"
  />
  </form>
  </div>

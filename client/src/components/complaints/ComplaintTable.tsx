@@ -20,25 +20,26 @@ interface ComplaintTableProps {
 }
 
 export default function ComplaintTable({ pengaduanList }: ComplaintTableProps) {
- return (
- <div className="overflow-x-auto">
- <Table>
- <TableHeader>
- <TableRow>
- <TableHead className="text-center w-[80px]">ID</TableHead>
- <TableHead className="text-center">{APP_MESSAGES.COMPLAINT.TITLE}</TableHead>
- <TableHead className="text-center hidden md:table-cell w-[200px]">
- Pelapor
- </TableHead>
- <TableHead className="text-center w-[120px] text-center">{APP_MESSAGES.COMPLAINT.STATUS}</TableHead>
- <TableHead className="text-center hidden lg:table-cell w-[150px]">
- Tanggal
- </TableHead>
- <TableHead className="text-center w-[180px] text-center">{APP_MESSAGES.COMMON.ACTION}</TableHead>
- </TableRow>
- </TableHeader>
- <TableBody>
- {pengaduanList.map((item) => (
+  const list = Array.isArray(pengaduanList) ? pengaduanList : [];
+  return (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-center w-20">ID</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.COMPLAINT.TITLE}</TableHead>
+            <TableHead className="text-center hidden md:table-cell w-48">
+              Pelapor
+            </TableHead>
+            <TableHead className="text-center w-32 text-center">{APP_MESSAGES.COMPLAINT.STATUS}</TableHead>
+            <TableHead className="text-center hidden lg:table-cell w-40">
+              Tanggal
+            </TableHead>
+            <TableHead className="text-center w-48 text-center">{APP_MESSAGES.COMMON.ACTION}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {list.map((item) => (
  <TableRow key={item.id}>
  <TableCell className="text-center font-medium">#{item.id}</TableCell>
  <TableCell className="text-center truncate font-medium">

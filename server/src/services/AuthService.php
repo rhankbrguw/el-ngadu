@@ -2,7 +2,7 @@
 
 namespace Services;
 
-use Components\Database;
+use Repositories\AuthRepository;
 use Components\EmailService;
 use Core\BaseException;
 use Constants\AppMessages;
@@ -12,12 +12,14 @@ use Constants\AppMessages;
  */
 class AuthService {
     
+    private AuthRepository $repository;
+    
+    public function __construct() {
+        $this->repository = new AuthRepository();
+    }
+    
     public function legacyLogin(string $username, string $password): array {
-        $pdo = Database::connect();
-        $sql = "SELECT nik, nama, username, password, telp FROM masyarakat WHERE username = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $user = $this->repository->getCitizenByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
             $public_user = [
@@ -28,32 +30,26 @@ class AuthService {
             ];
             return ['status' => 'success', 'user' => $user, 'public_user' => $public_user];
         }
-        throw new \Core\ValidationException(\Core\Messages::AUTH_USER_NOT_FOUND);
+        throw new \Core\ValidationException(\Constants\AppMessages::ERR_ACCOUNT_NOT_FOUND);
     }
 
     public function unifiedLogin(string $username, string $password): array {
-        $pdo = Database::connect();
-        
         // Cek masyarakat
-        $stmt = $pdo->prepare("SELECT nik, nama, username, password, telp, email, is_verified FROM masyarakat WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $user = $this->repository->getCitizenByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
             if (!$user['is_verified']) {
-                return $this->handleOtp($pdo, 'masyarakat', 'nik', $user['nik'], $user['email'], $user['nama'], 'masyarakat', $username);
+                return $this->handleOtp('masyarakat', 'nik', $user['nik'], $user['email'], $user['nama'], 'masyarakat', $username);
             }
             return ['status' => 'success', 'user' => $user, 'type' => 'masyarakat'];
         }
 
         // Cek petugas
-        $stmt = $pdo->prepare("SELECT id_petugas, nama_petugas, username, password, telp, level, email, is_verified FROM petugas WHERE username = ?");
-        $stmt->execute([$username]);
-        $petugas = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $petugas = $this->repository->getOfficerByUsername($username);
 
         if ($petugas && password_verify($password, $petugas['password'])) {
             if (!$petugas['is_verified']) {
-                return $this->handleOtp($pdo, 'petugas', 'id_petugas', $petugas['id_petugas'], $petugas['email'], $petugas['nama_petugas'], 'petugas', $username);
+                return $this->handleOtp('petugas', 'id_petugas', $petugas['id_petugas'], $petugas['email'], $petugas['nama_petugas'], 'petugas', $username);
             }
             return ['status' => 'success', 'user' => $petugas, 'type' => 'petugas'];
         }
@@ -61,7 +57,7 @@ class AuthService {
         throw new \Core\UnauthorizedException(AppMessages::ERR_INVALID_CREDENTIALS);
     }
 
-    private function handleOtp(\PDO $pdo, string $table, string $idColumn, string $idValue, ?string $email, string $nama, string $userType, string $username): array {
+    private function handleOtp(string $table, string $idColumn, string $idValue, ?string $email, string $nama, string $userType, string $username): array {
         if (empty($email)) {
             throw new BaseException(AppMessages::ERR_EMAIL_NOT_SET, 400);
         }
@@ -69,9 +65,7 @@ class AuthService {
         $otpCode = sprintf("%06d", mt_rand(1, 999999));
         $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 
-        $sql = "UPDATE {$table} SET otp_code = ?, otp_expires_at = ? WHERE {$idColumn} = ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$otpCode, $expiresAt, $idValue]);
+        $this->repository->updateOtp($table, $idColumn, $idValue, $otpCode, $expiresAt);
 
         $emailService = new EmailService();
         $emailService->sendEmail(
@@ -83,21 +77,17 @@ class AuthService {
 
         return [
             'requires_otp' => true,
-            'message' => 'OTP telah dikirim ke email Anda.',
+            'message' => AppMessages::MSG_OTP_SENT,
             'userType' => $userType,
             'username' => $username
         ];
     }
 
     public function verifyOtp(string $username, string $otp_code, string $userType): array {
-        $pdo = Database::connect();
-        
         $table = $userType === 'masyarakat' ? 'masyarakat' : 'petugas';
         $idCol = $userType === 'masyarakat' ? 'nik' : 'id_petugas';
         
-        $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $user = $this->repository->getUserByUsername($table, $username);
 
         if (!$user) {
             throw new \Core\UnauthorizedException(AppMessages::ERR_ACCOUNT_NOT_FOUND);
@@ -107,11 +97,10 @@ class AuthService {
             throw new \Core\ValidationException(AppMessages::ERR_INVALID_OTP);
         }
 
-        $stmt_clear = $pdo->prepare("UPDATE {$table} SET otp_code = NULL, otp_expires_at = NULL, is_verified = 1 WHERE {$idCol} = ?");
-        $stmt_clear->execute([$user[$idCol]]);
+        $this->repository->verifyAndClearOtp($table, $idCol, $user[$idCol]);
 
         if ($userType === 'masyarakat') {
-            \Components\NotificationManager::create($pdo, $user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
+            \Components\NotificationManager::create($this->repository->getPdo(), $user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
             $emailService = new EmailService();
             $emailService->sendEmail(
                 $user['email'], 

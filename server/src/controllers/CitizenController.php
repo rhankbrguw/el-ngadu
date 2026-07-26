@@ -5,8 +5,9 @@ namespace Controllers;
 use Core\Response;
 use Core\ValidationException;
 use Core\UnauthorizedException;
-use Core\Messages;
+use Core\ForbiddenException;
 use Constants\AppMessages;
+use Constants\Roles;
 use Components\Auth;
 use Services\CitizenService;
 use Rakit\Validation\Validator;
@@ -27,8 +28,11 @@ class CitizenController {
      */
     private function requireAdmin(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || $_SESSION['level'] !== 'admin') {
-            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED ?? Messages::ERR_AKSES_DITOLAK);
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (($_SESSION['level'] ?? '') !== Roles::ADMIN) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
     }
 
@@ -42,19 +46,17 @@ class CitizenController {
         $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
         
         $result = $this->citizenService->getAll($page, $limit);
-        
-        Response::json($result);
+        Response::success(AppMessages::SUCCESS_OPERATION, $result);
     }
 
     /**
      * Update an existing citizen
-
      */
-    public function update(): void {
+    public function updateCitizen(): void {
         $this->requireAdmin();
         
         if (!isset($_GET['nik'])) {
-            throw new ValidationException(Messages::ERR_NIK_MASYARAKAT_WAJIB_ADA_DI_URL);
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, ['nik' => 'NIK wajib ada']);
         }
         
         $nik = $_GET['nik'];
@@ -74,47 +76,40 @@ class CitizenController {
         }
         
         $data = $validation->getValidData();
-        
         if (empty($data)) {
-            throw new ValidationException(Messages::ERR_TIDAK_ADA_DATA_YANG_DIKIRIM_UNTUK_DIPERB);
+            throw new ValidationException(AppMessages::ERR_NO_DATA_UPDATE);
         }
 
         $this->citizenService->update($nik, $data);
-        
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_CITIZEN]);
+        Response::success(AppMessages::SUCCESS_UPDATE_CITIZEN);
     }
 
     /**
      * Delete a citizen
      */
-    public function delete(): void {
+    public function deleteCitizen(): void {
         $this->requireAdmin();
         
         if (!isset($_GET['nik']) || empty(trim($_GET['nik']))) {
-            throw new ValidationException(Messages::ERR_NIK_MASYARAKAT_WAJIB_ADA_DI_URL);
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, ['nik' => 'NIK wajib ada']);
         }
         
         $nik = $_GET['nik'];
-        
         $this->citizenService->delete($nik);
-        
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_DELETE_CITIZEN]);
+        Response::success(AppMessages::SUCCESS_DELETE_CITIZEN);
     }
 
     /**
      * Search citizens
      */
-    public function search(): void {
+    public function searchCitizens(): void {
         $this->requireAdmin();
         
         if (!isset($_GET['q']) || empty(trim($_GET['q']))) {
-            throw new ValidationException(Messages::ERR_QUERY_PENCARIAN_Q_DIBUTUHKAN);
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, ['q' => AppMessages::ERR_QUERY_REQUIRED]);
         }
         
-        $query = $_GET['q'];
-        
-        $results = $this->citizenService->search($query);
-        
-        Response::json($results);
+        $results = $this->citizenService->search($_GET['q']);
+        Response::success(AppMessages::SUCCESS_OPERATION, $results);
     }
 }

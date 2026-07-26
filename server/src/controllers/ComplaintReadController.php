@@ -4,7 +4,10 @@ namespace Controllers;
 
 use Core\Response;
 use Core\UnauthorizedException;
+use Core\ForbiddenException;
 use Core\ValidationException;
+use Constants\AppMessages;
+use Constants\Roles;
 use Components\Auth;
 use Services\ComplaintReadService;
 
@@ -18,53 +21,68 @@ class ComplaintReadController {
 
     public function getAll(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || !in_array(Auth::getUserType(), ['petugas', 'admin'])) {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK ?? 'Akses ditolak');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (!in_array(Auth::getUserType(), [Roles::PETUGAS, Roles::ADMIN], true)) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
         
         $result = $this->service->getAll($page, $limit);
-        Response::json($result);
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
     }
 
     public function getMine(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || Auth::getUserType() !== 'masyarakat') {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK_ANDA_HARUS_LOGIN_SEBAGAI_M ?? 'Harus login sbg masyarakat');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (Auth::getUserType() !== Roles::MASYARAKAT) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
         
-        $result = $this->service->getMine(Auth::getUserId(), $page, $limit);
-        Response::json($result);
+        $result = $this->service->getMine((string)Auth::getUserId(), $page, $limit);
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
     }
 
     public function getOne(): void {
-        if (!isset($_GET['id'])) throw new ValidationException(\Core\Messages::ERR_ID_PENGADUAN_TIDAK_DISEDIAKAN ?? "ID tidak disediakan");
-        $pengaduan = $this->service->getOne($_GET['id']);
-        Response::json($pengaduan);
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, ['id' => 'ID wajib']);
+        }
+        $pengaduan = $this->service->getOne((int)$_GET['id']);
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $pengaduan);
     }
 
     public function search(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn()) throw new UnauthorizedException(\Core\Messages::ERR_ANDA_HARUS_LOGIN_UNTUK_MELAKUKAN_PENCARI ?? "Harus login");
-        if (!isset($_GET['q']) || empty(trim($_GET['q']))) throw new ValidationException(\Core\Messages::ERR_QUERY_PENCARIAN_Q_DIBUTUHKAN ?? "Query dibutuhkan");
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (!isset($_GET['q']) || empty(trim($_GET['q']))) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, ['q' => AppMessages::ERR_QUERY_REQUIRED]);
+        }
 
-        $userNik = Auth::getUserType() === 'masyarakat' ? Auth::getUserId() : null;
+        $userNik = Auth::getUserType() === Roles::MASYARAKAT ? (string)Auth::getUserId() : null;
         $results = $this->service->search($_GET['q'], $userNik);
-        Response::json($results);
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $results);
     }
 
     public function statsMine(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || Auth::getUserType() !== 'masyarakat') {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK ?? "Akses ditolak");
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (Auth::getUserType() !== Roles::MASYARAKAT) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
-        $stats = $this->service->getStatsMine(Auth::getUserId());
-        Response::json($stats);
+        $stats = $this->service->getStatsMine((string)Auth::getUserId());
+        Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $stats);
     }
 }

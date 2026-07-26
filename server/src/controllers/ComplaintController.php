@@ -4,8 +4,10 @@ namespace Controllers;
 
 use Core\Response;
 use Core\UnauthorizedException;
+use Core\ForbiddenException;
 use Core\ValidationException;
 use Constants\AppMessages;
+use Constants\Roles;
 use Components\Auth;
 use Services\ComplaintService;
 use Rakit\Validation\Validator;
@@ -18,10 +20,13 @@ class ComplaintController {
         $this->service = new ComplaintService();
     }
 
-    public function create(): void {
+    public function createComplaint(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || Auth::getUserType() !== 'masyarakat') {
-            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED ?? 'Unauthorized');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (Auth::getUserType() !== Roles::MASYARAKAT) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
         $validator = new Validator();
@@ -35,34 +40,61 @@ class ComplaintController {
         $validation->validate();
 
         if ($validation->fails()) {
-            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED ?? 'Validation failed', $validation->errors()->firstOfAll());
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
         }
 
         $data = $validation->getValidData();
-        $file = isset($_FILES['foto_bukti']) ? $_FILES['foto_bukti'] : null;
+        $file = $_FILES['foto_bukti'] ?? null;
         
-        $this->service->createComplaint($data, $file, Auth::getUserId(), $_SESSION['nama'] ?? 'Unknown');
-
-        Response::json(['status' => 'success', 'message' => AppMessages::SUCCESS_COMPLAINT_CREATED ?? 'Berhasil dibuat'], 201);
+        $this->service->createComplaint($data, $file, (string)Auth::getUserId(), (string)($_SESSION['nama'] ?? 'Unknown'));
+        Response::success(AppMessages::SUCCESS_COMPLAINT_CREATED, [], 201);
     }
 
-    public function update(): void {
+    public function updateComplaintStatus(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || !in_array(Auth::getUserType(), ['petugas', 'admin'])) {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK_HANYA_PETUGAS_ATAU_ADMIN_Y ?? 'Akses ditolak');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (!in_array(Auth::getUserType(), [Roles::PETUGAS, Roles::ADMIN], true)) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
-        if (!isset($_GET['id'])) throw new ValidationException(\Core\Messages::ERR_ID_PENGADUAN_WAJIB_ADA_DI_URL ?? 'ID wajib');
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        if (empty(trim($input['status'] ?? ''))) throw new ValidationException("Status tidak boleh kosong");
+        $data = array_merge($input, $_GET);
+        
+        $validator = new Validator();
+        $validation = $validator->make($data, [
+            'id' => 'required',
+            'status' => 'required'
+        ]);
+        $validation->validate();
 
-        $this->service->updateStatus($_GET['id'], $input['status']);
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_COMPLAINT_STATUS]);
+        if ($validation->fails()) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
+        }
+
+        $validData = $validation->getValidData();
+        $this->service->updateStatus((int)$validData['id'], $validData['status']);
+        Response::success(AppMessages::SUCCESS_UPDATE_COMPLAINT_STATUS);
     }
 
-    public function delete(): void {
-        if (!isset($_GET['id'])) throw new ValidationException("ID wajib");
-        $this->service->deleteComplaint($_GET['id']);
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_COMPLAINT_DELETED]);
+    public function deleteComplaint(): void {
+        Auth::startSession();
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        $validator = new Validator();
+        $validation = $validator->make($_GET, [
+            'id' => 'required'
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
+        }
+
+        $validData = $validation->getValidData();
+        $this->service->deleteComplaint((int)$validData['id']);
+        Response::success(AppMessages::SUCCESS_COMPLAINT_DELETED);
     }
 }

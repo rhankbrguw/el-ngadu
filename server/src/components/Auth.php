@@ -3,13 +3,13 @@ namespace Components;
 
 class Auth
 {
-  public static function startSession()
+  public static function startSession(): void
   {
     if (session_status() === PHP_SESSION_NONE) {
       session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
-        'domain' => $_SERVER['SERVER_NAME'],
+        'domain' => $_SERVER['SERVER_NAME'] ?? '',
         'secure' => isset($_SERVER['HTTPS']),
         'httponly' => true,
         'samesite' => 'Lax'
@@ -18,7 +18,7 @@ class Auth
     }
   }
 
-  public static function login($user, $user_type)
+  public static function login(array $user, string $user_type): void
   {
     self::startSession();
     session_regenerate_id(true);
@@ -39,7 +39,7 @@ class Auth
     }
   }
 
-  public static function logout()
+  public static function logout(): void
   {
     self::startSession();
     $_SESSION = [];
@@ -58,19 +58,19 @@ class Auth
     session_destroy();
   }
 
-  public static function isLoggedIn()
+  public static function isLoggedIn(): bool
   {
     self::startSession();
     return isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true;
   }
 
-  public static function getUserId()
+  public static function getUserId(): string|int|null
   {
     self::startSession();
     return $_SESSION['user_id'] ?? null;
   }
 
-  public static function getUserType()
+  public static function getUserType(): ?string
   {
     self::startSession();
     return $_SESSION['user_type'] ?? null;

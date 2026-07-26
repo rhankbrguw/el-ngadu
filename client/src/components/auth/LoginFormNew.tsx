@@ -41,7 +41,7 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
  <Label htmlFor="username" className="text-sm">{APP_MESSAGES.AUTH.USERNAME}</Label>
  <Input
  id="username"
- placeholder="Masukkan username anda"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_USERNAME}
  disabled={isLoading}
  autoComplete="username"
  className="h-10 text-sm"
@@ -54,7 +54,7 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
  <Label htmlFor="password" className="text-sm">{APP_MESSAGES.AUTH.PASSWORD_LABEL}</Label>
  <PasswordInput
  id="password"
- placeholder="Masukkan password anda"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_PASSWORD}
  disabled={isLoading}
  autoComplete="current-password"
  className="h-10 text-sm"

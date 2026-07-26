@@ -5,6 +5,7 @@ export const createComplaintSchema = z.object({
  kategori: z.string().min(1, "Kategori wajib dipilih"),
  lokasi: z.string().min(1, "Lokasi wajib diisi"),
  isi: z.string().min(1, "Isi pengaduan wajib diisi"),
+ /** z.any() justified: file input produces File | undefined — validated server-side */
  foto_bukti: z.any().optional(),
 });
 

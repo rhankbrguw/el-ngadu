@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { RegisterFormFields } from "./RegisterFormFields";
 import { RegisterSuccessDialog } from "./RegisterSuccessDialog";
 import { AUTH_STRINGS } from "@/lib/constants/auth";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Form } from "@/components/ui/form";
 import { motion } from "framer-motion";
 
@@ -84,12 +85,12 @@ export function RegisterForm() {
  <CardContent className="space-y-3 sm:space-y-3 p-4 sm:p-5">
  <div className="space-y-1.5">
  <Label htmlFor="otpCode" className="text-sm text-center block mb-2">
- Kode OTP telah dikirim ke email Anda.
+ {AUTH_STRINGS.OTP_SENT_LABEL}
  </Label>
  <Input
  id="otpCode"
  type="text"
- placeholder="Masukkan 6 digit OTP"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_OTP}
  required
  maxLength={6}
  value={otpCode}
@@ -114,7 +115,7 @@ export function RegisterForm() {
  disabled={isLoading}
  >
  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
- {isLoading ? "Memverifikasi..." : "Verifikasi OTP"}
+ {isLoading ? AUTH_STRINGS.BTN_VERIFYING : AUTH_STRINGS.BTN_VERIFY_OTP}
  </Button>
  </CardFooter>
  </motion.form>

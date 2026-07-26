@@ -20,7 +20,7 @@ export function FlowSection() {
  </div>
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
  {steps.map((item, index) => (
- <Card key={item.step} style={{ animationDelay: `${index * 150}ms` }} className="text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-secondary/50 group animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both">
+ <Card key={item.step} className={`text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-secondary/50 group animate-in fade-in slide-in-from-bottom-8 duration-700 fill-mode-both [animation-delay:${index * 150}ms]`}>
  <CardHeader>
  <div className="bg-primary text-primary-foreground w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold transition-colors group-hover:bg-secondary group-hover:text-foreground">
  {item.step}

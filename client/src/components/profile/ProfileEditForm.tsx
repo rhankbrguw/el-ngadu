@@ -1,11 +1,5 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { ProfileEditSchema, type ProfileEditPayload } from "@/lib/validators/profile";
 import { motion } from "framer-motion";
-import { updateProfileService } from "@/services/authService";
-import { useAuth } from "@/hooks/useAuth";
+import { useProfileEdit } from "@/hooks/useProfileEdit";
 import { Button } from "@/components/ui/button";
 import {
  Form,
@@ -20,37 +14,8 @@ import { PhoneInput } from "@/components/ui/PhoneInput";
 import { Loader2 } from "lucide-react";
 import { APP_MESSAGES } from "@/lib/constants/messages";
 
-
 export default function ProfileEditForm() {
- const { user, updateUser } = useAuth();
-
- const form = useForm<ProfileEditPayload>({
- resolver: zodResolver(ProfileEditSchema),
- defaultValues: { nama: "", nama_petugas: "", username: "", telp: "" },
- });
-
- useEffect(() => {
- if (user) {
- form.reset({
- nama: user.userType === "masyarakat" ? user.nama : undefined,
- nama_petugas:
- user.userType === "petugas" ? user.nama_petugas : undefined,
- username: user.username,
- telp: user.telp,
- email: user.email || "",
- });
- }
- }, [user, form]);
-
- const onSubmit = async (data: ProfileEditPayload) => {
- try {
- await updateProfileService(data);
- updateUser(data);
- toast.success("Profil berhasil diperbarui!");
- } catch (error) {
- toast.error(error instanceof Error ? error.message : "Terjadi kesalahan");
- }
- };
+ const { form, user, onSubmit, isLoading } = useProfileEdit();
 
  return (
  <Form {...form}>
@@ -58,11 +23,11 @@ export default function ProfileEditForm() {
  initial={{ opacity: 0, y: 10 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ duration: 0.3 }}
- onSubmit={form.handleSubmit(onSubmit)}
+ onSubmit={onSubmit}
  className="space-y-4"
  >
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
- {user?.userType === "masyarakat" ? (
+ {user?.userType === APP_MESSAGES.ROLES.CITIZEN ? (
  <FormField
  control={form.control}
  name="nama"
@@ -127,7 +92,7 @@ export default function ProfileEditForm() {
  <FormItem>
  <FormLabel>{APP_MESSAGES.AUTH.EMAIL_LABEL}</FormLabel>
  <FormControl>
- <Input {...field} type="email" placeholder="contoh@email.com" />
+ <Input {...field} type="email" placeholder={APP_MESSAGES.PROFILE.PLACEHOLDER_EMAIL} />
  </FormControl>
  <FormMessage />
  </FormItem>
@@ -135,8 +100,8 @@ export default function ProfileEditForm() {
  />
  </div>
  <div className="flex justify-end pt-2">
- <Button type="submit" disabled={form.formState.isSubmitting}>
- {form.formState.isSubmitting && (
+ <Button type="submit" disabled={isLoading}>
+ {isLoading && (
  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
  )}
  Simpan Perubahan Profil

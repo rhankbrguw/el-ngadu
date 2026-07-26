@@ -6,7 +6,6 @@ import {
  MasyarakatEditSchema,
  type MasyarakatEditPayload,
 } from "@/lib/validators/profile";
-import { updateMasyarakatService } from "@/services/citizenService";
 import type { Masyarakat } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +33,7 @@ interface CitizenDialogProps {
  isOpen: boolean;
  onOpenChange: (open: boolean) => void;
  onSuccess: () => void;
+ onUpdate: (nik: string, data: MasyarakatEditPayload) => Promise<void>;
 }
 
 export default function CitizenDialog({
@@ -41,6 +41,7 @@ export default function CitizenDialog({
  isOpen,
  onOpenChange,
  onSuccess,
+ onUpdate,
 }: CitizenDialogProps) {
  const form = useForm<MasyarakatEditPayload>({
  resolver: zodResolver(MasyarakatEditSchema),
@@ -61,8 +62,8 @@ export default function CitizenDialog({
  if (!masyarakatToEdit) return;
 
  try {
- await updateMasyarakatService(masyarakatToEdit.nik, data);
- toast.success("Data masyarakat berhasil diperbarui!");
+ await onUpdate(masyarakatToEdit.nik, data);
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.SUCCESS_UPDATE_CITIZEN);
  onSuccess();
  onOpenChange(false);
  } catch (error) {
@@ -75,7 +76,7 @@ export default function CitizenDialog({
 
  return (
  <Dialog open={isOpen} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
+ <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
  <DialogHeader>
  <DialogTitle>Ubah Data Masyarakat</DialogTitle>
  </DialogHeader>

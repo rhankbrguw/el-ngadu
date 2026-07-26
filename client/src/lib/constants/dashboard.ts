@@ -7,6 +7,9 @@ export const DASHBOARD_STRINGS = {
  GREETING_DEFAULT_USER: "Pengguna",
  GREETING_SUMMARY: "Berikut adalah ringkasan aktivitas sistem El-Ngadu.",
  ERROR_FETCH_STATS: "Gagal memuat statistik.",
+ SEARCH_PLACEHOLDER_OFFICER: "Cari petugas...",
+ SEARCH_PLACEHOLDER_CITIZEN: "Cari masyarakat...",
+ SEARCH_PLACEHOLDER_COMPLAINT: "Cari pengaduan...",
  PETUGAS_INSTRUCTION: "Silakan kelola pengaduan yang masuk melalui menu di samping.",
  STATS_MASYARAKAT: {
  TOTAL_DIAJUKAN: "Total Diajukan",

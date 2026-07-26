@@ -3,10 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { PetugasSchema, type PetugasPayload } from "@/lib/validators";
-import {
- createPetugasService,
- updatePetugasService,
-} from "@/services/officerService";
 import type { Petugas } from "@/types";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PETUGAS_DIALOG_STRINGS } from "@/lib/constants/admin";
@@ -18,6 +14,8 @@ interface OfficerDialogProps {
  isOpen: boolean;
  onOpenChange: (open: boolean) => void;
  onSuccess: () => void;
+ onCreate: (data: PetugasPayload) => Promise<void>;
+ onUpdate: (id: number, data: PetugasPayload) => Promise<void>;
 }
 
 export default function OfficerDialog({
@@ -25,6 +23,8 @@ export default function OfficerDialog({
  isOpen,
  onOpenChange,
  onSuccess,
+ onCreate,
+ onUpdate,
 }: OfficerDialogProps) {
  const isEditMode = !!petugasToEdit;
 
@@ -67,31 +67,32 @@ export default function OfficerDialog({
 
  const onSubmit = async (data: PetugasPayload) => {
  try {
- const payload = { ...data };
- if (isEditMode && !payload.password) {
- delete payload.password;
- }
-
- if (isEditMode && petugasToEdit) {
- await updatePetugasService(petugasToEdit.id_petugas, payload);
- toast.success(PETUGAS_DIALOG_STRINGS.SUCCESS_EDIT);
- } else {
- await createPetugasService(payload);
- toast.success(PETUGAS_DIALOG_STRINGS.SUCCESS_ADD);
- }
- onSuccess();
- onOpenChange(false);
- } catch (error) {
- const errorMessage =
- error instanceof Error ? error.message : PETUGAS_DIALOG_STRINGS.ERROR_GENERAL;
- toast.error(errorMessage);
- form.setError("root", { type: "server", message: errorMessage });
- }
+    if (isEditMode && petugasToEdit) {
+      // Prevent editing self password in this dialog
+      const payload = { ...data };
+      if (payload.password === "") {
+        delete payload.password; // Don't send empty password if not changing
+      }
+      await onUpdate(petugasToEdit.id_petugas, payload);
+      toast.success(PETUGAS_DIALOG_STRINGS.SUCCESS_EDIT);
+    } else {
+      await onCreate(data);
+      toast.success(PETUGAS_DIALOG_STRINGS.SUCCESS_ADD);
+    }
+    onSuccess();
+    onOpenChange(false);
+  } catch (error) {
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : PETUGAS_DIALOG_STRINGS.ERROR_GENERAL
+    );
+  }
  };
 
  return (
  <Dialog open={isOpen} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
+ <DialogContent className="sm:max-w-md" aria-describedby={undefined}>
  <OfficerDialogHeader isEditMode={isEditMode} />
  <OfficerDialogForm
  form={form}

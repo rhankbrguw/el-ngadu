@@ -3,8 +3,8 @@ namespace Services;
 
 class GeminiService
 {
-    private $apiKey;
-    private $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-robotics-er-1.6-preview:generateContent';
+    private string $apiKey;
+    private string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-robotics-er-1.6-preview:generateContent';
 
     public function __construct()
     {

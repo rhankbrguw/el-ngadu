@@ -20,12 +20,15 @@ class OfficerCreateController {
     
     private function requireAdmin(): void {
         Auth::startSession();
-        if (!Auth::isLoggedIn() || Auth::getUserType() !== 'petugas' || $_SESSION['level'] !== 'admin') {
+        if (!Auth::isLoggedIn()) {
             throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
+        }
+        if (Auth::getUserType() !== \Constants\Roles::PETUGAS || $_SESSION['level'] !== \Constants\Roles::ADMIN) {
+            throw new \Core\ForbiddenException(\Constants\AppMessages::ERR_FORBIDDEN);
         }
     }
 
-    public function create(): void {
+    public function createOfficer(): void {
         $this->requireAdmin();
         
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -49,6 +52,6 @@ class OfficerCreateController {
         
         $this->officerService->createOfficer($validation->getValidData());
         
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_CREATE_OFFICER]);
+        Response::success(\Constants\AppMessages::SUCCESS_CREATE_OFFICER);
     }
 }

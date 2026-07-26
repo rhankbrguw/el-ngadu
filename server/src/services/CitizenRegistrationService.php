@@ -2,71 +2,75 @@
 
 namespace Services;
 
-use Components\Database;
+use Repositories\CitizenRepository;
+use Repositories\AuthRepository;
 use Components\EmailService;
-use Core\BaseException;
-use Core\ConflictException;
-use Core\Messages;
+use Constants\AppMessages;
 
 class CitizenRegistrationService {
+    
+    private CitizenRepository $repository;
+    private AuthRepository $authRepository;
+    
+    public function __construct() {
+        $this->repository = new CitizenRepository();
+        $this->authRepository = new AuthRepository();
+    }
+    
     public function register(array $data): array {
-        $pdo = Database::connect();
-        $hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
-
-        try {
-            $adminCountStmt = $pdo->query("SELECT COUNT(*) FROM petugas WHERE level = 'admin'");
-            $adminCount = $adminCountStmt->fetchColumn();
-
-            if ($adminCount == 0) {
-                $sql = "INSERT INTO petugas (nama_petugas, username, password, email, telp, level, is_verified) VALUES (?, ?, ?, ?, ?, 'admin', 1)";
-                $statement = $pdo->prepare($sql);
-                $statement->execute([$data['nama'], $data['username'], $hashed_password, $data['email'], $data['telp']]);
-                
-                $id_petugas = $pdo->lastInsertId();
-                
-                return [
-                    'is_admin' => true,
-                    'user' => [
-                        'id_petugas' => $id_petugas,
-                        'username' => $data['username'],
-                        'nama_petugas' => $data['nama'],
-                        'email' => $data['email'],
-                        'telp' => $data['telp'],
-                        'level' => 'admin',
-                        'userType' => 'petugas'
-                    ]
-                ];
-            } else {
-                $sql = "INSERT INTO masyarakat (nik, nama, username, password, email, telp) VALUES (?, ?, ?, ?, ?, ?)";
-                $statement = $pdo->prepare($sql);
-                $statement->execute([$data['nik'], $data['nama'], $data['username'], $hashed_password, $data['email'], $data['telp']]);
-
-                $otp_code = str_pad((string)rand(0, 999999), 6, '0', STR_PAD_LEFT);
-                $otp_expires = date('Y-m-d H:i:s', strtotime('+5 minutes'));
-
-                $updateOtp = $pdo->prepare("UPDATE masyarakat SET otp_code = ?, otp_expires_at = ? WHERE username = ?");
-                $updateOtp->execute([$otp_code, $otp_expires, $data['username']]);
-
-                $emailService = new EmailService();
-                $emailService->sendEmail(
-                    $data['email'],
-                    \Constants\AppMessages::EMAIL_SUBJECT_OTP,
-                    \Constants\AppMessages::EMAIL_TITLE_OTP,
-                    sprintf(\Constants\AppMessages::EMAIL_CONTENT_OTP, htmlspecialchars($data['nama']), $otp_code)
-                );
-
-                return [
-                    'is_admin' => false,
-                    'username' => $data['username'],
-                    'userType' => 'masyarakat',
-                ];
-            }
-        } catch (\PDOException $e) {
-            if ($e->getCode() === '23000') {
-                throw new ConflictException(Messages::ERR_NIK_ATAU_USERNAME_SUDAH_TERDAFTAR);
-            } else {
-                throw new BaseException('Gagal melakukan registrasi: ' . $e->getMessage(), 500);
-            }
+        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+        if ($this->repository->getAdminCount() === 0) {
+            return $this->handleAdminCreation($data);
         }
+        return $this->handleCitizenCreation($data);
+    }
+
+    private function handleAdminCreation(array $data): array {
+        $id_petugas = $this->repository->createAdmin($data);
+        $user = [
+            'id_petugas' => $id_petugas,
+            'username' => $data['username'],
+            'nama_petugas' => $data['nama'],
+            'email' => $data['email'],
+            'telp' => $data['telp'],
+            'level' => 'admin',
+            'userType' => 'petugas'
+        ];
+
+        return [
+            'is_setup_wizard' => true,
+            'user' => $user,
+            'message' => AppMessages::SUCCESS_SETUP_WIZARD,
+            'response_data' => [
+                'bypass_otp' => true,
+                'user' => $user
+            ]
+        ];
+    }
+
+    private function handleCitizenCreation(array $data): array {
+        $this->repository->createCitizen($data);
+        $otpCode = str_pad((string)rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otpExpires = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+        $this->authRepository->updateOtp('masyarakat', 'username', $data['username'], $otpCode, $otpExpires);
+        
+        $emailService = new EmailService();
+        $emailService->sendEmail(
+            $data['email'],
+            AppMessages::EMAIL_SUBJECT_OTP,
+            AppMessages::EMAIL_TITLE_OTP,
+            sprintf(AppMessages::EMAIL_CONTENT_OTP, htmlspecialchars($data['nama']), $otpCode)
+        );
+        
+        return [
+            'is_setup_wizard' => false,
+            'user' => null,
+            'message' => AppMessages::SUCCESS_REGISTER,
+            'response_data' => [
+                'requires_otp' => true,
+                'username' => $data['username'],
+                'userType' => 'masyarakat',
+            ]
+        ];
     }
 }

@@ -5,8 +5,10 @@ namespace Controllers;
 use Components\Auth;
 use Core\Response;
 use Core\UnauthorizedException;
-use Core\BaseException;
+use Core\ForbiddenException;
 use Services\ReportService;
+use Constants\AppMessages;
+use Constants\Roles;
 
 class ReportController {
     private ReportService $reportService;
@@ -15,18 +17,18 @@ class ReportController {
         $this->reportService = new ReportService();
     }
 
-    public function generate(): void {
+    public function generateReport(): void {
         Auth::startSession();
 
-        if (!Auth::isLoggedIn() || Auth::getUserType() !== 'petugas' || ($_SESSION['level'] ?? '') !== 'admin') {
-            throw new UnauthorizedException(\Core\Messages::ERR_AKSES_DITOLAK_HANYA_ADMIN_YANG_DAPAT_MEM ?? 'Akses ditolak.');
+        if (!Auth::isLoggedIn()) {
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
 
-        try {
-            $laporan = $this->reportService->generateReport();
-            Response::json($laporan);
-        } catch (\PDOException $e) {
-            throw new BaseException('Gagal membuat laporan: ' . $e->getMessage(), 500);
+        if (Auth::getUserType() !== Roles::PETUGAS || ($_SESSION['level'] ?? '') !== Roles::ADMIN) {
+            throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
+
+        $laporan = $this->reportService->generateReport();
+        Response::success(AppMessages::SUCCESS_OPERATION, $laporan);
     }
 }

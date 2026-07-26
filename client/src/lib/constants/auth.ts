@@ -22,6 +22,9 @@ export const AUTH_STRINGS = {
  SUCCESS_TITLE: "Registrasi Berhasil!",
  SUCCESS_DESC: "Akun Anda telah berhasil diverifikasi. Mengalihkan ke dashboard...",
  CONTINUE_TO_DASHBOARD: "Masuk ke Dashboard",
+ OTP_SENT_LABEL: "Kode OTP telah dikirim ke email Anda.",
+ BTN_VERIFYING: "Memverifikasi...",
+ BTN_VERIFY_OTP: "Verifikasi OTP",
 } as const;
 
 export const AUTH_MESSAGES = {

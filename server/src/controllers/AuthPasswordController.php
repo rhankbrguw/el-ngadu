@@ -7,6 +7,8 @@ use Core\ValidationException;
 use Core\UnauthorizedException;
 use Components\Auth;
 use Services\AuthPasswordService;
+use Rakit\Validation\Validator;
+use Constants\AppMessages;
 
 class AuthPasswordController {
     
@@ -18,39 +20,61 @@ class AuthPasswordController {
 
     public function forgotPassword(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        if (empty(trim($input['email'] ?? ''))) {
-            throw new ValidationException("Email wajib diisi.");
+        
+        $validator = new Validator();
+        $validation = $validator->make($input, [
+            'email' => 'required|email'
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
         }
         
-        $this->service->forgotPassword(trim($input['email']));
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_FORGOT_PWD]);
+        $this->service->forgotPassword($validation->getValidData()['email']);
+        Response::success(AppMessages::SUCCESS_FORGOT_PWD);
     }
 
     public function resetPassword(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        if (empty(trim($input['token'] ?? '')) || empty($input['password'] ?? '')) {
-            throw new ValidationException("Token dan kata sandi baru wajib diisi.");
+        
+        $validator = new Validator();
+        $validation = $validator->make($input, [
+            'token' => 'required',
+            'password' => 'required|min:8'
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
         }
         
-        $this->service->resetPassword(trim($input['token']), $input['password']);
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_RESET_PWD]);
+        $data = $validation->getValidData();
+        $this->service->resetPassword($data['token'], $data['password']);
+        Response::success(AppMessages::SUCCESS_RESET_PWD);
     }
 
     public function changePassword(): void {
         Auth::startSession();
         if (!Auth::isLoggedIn()) {
-            throw new UnauthorizedException(\Core\Messages::ERR_ANDA_HARUS_LOGIN_UNTUK_MELAKUKAN_TINDAKA ?? "Harus login");
+            throw new UnauthorizedException(AppMessages::ERR_UNAUTHORIZED);
         }
         
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        if (empty($input['old_password']) || empty($input['new_password'])) {
-            throw new ValidationException(\Core\Messages::ERR_PASSWORD_LAMA_DAN_BARU_WAJIB_DIISI ?? "Password lama dan baru wajib diisi.");
-        }
-        if (strlen($input['new_password']) < 8) {
-            throw new ValidationException(\Core\Messages::ERR_PASSWORD_BARU_HARUS_MINIMAL_8_KARAKTER ?? "Password baru minimal 8 karakter.");
+        
+        $validator = new Validator();
+        $validation = $validator->make($input, [
+            'old_password' => 'required',
+            'new_password' => 'required|min:8'
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
         }
         
-        $this->service->changePassword(Auth::getUserId(), Auth::getUserType(), $input['old_password'], $input['new_password']);
-        Response::json(['message' => \Constants\AppMessages::SUCCESS_UPDATE_PWD]);
+        $data = $validation->getValidData();
+        $this->service->changePassword((string)Auth::getUserId(), (string)Auth::getUserType(), $data['old_password'], $data['new_password']);
+        Response::success(AppMessages::SUCCESS_UPDATE_PWD);
     }
 }

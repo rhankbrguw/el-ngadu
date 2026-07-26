@@ -72,6 +72,8 @@ export default function ManageOfficersPage() {
  handleOpenEditDialog,
  handleOpenAddDialog,
  handleDialogSuccess,
+ createPetugas,
+ updatePetugas,
  refetch,
  } = useManageOfficers();
 
@@ -108,12 +110,14 @@ export default function ManageOfficersPage() {
  )}
  </Card>
 
- <OfficerDialog
- isOpen={isDialogOpen}
- onOpenChange={setIsDialogOpen}
- onSuccess={handleDialogSuccess}
- petugasToEdit={editingPetugas}
- />
+  <OfficerDialog
+    isOpen={isDialogOpen}
+    onOpenChange={setIsDialogOpen}
+    onSuccess={handleDialogSuccess}
+    onCreate={createPetugas}
+    onUpdate={updatePetugas}
+    petugasToEdit={editingPetugas}
+  />
  </div>
  );
 }

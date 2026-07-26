@@ -9,6 +9,7 @@ import {
 import { createResponseService } from "@/services/responseService";
 import type { PengaduanDetail, Response } from "@/types";
 import { getErrorMessage } from "@/lib/complaintUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export function useComplaintDetail() {
  const { id } = useParams<{ id: string }>();
@@ -48,7 +49,7 @@ export function useComplaintDetail() {
  try {
  await updateStatusPengaduanService(id, newStatus);
  setPengaduan((prev) => (prev ? { ...prev, status: newStatus } : null));
- toast.success("Status berhasil diubah!");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.SUCCESS_CHANGE_STATUS);
  } catch (err) {
  toast.error(getErrorMessage(err));
  } finally {
@@ -66,7 +67,7 @@ export function useComplaintDetail() {
  id_pengaduan: id,
  isi_tanggapan: isiResponse,
  });
- toast.success("Response berhasil dikirim!");
+ toast.success(APP_MESSAGES.TOAST_MESSAGES.SUCCESS_SEND_RESPONSE);
 
  const newResponse: Response = {
  id_tanggapan: Date.now(),

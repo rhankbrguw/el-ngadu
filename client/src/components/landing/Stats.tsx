@@ -1,29 +1,9 @@
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
+import { usePublicStats } from "@/hooks/usePublicStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, CheckCircle, Clock } from "lucide-react";
 
-interface StatsData {
- total: number;
- proses: number;
- selesai: number;
-}
-
 export function Stats() {
- const [stats, setStats] = useState<StatsData>({ total: 0, proses: 0, selesai: 0 });
-
- useEffect(() => {
- const fetchStats = async () => {
- try {
- const response = await api.get<StatsData>('/stats');
- setStats(response.data);
- } catch (error) {
- console.error("Gagal mengambil data statistik:", error);
- }
- };
-
- fetchStats();
- }, []);
+ const { stats } = usePublicStats();
 
  return (
  <section className="py-16 bg-background ">

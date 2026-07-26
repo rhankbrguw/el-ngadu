@@ -63,6 +63,7 @@ export default function ManageCitizensPage() {
  handleDeleteMasyarakat,
  handleOpenEditDialog,
  handleDialogSuccess,
+ updateMasyarakat,
  refetch,
  } = useManageCitizens();
 
@@ -116,6 +117,7 @@ export default function ManageCitizensPage() {
  isOpen={isDialogOpen}
  onOpenChange={setIsDialogOpen}
  onSuccess={handleDialogSuccess}
+ onUpdate={updateMasyarakat}
  masyarakatToEdit={editingMasyarakat}
  />
  </div>

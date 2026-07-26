@@ -6,8 +6,10 @@ class AppMessages {
     public const ERR_VALIDATION_FAILED = 'Validasi gagal, mohon periksa kembali data Anda.';
     public const ERR_UNAUTHORIZED = 'Akses ditolak, Anda harus login.';
     public const ERR_FORBIDDEN = 'Anda tidak memiliki izin untuk melakukan aksi ini.';
+    public const ERR_NOT_FOUND = 'Endpoint atau data tidak ditemukan.';
     public const ERR_FILE_FORMAT = 'Format file tidak didukung. Hanya JPG, PNG, dan PDF yang diperbolehkan.';
     public const ERR_DB_SAVE = 'Gagal menyimpan data ke database.';
+    public const ERR_DB_CONNECTION = 'Koneksi database gagal.';
     
     public const SUCCESS_COMPLAINT_CREATED = 'Pengaduan berhasil dibuat.';
     public const SUCCESS_COMPLAINT_UPDATED = 'Pengaduan berhasil diperbarui.';
@@ -53,13 +55,11 @@ class AppMessages {
     public const ERR_INVALID_OTP = 'Kode OTP salah atau sudah kedaluwarsa.';
     public const ERR_EMAIL_NOT_SET = 'Email belum diatur untuk akun ini. Tidak dapat mengirim OTP.';
     
-    public const COLOR_DARK = '#0f172a';
-    public const COLOR_PRIMARY = '#eab308';
-    
     public const EMAIL_TITLE_OTP = 'Kode OTP Login Anda';
     public const EMAIL_SUBJECT_OTP = 'Kode OTP Login El-Ngadu';
-    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: ' . self::COLOR_DARK . '; color: ' . self::COLOR_PRIMARY . '; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
+    public const EMAIL_CONTENT_OTP = '<p>Halo <strong>%s</strong>,</p><p>Seseorang mencoba masuk ke akun Anda. Berikut adalah kode OTP Anda:</p><div style="text-align: center; margin: 30px 0;"><span style="background-color: ' . \Constants\DesignTokens::COLOR_DARK . '; color: ' . \Constants\DesignTokens::COLOR_PRIMARY . '; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; display: inline-block;">%s</span></div><p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Jangan berikan kode ini kepada siapapun.</p>';
 
+    public const SUCCESS_OPERATION = "Operasi berhasil.";
     public const SUCCESS_LOGIN = "Login berhasil.";
     public const SUCCESS_VERIFY_OTP = "Verifikasi OTP berhasil.";
     public const SUCCESS_LOGOUT = "Logout berhasil.";
@@ -77,5 +77,17 @@ class AppMessages {
     public const SUCCESS_DELETE_OFFICER = "Akun petugas berhasil dihapus";
     public const SUCCESS_CREATE_OFFICER = "Akun petugas baru berhasil dibuat.";
     public const SUCCESS_SEND_RESPONSE = "Tanggapan berhasil dikirim.";
+    public const SUCCESS_GET_SUPPORT_REPLY = 'Berhasil mendapatkan respon';
+    public const MSG_OTP_SENT = 'OTP telah dikirim ke email Anda.';
+    public const MSG_OTP_REQUIRED = 'OTP required';
 
+    public const NOTIF_DEFAULT_TITLE = 'Pemberitahuan Sistem';
+    public const NOTIF_PROFILE_UPDATED_BY_ADMIN = 'Data profil Anda telah diperbarui oleh admin.';
+    public const NOTIF_MARKED_READ = '%d notifikasi telah berhasil ditandai dibaca.';
+    public const NOTIF_SINGLE_MARKED_READ = 'Notification marked as read.';
+
+    public const ROUTE_DASHBOARD = '/dashboard';
+    public const ROUTE_DASHBOARD_PROFILE = '/dashboard/profile';
+    public const ROUTE_COMPLAINT_HISTORY = '/dashboard/history/%d';
+    public const ROUTE_COMPLAINT_DETAIL = '/dashboard/complaints/%d';
 }

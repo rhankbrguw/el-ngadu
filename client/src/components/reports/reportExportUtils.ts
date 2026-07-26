@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { exportToCsv } from "@/lib/utils";
 import { generatePdfReport } from "@/lib/pdfGenerator";
 import { REPORT_STRINGS } from "@/lib/constants/reports";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export const handleExportCSV = (filteredData: Record<string, unknown>[]) => {
  if (filteredData.length > 0) {
@@ -33,9 +34,10 @@ export const handleExportPDF = (filteredData: Record<string, unknown>[]) => {
  try {
  generatePdfReport(filteredData);
  toast.success(REPORT_STRINGS.SUCCESS_EXPORT);
- } catch {
- toast.error("Gagal men-generate PDF.");
- }
+  } catch (error) {
+    console.error("PDF generation failed", error);
+    toast.error(APP_MESSAGES.TOAST_MESSAGES.ERROR_PDF_GENERATE);
+  }
  } else {
  toast.error(REPORT_STRINGS.ERROR_EXPORT);
  }

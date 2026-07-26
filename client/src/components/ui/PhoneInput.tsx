@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 export interface PhoneInputProps
  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
@@ -70,7 +71,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
  ref={ref}
  value={displayValue}
  onChange={handleChange}
- placeholder="+62-8XX-XXXX-XXXX"
+ placeholder={APP_MESSAGES.COMMON.PHONE_PLACEHOLDER}
  className={cn("font-mono", className)}
  {...props}
  />

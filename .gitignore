@@ -1,32 +1,33 @@
-# Databases
-*.sqlite
-*.db
-el_ngadu.sqlite
-server/el_ngadu.sqlite
-server/elngadu.db
-
-# Node
-client/node_modules/
-client/dist/
-client/build/
-npm-debug.log*
-
-# PHP / Composer
-server/vendor/
-
-# Uploads
-server/uploads/
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Environments
 .env
-.env.local
-.env.*.local
-client/.env
-server/.env
+.env.*
+!.env.example
 
-# Editor / OS
-.vscode/
-.agent/
-.idea/
-.DS_Store
+# Node / Frontend (Vite)
+client/node_modules/
+client/dist/
+client/build/
+client/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# PHP / Backend
+server/vendor/
 *.log
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads
+server/uploads/

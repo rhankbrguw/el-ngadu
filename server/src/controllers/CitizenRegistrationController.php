@@ -17,7 +17,7 @@ class CitizenRegistrationController {
         $this->registrationService = new CitizenRegistrationService();
     }
 
-    public function register(): void {
+    public function registerCitizen(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         
         $validator = new Validator();
@@ -37,25 +37,13 @@ class CitizenRegistrationController {
         }
 
         $data = $validation->getValidData();
-        
         $result = $this->registrationService->register($data);
 
-        if ($result['is_admin']) {
+        if ($result['is_setup_wizard'] && !empty($result['user'])) {
             Auth::startSession();
-            Auth::login($result['user'], 'petugas');
-            
-            Response::json([
-                'bypass_otp' => true,
-                'message' => \Constants\AppMessages::SUCCESS_SETUP_WIZARD,
-                'user' => $result['user']
-            ]);
-        } else {
-            Response::json([
-                'requires_otp' => true,
-                'username' => $result['username'],
-                'userType' => $result['userType'],
-                'message' => \Constants\AppMessages::SUCCESS_REGISTER
-            ]);
+            Auth::login($result['user'], \Constants\Roles::PETUGAS);
         }
+
+        Response::success($result['message'], $result['response_data']);
     }
 }

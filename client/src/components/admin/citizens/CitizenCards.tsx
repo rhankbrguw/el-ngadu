@@ -18,9 +18,10 @@ export default function CitizenCards({
  onDelete,
  onEdit,
 }: CitizenCardsProps) {
+ const list = Array.isArray(masyarakatList) ? masyarakatList : [];
  return (
  <div className="grid gap-4 md:hidden">
- {masyarakatList.map((m) => (
+ {list.map((m) => (
  <Card key={m.nik}>
  <CardContent className="flex flex-col h-full justify-between">
  <div>

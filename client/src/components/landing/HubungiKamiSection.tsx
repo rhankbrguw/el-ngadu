@@ -46,17 +46,17 @@ export function HubungiKamiSection() {
  <form className="space-y-3">
  <div className="grid gap-2">
  <Label htmlFor="name">{APP_MESSAGES.AUTH.NAME_LABEL}</Label>
- <Input id="name" type="text" placeholder="Nama Anda" />
+ <Input id="name" type="text" placeholder={APP_MESSAGES.LANDING.PLACEHOLDER_NAME} />
  </div>
  <div className="grid gap-2">
  <Label htmlFor="email">{APP_MESSAGES.AUTH.EMAIL_LABEL}</Label>
- <Input id="email" type="email" placeholder="email@anda.com" />
+ <Input id="email" type="email" placeholder={APP_MESSAGES.LANDING.PLACEHOLDER_EMAIL} />
  </div>
  <div className="grid gap-2">
  <Label htmlFor="message">{APP_MESSAGES.COMMON.MESSAGE}</Label>
- <Textarea id="message" placeholder="Tulis pesan Anda di sini..." />
+ <Textarea id="message" placeholder={APP_MESSAGES.LANDING.PLACEHOLDER_MESSAGE} />
  </div>
- <Button type="submit" className="w-full ">Kirim Pesan</Button>
+ <Button type="submit" className="w-full ">{APP_MESSAGES.COMMON.SUBMIT}</Button>
  </form>
  </CardContent>
  </Card>

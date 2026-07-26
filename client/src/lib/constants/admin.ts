@@ -11,6 +11,8 @@ export const PETUGAS_DIALOG_STRINGS = {
  LABEL_PASSWORD: "Password",
  PLACEHOLDER_PASSWORD_EDIT: "Isi jika ingin ganti",
  PLACEHOLDER_PASSWORD_ADD: "Minimal 8 karakter",
+ LABEL_EMAIL: "Email",
+ PLACEHOLDER_EMAIL: "contoh@gmail.com",
  LABEL_TELP: "No. Telepon",
  PLACEHOLDER_TELP: "08123...",
  LABEL_LEVEL: "Level",

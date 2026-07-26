@@ -7,15 +7,16 @@ if (php_sapi_name() === 'cli-server') {
     }
 }
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load Environment Variables
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../');
 $dotenv->safeLoad();
+
+$isProduction = ($_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'production') === 'production';
+ini_set('display_errors', $isProduction ? '0' : '1');
+ini_set('display_startup_errors', $isProduction ? '0' : '1');
+error_reporting($isProduction ? 0 : E_ALL);
 
 require_once __DIR__ . '/../src/core/init.php';
 
@@ -65,9 +66,9 @@ $router->mount('/api', function() use ($router) {
                 $controller->getAll();
             }
         });
-        $router->post('/', 'Controllers\ComplaintController@create');
-        $router->patch('/', 'Controllers\ComplaintController@update');
-        $router->delete('/', 'Controllers\ComplaintController@delete');
+        $router->post('/', 'Controllers\ComplaintController@createComplaint');
+        $router->patch('/', 'Controllers\ComplaintController@updateComplaintStatus');
+        $router->delete('/', 'Controllers\ComplaintController@deleteComplaint');
         $router->get('/mine', 'Controllers\ComplaintReadController@getMine');
         $router->get('/stats-mine', 'Controllers\ComplaintReadController@statsMine');
     });
@@ -75,19 +76,19 @@ $router->mount('/api', function() use ($router) {
     // Citizens Routes
     $router->mount('/citizens', function() use ($router) {
         $router->get('/', 'Controllers\CitizenController@getAll');
-        $router->post('/register', 'Controllers\CitizenRegistrationController@register');
-        $router->patch('/', 'Controllers\CitizenController@update');
-        $router->delete('/', 'Controllers\CitizenController@delete');
-        $router->get('/search', 'Controllers\CitizenController@search');
+        $router->post('/register', 'Controllers\CitizenRegistrationController@registerCitizen');
+        $router->patch('/', 'Controllers\CitizenController@updateCitizen');
+        $router->delete('/', 'Controllers\CitizenController@deleteCitizen');
+        $router->get('/search', 'Controllers\CitizenController@searchCitizens');
     });
 
     // Officers Routes
     $router->mount('/officers', function() use ($router) {
         $router->get('/', 'Controllers\OfficerController@readAll');
-        $router->post('/', 'Controllers\OfficerCreateController@create');
-        $router->patch('/', 'Controllers\OfficerController@update');
-        $router->delete('/', 'Controllers\OfficerController@delete');
-        $router->get('/search', 'Controllers\OfficerController@search');
+        $router->post('/', 'Controllers\OfficerCreateController@createOfficer');
+        $router->patch('/', 'Controllers\OfficerController@updateOfficer');
+        $router->delete('/', 'Controllers\OfficerController@deleteOfficer');
+        $router->get('/search', 'Controllers\OfficerController@searchOfficers');
     });
 
     // Notifications Routes
@@ -99,15 +100,15 @@ $router->mount('/api', function() use ($router) {
 
     // Stats Routes
     $router->mount('/stats', function() use ($router) {
-        $router->get('/', 'Controllers\StatsController@read');
-        $router->get('/admin', 'Controllers\StatsController@admin');
+        $router->get('/', 'Controllers\StatsController@getPublicStats');
+        $router->get('/admin', 'Controllers\StatsController@getAdminStats');
     });
 
     // Responses Routes
-    $router->post('/responses', 'Controllers\ResponseController@create');
+    $router->post('/responses', 'Controllers\ResponseController@createResponse');
 
     // Reports Routes
-    $router->get('/reports/generate', 'Controllers\ReportController@generate');
+    $router->get('/reports/generate', 'Controllers\ReportController@generateReport');
 
     // Support AI Routes
     $router->mount('/support', function() use ($router) {
@@ -117,13 +118,9 @@ $router->mount('/api', function() use ($router) {
 
 // Custom 404
 $router->set404(function() {
-    header('HTTP/1.1 404 Not Found');
-    header('Content-Type: application/json');
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Endpoint tidak ditemukan'
-    ]);
+    \Core\Response::error(\Constants\AppMessages::ERR_NOT_FOUND, 404);
 });
 
 // Run it!
 $router->run();
+

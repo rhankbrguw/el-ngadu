@@ -1,12 +1,5 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import {
- ChangePasswordSchema,
- type ChangePasswordPayload,
-} from "@/lib/validators/profile";
 import { motion } from "framer-motion";
-import { changePasswordService } from "@/services/authService";
+import { usePasswordChange } from "@/hooks/usePasswordChange";
 import { Button } from "@/components/ui/button";
 import {
  Form,
@@ -20,32 +13,8 @@ import { PasswordInput } from "@/components/common/PasswordInput";
 import { Loader2 } from "lucide-react";
 import { APP_MESSAGES } from "@/lib/constants/messages";
 
-
 export default function PasswordChangeForm() {
- const form = useForm<ChangePasswordPayload>({
- resolver: zodResolver(ChangePasswordSchema),
- defaultValues: {
- old_password: "",
- new_password: "",
- confirm_password: "",
- },
- });
-
- const onSubmit = async (data: ChangePasswordPayload) => {
- try {
- await changePasswordService({
- old_password: data.old_password,
- new_password: data.new_password,
- });
- toast.success("Kata sandi berhasil diperbarui!");
- form.reset();
- } catch (error) {
- const errorMessage =
- error instanceof Error ? error.message : "Terjadi kesalahan";
- toast.error(errorMessage);
- form.setError("root", { type: "server", message: errorMessage });
- }
- };
+ const { form, onSubmit, isLoading } = usePasswordChange();
 
  return (
  <Form {...form}>
@@ -53,7 +22,7 @@ export default function PasswordChangeForm() {
  initial={{ opacity: 0, y: 10 }} 
  animate={{ opacity: 1, y: 0 }} 
  transition={{ duration: 0.3 }}
- onSubmit={form.handleSubmit(onSubmit)} 
+ onSubmit={onSubmit} 
  className="space-y-4"
  >
  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -64,7 +33,7 @@ export default function PasswordChangeForm() {
  <FormItem>
  <FormLabel>{APP_MESSAGES.AUTH.OLD_PASSWORD}</FormLabel>
  <FormControl>
- <PasswordInput placeholder="••••••••" {...field} />
+ <PasswordInput placeholder={APP_MESSAGES.PROFILE.PLACEHOLDER_PASSWORD} {...field} />
  </FormControl>
  <FormMessage />
  </FormItem>
@@ -79,7 +48,7 @@ export default function PasswordChangeForm() {
  <FormLabel>{APP_MESSAGES.AUTH.NEW_PASSWORD}</FormLabel>
  <FormControl>
  <PasswordInput
- placeholder="Minimal 8 karakter"
+ placeholder={APP_MESSAGES.PROFILE.PLACEHOLDER_MIN_8}
  {...field}
  />
  </FormControl>
@@ -95,7 +64,7 @@ export default function PasswordChangeForm() {
  <FormLabel>Konfirmasi Kata Sandi Baru</FormLabel>
  <FormControl>
  <PasswordInput
- placeholder="Ketik ulang kata sandi baru"
+ placeholder={APP_MESSAGES.PROFILE.PLACEHOLDER_NEW_PASSWORD}
  {...field}
  />
  </FormControl>
@@ -110,8 +79,8 @@ export default function PasswordChangeForm() {
  </p>
  )}
  <div className="flex justify-end pt-2">
- <Button type="submit" disabled={form.formState.isSubmitting}>
- {form.formState.isSubmitting && (
+ <Button type="submit" disabled={isLoading}>
+ {isLoading && (
  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
  )}
  Ubah Kata Sandi

@@ -19,3 +19,8 @@ public/test-hash.php
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db

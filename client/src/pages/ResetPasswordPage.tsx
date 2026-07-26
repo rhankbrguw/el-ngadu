@@ -1,57 +1,24 @@
-import { useState, type FormEvent } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { resetPasswordService } from "@/services/passwordResetService";
+import { Link } from "react-router-dom";
+import { useResetPassword } from "@/hooks/useResetPassword";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PasswordInput } from "@/components/common/PasswordInput";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import { getErrorMessage } from "@/lib/complaintUtils";
 
 export default function ResetPasswordPage() {
- const [password, setPassword] = useState("");
- const [confirmPassword, setConfirmPassword] = useState("");
- const [error, setError] = useState<string | null>(null);
- const [successMsg, setSuccessMsg] = useState<string | null>(null);
- const [isLoading, setIsLoading] = useState(false);
- const navigate = useNavigate();
-
- const [searchParams] = useSearchParams();
- const token = searchParams.get("token");
-
- const handleSubmit = async (e: FormEvent) => {
- e.preventDefault();
-
- if (!token) {
- setError("Tautan reset password tidak valid.");
- return;
- }
-
- if (password.length < 8) {
- setError("Kata sandi minimal 8 karakter.");
- return;
- }
-
- if (password !== confirmPassword) {
- setError("Konfirmasi kata sandi tidak cocok.");
- return;
- }
-
- setIsLoading(true);
- setError(null);
-
- try {
- const response = await resetPasswordService(password, token);
- setSuccessMsg(response.message);
- setTimeout(() => {
- navigate("/login");
- }, 2000);
- } catch (err) {
- setError(getErrorMessage(err));
- } finally {
- setIsLoading(false);
- }
- };
+  const {
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    successMsg,
+    isLoading,
+    token,
+    handleSubmit,
+  } = useResetPassword();
 
  return (
  <div className="flex min-h-screen items-center justify-center bg-background p-4 ">
@@ -77,7 +44,7 @@ export default function ResetPasswordPage() {
  </Label>
  <PasswordInput
  id="password"
- placeholder="Minimal 8 karakter"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_MIN_8}
  required
  value={password}
  onChange={(e) => setPassword(e.target.value)}
@@ -91,7 +58,7 @@ export default function ResetPasswordPage() {
  </Label>
  <PasswordInput
  id="confirmPassword"
- placeholder="Ulangi kata sandi baru"
+ placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_REPEAT_NEW_PASS}
  required
  value={confirmPassword}
  onChange={(e) => setConfirmPassword(e.target.value)}

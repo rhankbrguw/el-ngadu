@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Edit, Send } from "lucide-react";
+import { APP_MESSAGES } from "@/lib/constants/messages";
 
 interface OfficerActionPanelProps {
  pengaduan: PengaduanDetail;
@@ -63,7 +64,7 @@ export function OfficerActionPanel({
  </CardHeader>
  <CardContent>
  <Textarea
- placeholder="Tulis solusi atau tindakan yang telah diambil..."
+ placeholder={APP_MESSAGES.COMPLAINT.PLACEHOLDER_ACTION}
  rows={5}
  value={isiResponse}
  onChange={(e) => onIsiResponseChange(e.target.value)}

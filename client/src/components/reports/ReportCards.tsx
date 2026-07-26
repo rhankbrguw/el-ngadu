@@ -18,9 +18,10 @@ interface ReportCardsProps {
 }
 
 export default function ReportCards({ laporanList }: ReportCardsProps) {
+  const list = Array.isArray(laporanList) ? laporanList : [];
  return (
  <div className="space-y-3">
- {laporanList.map((item) => (
+ {list.map((item) => (
  <Card
  key={`laporan-card-${item.id}-${item.id_tanggapan || "null"}`}
  className="w-full"

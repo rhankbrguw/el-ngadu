@@ -6,13 +6,13 @@ use PDOException;
 
 class Database
 {
-  private static $host = null;
-  private static $db_name = null;
-  private static $username = null;
-  private static $password = null;
-  private static $pdo = null;
+  private static ?string $host = null;
+  private static ?string $db_name = null;
+  private static ?string $username = null;
+  private static ?string $password = null;
+  private static ?PDO $pdo = null;
 
-  public static function connect()
+  public static function connect(): PDO
   {
     if (self::$pdo === null) {
       $db_driver = $_ENV['DB_DRIVER'] ?? getenv('DB_DRIVER') ?: 'sqlite';
@@ -23,9 +23,9 @@ class Database
           self::$username = null;
           self::$password = null;
       } else {
-          self::$host = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?: '127.0.0.1';
-          self::$db_name = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?: 'el_ngadu';
-          self::$username = $_ENV['DB_USER'] ?? getenv('DB_USER') ?: 'root';
+          self::$host = self::requireEnv('DB_HOST');
+          self::$db_name = self::requireEnv('DB_NAME');
+          self::$username = self::requireEnv('DB_USER');
           self::$password = isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
           $dsn = "mysql:host=" . self::$host . ";dbname=" . self::$db_name . ";charset=utf8mb4";
       }
@@ -38,10 +38,19 @@ class Database
       try {
         self::$pdo = new PDO($dsn, self::$username, self::$password, $options);
       } catch (PDOException $e) {
-        throw new \Core\BaseException(\Core\Messages::DB_CONNECTION_FAILED, 500);
+        throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_CONNECTION, 500);
       }
     }
 
     return self::$pdo;
+  }
+
+  private static function requireEnv(string $key): string
+  {
+    $value = $_ENV[$key] ?? getenv($key) ?: null;
+    if ($value === null || $value === '') {
+      throw new \RuntimeException("Missing required environment variable: {$key}");
+    }
+    return $value;
   }
 }
