@@ -12,6 +12,9 @@ class Config {
     public const OTP_EXPIRY_MINUTES = 5;
     public const RESET_TOKEN_EXPIRY_MINUTES = 30;
 
+    public const DEFAULT_PAGINATION_LIMIT = 10;
+    public const MAX_PAGINATION_LIMIT = 100;
+
     public const ENV_DEV = 'development';
     public const ENV_PROD = 'production';
 

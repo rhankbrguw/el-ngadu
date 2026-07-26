@@ -42,8 +42,9 @@ class CitizenController {
     public function getAll(): void {
         $this->requireAdmin();
         
-        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : \Constants\Config::DEFAULT_PAGINATION_LIMIT;
+        $limit = min(max(1, $limit), \Constants\Config::MAX_PAGINATION_LIMIT);
         
         $result = $this->citizenService->getAll($page, $limit);
         Response::success(AppMessages::SUCCESS_OPERATION, $result);

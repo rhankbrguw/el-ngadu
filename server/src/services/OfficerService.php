@@ -44,7 +44,7 @@ class OfficerService {
             $this->repository->beginTransaction();
             $newId = $this->repository->create($data);
             
-            NotificationManager::create($this->repository->getPdo(), (string)$newId, 'petugas', AppMessages::NOTIF_WELCOME_OFFICER, AppMessages::ROUTE_DASHBOARD);
+            NotificationManager::create((string)$newId, 'petugas', AppMessages::NOTIF_WELCOME_OFFICER, AppMessages::ROUTE_DASHBOARD);
             $this->repository->commit();
         } catch (\Throwable $e) {
             $this->repository->rollBack();
@@ -89,7 +89,7 @@ class OfficerService {
             }
             
             $this->repository->update($id, $fields, $params);
-            NotificationManager::create($this->repository->getPdo(), (string)$id, 'petugas', AppMessages::NOTIF_PROFILE_UPDATED_BY_ADMIN, AppMessages::ROUTE_DASHBOARD_PROFILE);
+            NotificationManager::create((string)$id, 'petugas', AppMessages::NOTIF_PROFILE_UPDATED_BY_ADMIN, AppMessages::ROUTE_DASHBOARD_PROFILE);
             $this->repository->commit();
         } catch (\Throwable $e) {
             $this->repository->rollBack();

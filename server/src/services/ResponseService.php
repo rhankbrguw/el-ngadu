@@ -32,7 +32,7 @@ class ResponseService {
                 $nik_masyarakat = $pengaduan['nik_masyarakat'];
                 $message = sprintf(AppMessages::NOTIF_RESPONSE_NEW, $idPengaduan);
                 $link = "/dashboard/history/" . $idPengaduan;
-                NotificationManager::create($this->repository->getPdo(), $nik_masyarakat, 'masyarakat', $message, $link);
+                NotificationManager::create($nik_masyarakat, 'masyarakat', $message, $link);
 
                 if (!empty($pengaduan['email'])) {
                     $emailTitle = AppMessages::EMAIL_TITLE_RESPONSE_NEW;

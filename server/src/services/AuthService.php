@@ -98,7 +98,7 @@ class AuthService {
         $this->repository->verifyAndClearOtp($table, $idCol, $user[$idCol]);
 
         if ($userType === 'masyarakat') {
-            \Components\NotificationManager::create($this->repository->getPdo(), $user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
+            \Components\NotificationManager::create($user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
             EmailService::getInstance()->sendEmail(
                 $user['email'], 
                 AppMessages::EMAIL_SUBJECT_WELCOME, 

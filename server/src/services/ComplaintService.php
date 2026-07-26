@@ -43,7 +43,7 @@ class ComplaintService {
 
             $msg = sprintf(AppMessages::NOTIF_COMPLAINT_STATUS_UPDATED, $id, $status);
             $linkUrl = sprintf(AppMessages::ROUTE_COMPLAINT_HISTORY, $id);
-            NotificationManager::create($this->repository->getPdo(), $complaint['nik_masyarakat'], 'masyarakat', $msg, $linkUrl);
+            NotificationManager::create($complaint['nik_masyarakat'], 'masyarakat', $msg, $linkUrl);
             
             if (!empty($complaint['email'])) {
                 $appUrl = \Constants\Config::getAppUrl();
@@ -93,7 +93,7 @@ class ComplaintService {
         
         $emailService = EmailService::getInstance();
         foreach ($officers as $officer) {
-            NotificationManager::create($pdo, (string)$officer['id_petugas'], 'petugas', $msg, $routeDetail);
+            NotificationManager::create((string)$officer['id_petugas'], 'petugas', $msg, $routeDetail);
             if (!empty($officer['email'])) {
                 $emailService->sendEmail(
                     $officer['email'],

@@ -65,7 +65,7 @@ class CitizenService {
             }
 
             $this->repository->update($nik, $fields, $params);
-            NotificationManager::create($this->repository->getPdo(), $nik, 'masyarakat', AppMessages::NOTIF_PROFILE_UPDATED_BY_ADMIN, AppMessages::ROUTE_DASHBOARD_PROFILE);
+            NotificationManager::create($nik, 'masyarakat', AppMessages::NOTIF_PROFILE_UPDATED_BY_ADMIN, AppMessages::ROUTE_DASHBOARD_PROFILE);
 
             $this->repository->commit();
         } catch (\Throwable $e) {

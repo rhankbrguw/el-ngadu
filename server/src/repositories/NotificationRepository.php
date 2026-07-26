@@ -50,4 +50,10 @@ class NotificationRepository {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function create(string $user_identifier, string $user_type, string $title, string $message, ?string $link_url = null): bool {
+        $sql = "INSERT INTO notifications (user_id, user_type, title, message, link_url) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$user_identifier, $user_type, $title, $message, $link_url]);
+    }
 }

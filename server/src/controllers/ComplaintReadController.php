@@ -28,8 +28,9 @@ class ComplaintReadController {
             throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
-        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : \Constants\Config::DEFAULT_PAGINATION_LIMIT;
+        $limit = min(max(1, $limit), \Constants\Config::MAX_PAGINATION_LIMIT);
         
         $result = $this->service->getAll($page, $limit);
         Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
@@ -44,8 +45,9 @@ class ComplaintReadController {
             throw new ForbiddenException(AppMessages::ERR_FORBIDDEN);
         }
 
-        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 10;
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : \Constants\Config::DEFAULT_PAGINATION_LIMIT;
+        $limit = min(max(1, $limit), \Constants\Config::MAX_PAGINATION_LIMIT);
         
         $result = $this->service->getMine((string)Auth::getUserId(), $page, $limit);
         Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
