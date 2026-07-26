@@ -15,7 +15,7 @@ class Database
   public static function connect(): PDO
   {
     if (self::$pdo === null) {
-      $db_driver = $_ENV['DB_DRIVER'] ?? getenv('DB_DRIVER') ?: 'sqlite';
+      $db_driver = \Constants\Config::getDbDriver();
       
       if ($db_driver === 'sqlite') {
           $db_path = __DIR__ . '/../../el_ngadu.sqlite';
@@ -23,10 +23,15 @@ class Database
           self::$username = null;
           self::$password = null;
       } else {
-          self::$host = self::requireEnv('DB_HOST');
-          self::$db_name = self::requireEnv('DB_NAME');
-          self::$username = self::requireEnv('DB_USER');
-          self::$password = isset($_ENV['DB_PASS']) ? $_ENV['DB_PASS'] : (getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+          self::$host = \Constants\Config::getDbHost();
+          self::$db_name = \Constants\Config::getDbName();
+          self::$username = \Constants\Config::getDbUser();
+          self::$password = \Constants\Config::getDbPass();
+          
+          if (!self::$host || !self::$db_name || !self::$username) {
+              throw new \RuntimeException("Missing required database environment variables.");
+          }
+          
           $dsn = "mysql:host=" . self::$host . ";dbname=" . self::$db_name . ";charset=utf8mb4";
       }
 
@@ -45,12 +50,5 @@ class Database
     return self::$pdo;
   }
 
-  private static function requireEnv(string $key): string
-  {
-    $value = $_ENV[$key] ?? getenv($key) ?: null;
-    if ($value === null || $value === '') {
-      throw new \RuntimeException("Missing required environment variable: {$key}");
-    }
-    return $value;
-  }
+
 }

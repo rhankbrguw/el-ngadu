@@ -6,6 +6,7 @@ use Repositories\AuthRepository;
 use Components\EmailService;
 use Core\BaseException;
 use Constants\AppMessages;
+use Constants\Config;
 
 /**
  * Service for handling Authentication business logic
@@ -34,7 +35,6 @@ class AuthService {
     }
 
     public function unifiedLogin(string $username, string $password): array {
-        // Cek masyarakat
         $user = $this->repository->getCitizenByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
@@ -44,7 +44,6 @@ class AuthService {
             return ['status' => 'success', 'user' => $user, 'type' => 'masyarakat'];
         }
 
-        // Cek petugas
         $petugas = $this->repository->getOfficerByUsername($username);
 
         if ($petugas && password_verify($password, $petugas['password'])) {
@@ -63,12 +62,11 @@ class AuthService {
         }
         
         $otpCode = sprintf("%06d", mt_rand(1, 999999));
-        $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+' . Config::OTP_EXPIRY_MINUTES . ' minutes'));
 
         $this->repository->updateOtp($table, $idColumn, $idValue, $otpCode, $expiresAt);
 
-        $emailService = new EmailService();
-        $emailService->sendEmail(
+        EmailService::getInstance()->sendEmail(
             $email, 
             AppMessages::EMAIL_SUBJECT_OTP, 
             AppMessages::EMAIL_TITLE_OTP, 
@@ -101,8 +99,7 @@ class AuthService {
 
         if ($userType === 'masyarakat') {
             \Components\NotificationManager::create($this->repository->getPdo(), $user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
-            $emailService = new EmailService();
-            $emailService->sendEmail(
+            EmailService::getInstance()->sendEmail(
                 $user['email'], 
                 AppMessages::EMAIL_SUBJECT_WELCOME, 
                 AppMessages::EMAIL_TITLE_WELCOME, 

@@ -4,32 +4,67 @@ namespace Components;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Constants\Config;
 use Constants\DesignTokens;
 
 class EmailService {
     private PHPMailer $mailer;
+    private static ?self $instance = null;
 
     public function __construct() {
         $this->mailer = new PHPMailer(true);
-        $this->mailer->isSMTP();
-        $this->mailer->Host       = $_ENV['SMTP_HOST'] ?? getenv('SMTP_HOST') ?: 'smtp.gmail.com';
-        $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = $_ENV['SMTP_USER'] ?? getenv('SMTP_USER') ?: '';
-        $this->mailer->Password   = $_ENV['SMTP_PASS'] ?? getenv('SMTP_PASS') ?: '';
-        $this->mailer->SMTPSecure = $_ENV['SMTP_SECURE'] ?? getenv('SMTP_SECURE') ?: PHPMailer::ENCRYPTION_SMTPS;
-        $this->mailer->Port       = (int)($_ENV['SMTP_PORT'] ?? getenv('SMTP_PORT') ?: 465);
+        $this->configureSmtp();
+        $this->configureIdentity();
+    }
 
-        $this->mailer->setFrom($_ENV['SMTP_FROM'] ?? getenv('SMTP_FROM') ?: 'noreply@example.com', $_ENV['SMTP_FROM_NAME'] ?? getenv('SMTP_FROM_NAME') ?: 'Tim El-Ngadu');
+    public static function getInstance(): self {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function configureSmtp(): void {
+        $smtpConfig = Config::getSmtpConfig();
+        $isDev = Config::isDev();
+
+        $this->mailer->isSMTP();
+        $this->mailer->Host       = $smtpConfig['host'];
+        $this->mailer->SMTPAuth   = true;
+        $this->mailer->Username   = $smtpConfig['user'];
+        $this->mailer->Password   = $smtpConfig['pass'];
+        $this->mailer->Port       = $smtpConfig['port'];
+        $this->mailer->SMTPKeepAlive = true;
+
+        $this->mailer->Timeout         = Config::SMTP_TIMEOUT_SECONDS;
+        $this->mailer->SMTPOptions     = $isDev
+            ? ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]]
+            : [];
+
+        $this->resolveEncryption($smtpConfig['port'], $smtpConfig['secure']);
+    }
+
+    private function resolveEncryption(int $port, string $secure): void {
+        if ($secure === 'tls' || $port === 587) {
+            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            return;
+        }
+        $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    }
+
+    private function configureIdentity(): void {
+        $smtpConfig = Config::getSmtpConfig();
+        $this->mailer->setFrom($smtpConfig['from'], $smtpConfig['from_name']);
     }
 
     private function buildActionButton(?string $text, ?string $url): string {
         if (!$text || !$url) {
             return '';
         }
-        $primary = DesignTokens::COLOR_DARK;
-        $secondary = DesignTokens::COLOR_PRIMARY;
+        $bg = DesignTokens::COLOR_DARK;
+        $fg = DesignTokens::COLOR_PRIMARY;
         return "<div style='text-align: center; margin-top: 30px; margin-bottom: 20px;'>
-            <a href='{$url}' style='background-color: {$primary}; color: {$secondary}; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;'>{$text}</a>
+            <a href='{$url}' style='background-color: {$bg}; color: {$fg}; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;'>{$text}</a>
         </div>";
     }
 

@@ -35,12 +35,11 @@ class ResponseService {
                 NotificationManager::create($this->repository->getPdo(), $nik_masyarakat, 'masyarakat', $message, $link);
 
                 if (!empty($pengaduan['email'])) {
-                    $emailService = new EmailService();
                     $emailTitle = AppMessages::EMAIL_TITLE_RESPONSE_NEW;
                     $emailContent = sprintf(AppMessages::EMAIL_CONTENT_RESPONSE_NEW, htmlspecialchars($pengaduan['nama']), htmlspecialchars($pengaduan['judul']), nl2br(htmlspecialchars($isiTanggapan)));
-                    $appUrl = $_ENV['APP_URL'] ?? 'https://el-ngadu.vercel.app';
+                    $appUrl = \Constants\Config::getAppUrl();
                     $actionUrl = $appUrl . $link;
-                    $emailService->sendEmail($pengaduan['email'], AppMessages::EMAIL_SUBJECT_RESPONSE_NEW, $emailTitle, $emailContent, AppMessages::EMAIL_BTN_VIEW_RESPONSE, $actionUrl);
+                    EmailService::getInstance()->sendEmail($pengaduan['email'], AppMessages::EMAIL_SUBJECT_RESPONSE_NEW, $emailTitle, $emailContent, AppMessages::EMAIL_BTN_VIEW_RESPONSE, $actionUrl);
                 }
             }
 

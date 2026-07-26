@@ -4,8 +4,9 @@ namespace Services;
 
 use Repositories\AuthRepository;
 use Components\EmailService;
-use Core\BaseException;
 use Core\ValidationException;
+use Constants\Config;
+use Constants\DesignTokens;
 
 class AuthPasswordService {
     
@@ -18,25 +19,27 @@ class AuthPasswordService {
     public function forgotPassword(string $email): void {
         $user = $this->repository->getUserByEmail($email);
         
-        if (!$user) return; // Silent success
+        if (!$user) return;
 
         $table = $user['type'];
         $id_col = $table === 'masyarakat' ? 'nik' : 'id_petugas';
         
         $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+        $expires = date('Y-m-d H:i:s', strtotime('+' . Config::RESET_TOKEN_EXPIRY_MINUTES . ' minutes'));
         
         $this->repository->updateResetToken($table, $id_col, $user['id'], $token, $expires);
         
-        $appUrl = $_ENV['APP_URL'] ?? 'http://localhost:5173';
+        $appUrl = Config::getAppUrl();
         $resetLink = rtrim($appUrl, '/') . "/reset-password?token=" . $token;
+        $bg = DesignTokens::COLOR_DARK;
+        $fg = DesignTokens::COLOR_PRIMARY;
         $content = "<p>Halo <strong>" . htmlspecialchars($user['nama']) . "</strong>,</p>
                     <p>Klik tombol di bawah ini untuk mengatur kata sandi baru:</p>
                     <div style='text-align: center; margin: 30px 0;'>
-                        <a href='{$resetLink}' style='background-color: " . \Constants\AppMessages::COLOR_PRIMARY . "; color: " . \Constants\AppMessages::COLOR_DARK . "; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Reset Password</a>
+                        <a href='{$resetLink}' style='background-color: {$bg}; color: {$fg}; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Reset Password</a>
                     </div>";
         
-        (new EmailService())->sendEmail($email, "Reset Password El-Ngadu", "Reset Password Anda", $content);
+        EmailService::getInstance()->sendEmail($email, "Reset Password El-Ngadu", "Reset Password Anda", $content);
     }
 
     public function resetPassword(string $token, string $password): void {

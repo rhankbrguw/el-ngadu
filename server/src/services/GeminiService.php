@@ -8,7 +8,7 @@ class GeminiService
 
     public function __construct()
     {
-        $this->apiKey = $_ENV['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?: '';
+        $this->apiKey = \Constants\Config::getGeminiApiKey();
         if (empty($this->apiKey)) {
             throw new \Exception("Gemini API Key is missing");
         }

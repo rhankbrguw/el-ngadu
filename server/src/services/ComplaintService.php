@@ -46,8 +46,8 @@ class ComplaintService {
             NotificationManager::create($this->repository->getPdo(), $complaint['nik_masyarakat'], 'masyarakat', $msg, $linkUrl);
             
             if (!empty($complaint['email'])) {
-                $appUrl = $_ENV['APP_URL'] ?? getenv('APP_URL') ?: 'https://el-ngadu.vercel.app';
-                (new EmailService())->sendEmail(
+                $appUrl = \Constants\Config::getAppUrl();
+                EmailService::getInstance()->sendEmail(
                     $complaint['email'], 
                     sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_STATUS, strtoupper($status)), 
                     AppMessages::EMAIL_TITLE_COMPLAINT_STATUS, 
@@ -87,11 +87,11 @@ class ComplaintService {
     private function notifyOfficers(\PDO $pdo, int $id, string $title, string $category, string $userName): void {
         $officers = $this->repository->getOfficers();
         $msg = sprintf(AppMessages::NOTIF_COMPLAINT_NEW, $title, $category, $userName);
-        $appUrl = $_ENV['APP_URL'] ?? getenv('APP_URL') ?: 'https://el-ngadu.vercel.app';
+        $appUrl = \Constants\Config::getAppUrl();
         $url = rtrim($appUrl, '/') . sprintf(AppMessages::ROUTE_COMPLAINT_DETAIL, $id);
         $routeDetail = sprintf(AppMessages::ROUTE_COMPLAINT_DETAIL, $id);
         
-        $emailService = new EmailService();
+        $emailService = EmailService::getInstance();
         foreach ($officers as $officer) {
             NotificationManager::create($pdo, (string)$officer['id_petugas'], 'petugas', $msg, $routeDetail);
             if (!empty($officer['email'])) {

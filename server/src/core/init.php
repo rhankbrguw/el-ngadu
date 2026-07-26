@@ -1,21 +1,4 @@
 <?php
-// CORS Headers
-$allowedOrigins = array_filter(array_map('trim', explode(',', $_ENV['ALLOWED_ORIGINS'] ?? getenv('ALLOWED_ORIGINS') ?: 'http://localhost:5173')));
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, $allowedOrigins, true)) {
-    header("Access-Control-Allow-Origin: {$origin}");
-} elseif (!empty($allowedOrigins)) {
-    header("Access-Control-Allow-Origin: {$allowedOrigins[0]}");
-}
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
 // Auto-loader for our architecture
 spl_autoload_register(function (string $class): void {
     $map = [
@@ -40,6 +23,23 @@ spl_autoload_register(function (string $class): void {
         return;
     }
 });
+
+// CORS Headers
+$allowedOrigins = array_filter(array_map('trim', explode(',', \Constants\Config::getAllowedOrigins())));
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+} elseif (!empty($allowedOrigins)) {
+    header("Access-Control-Allow-Origin: {$allowedOrigins[0]}");
+}
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 // Global Class Aliases for backward compatibility
 class_alias('Components\Auth', 'Auth');
