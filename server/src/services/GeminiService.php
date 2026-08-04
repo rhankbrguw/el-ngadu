@@ -4,13 +4,14 @@ namespace Services;
 class GeminiService
 {
     private string $apiKey;
-    private string $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-robotics-er-1.6-preview:generateContent';
+    private string $apiUrl;
 
     public function __construct()
     {
         $this->apiKey = \Constants\Config::getGeminiApiKey();
+        $this->apiUrl = $_ENV['GEMINI_API_URL'] ?? getenv('GEMINI_API_URL') ?: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-robotics-er-1.6-preview:generateContent';
         if (empty($this->apiKey)) {
-            throw new \Exception("Gemini API Key is missing");
+            throw new \Core\BaseException("Gemini API Key is missing");
         }
     }
 
@@ -37,8 +38,8 @@ class GeminiService
                 ]
             ],
             "generationConfig" => [
-                "temperature" => 0.3,
-                "maxOutputTokens" => 800
+                "temperature" => \Constants\Config::GEMINI_TEMP,
+                "maxOutputTokens" => \Constants\Config::GEMINI_MAX_TOKENS
             ]
         ];
     }
@@ -55,8 +56,8 @@ class GeminiService
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpCode !== 200) {
-            throw new \Exception("Gagal menghubungi AI Server.");
+        if ($httpCode !== \Core\Response::HTTP_OK) {
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_AI_SERVER);
         }
 
         return $response;

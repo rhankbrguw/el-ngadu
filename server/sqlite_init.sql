@@ -63,6 +63,11 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_pengaduan_nik ON pengaduan(nik_masyarakat);
+CREATE INDEX idx_pengaduan_status ON pengaduan(status);
+CREATE INDEX idx_pengaduan_created ON pengaduan(created_at);
+CREATE INDEX idx_notifikasi_is_read ON notifications(is_read);
+
 -- Insert Default Admin (Password: password123)
 INSERT OR IGNORE INTO petugas (nama_petugas, username, password, telp, level, is_verified) 
 VALUES ('Super Admin', 'admin', '$2y$12$zn6jUMecjOMiO8V8dFyPU.Ob45icHuaerruK4wHjLuG3WnTHu750a', '08123456789', 'admin', 1);

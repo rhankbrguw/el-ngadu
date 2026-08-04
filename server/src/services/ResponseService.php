@@ -22,9 +22,8 @@ class ResponseService {
 
             $this->repository->createResponse($idPengaduan, $idPetugas, $isiTanggapan);
 
-            // Since ComplaintRepository isn't made yet, we can do this via ComplaintRepository later or via ResponseRepository
-            // Better to keep it in ResponseRepository for this specific transaction or do a query
-            $this->repository->updateComplaintStatus($idPengaduan, 'selesai');
+            // No comment
+            $this->repository->updateComplaintStatus($idPengaduan, \Constants\ComplaintStatus::COMPLETED);
 
             $pengaduan = $this->repository->getComplaintDetailsForResponse($idPengaduan);
 
@@ -39,14 +38,14 @@ class ResponseService {
                     $emailContent = sprintf(AppMessages::EMAIL_CONTENT_RESPONSE_NEW, htmlspecialchars($pengaduan['nama']), htmlspecialchars($pengaduan['judul']), nl2br(htmlspecialchars($isiTanggapan)));
                     $appUrl = \Constants\Config::getAppUrl();
                     $actionUrl = $appUrl . $link;
-                    EmailService::getInstance()->sendEmail($pengaduan['email'], AppMessages::EMAIL_SUBJECT_RESPONSE_NEW, $emailTitle, $emailContent, AppMessages::EMAIL_BTN_VIEW_RESPONSE, $actionUrl);
+                    EmailService::getInstance()->sendEmailAsync($pengaduan['email'], AppMessages::EMAIL_SUBJECT_RESPONSE_NEW, $emailTitle, $emailContent, AppMessages::EMAIL_BTN_VIEW_RESPONSE, $actionUrl);
                 }
             }
 
             $this->repository->commit();
         } catch (\Throwable $e) {
             $this->repository->rollBack();
-            throw new BaseException(AppMessages::ERR_DB_SAVE_RESPONSE . ': ' . $e->getMessage(), 500);
+            throw new BaseException(AppMessages::ERR_DB_SAVE_RESPONSE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 }

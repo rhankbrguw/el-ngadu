@@ -36,7 +36,7 @@ class ComplaintService {
             
             $complaint = $this->repository->getComplaintDetailsForUpdate($id);
             if (!$complaint) {
-                throw new \Core\NotFoundException("Pengaduan tidak ditemukan.");
+                throw new \Core\NotFoundException(\Constants\AppMessages::ERR_COMPLAINT_NOT_FOUND);
             }
 
             $this->repository->updateStatus($id, $status);
@@ -47,7 +47,7 @@ class ComplaintService {
             
             if (!empty($complaint['email'])) {
                 $appUrl = \Constants\Config::getAppUrl();
-                EmailService::getInstance()->sendEmail(
+                EmailService::getInstance()->sendEmailAsync(
                     $complaint['email'], 
                     sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_STATUS, strtoupper($status)), 
                     AppMessages::EMAIL_TITLE_COMPLAINT_STATUS, 
@@ -66,7 +66,7 @@ class ComplaintService {
     public function deleteComplaint(int $id): void {
         $rowCount = $this->repository->deleteComplaint($id);
         if ($rowCount === 0) {
-            throw new \Core\NotFoundException("Pengaduan tidak ditemukan");
+            throw new \Core\NotFoundException(\Constants\AppMessages::ERR_COMPLAINT_NOT_FOUND);
         }
     }
     
@@ -79,7 +79,7 @@ class ComplaintService {
         }
         $name = uniqid('img_', true) . '.' . $ext;
         $dir = __DIR__ . '/../../public/uploads/';
-        if (!is_dir($dir)) mkdir($dir, 0777, true);
+        if (!is_dir($dir)) mkdir($dir, \Constants\Config::DIR_PERMISSIONS, true);
         if (move_uploaded_file($file['tmp_name'], $dir . $name)) return '/uploads/' . $name;
         return null;
     }
@@ -95,7 +95,7 @@ class ComplaintService {
         foreach ($officers as $officer) {
             NotificationManager::create((string)$officer['id_petugas'], 'petugas', $msg, $routeDetail);
             if (!empty($officer['email'])) {
-                $emailService->sendEmail(
+                $emailService->sendEmailAsync(
                     $officer['email'],
                     sprintf(AppMessages::EMAIL_SUBJECT_COMPLAINT_NEW, $title),
                     AppMessages::EMAIL_TITLE_COMPLAINT_NEW,

@@ -51,11 +51,11 @@ class CitizenRegistrationService {
 
     private function handleCitizenCreation(array $data): array {
         $this->repository->createCitizen($data);
-        $otpCode = str_pad((string)rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otpCode = str_pad((string)rand(\Constants\Config::OTP_RANGE_MIN, \Constants\Config::OTP_RANGE_MAX), 6, '0', STR_PAD_LEFT);
         $otpExpires = date('Y-m-d H:i:s', strtotime('+' . Config::OTP_EXPIRY_MINUTES . ' minutes'));
         $this->authRepository->updateOtp('masyarakat', 'username', $data['username'], $otpCode, $otpExpires);
         
-        EmailService::getInstance()->sendEmail(
+        EmailService::getInstance()->sendEmailAsync(
             $data['email'],
             AppMessages::EMAIL_SUBJECT_OTP,
             AppMessages::EMAIL_TITLE_OTP,

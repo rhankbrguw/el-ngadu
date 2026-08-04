@@ -13,6 +13,7 @@ import {
 import { Bell, CheckCheck, Loader2 } from "lucide-react";
 import type { Notification, Pagination } from "@/types";
 import { APP_MESSAGES } from "@/lib/constants/messages";
+import { POLLING_INTERVAL_MS } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
 
 interface NotificationsProps {
@@ -39,8 +40,8 @@ export default function Notifications({
   const [, setTick] = useState(0);
 
   useEffect(() => {
-    // Memperbarui waktu setiap 1 menit (60000ms) agar waktu relatif (timeAgo) real-time
-    const interval = setInterval(() => setTick(t => t + 1), 60000);
+    // Memperbarui waktu setiap 1 menit agar waktu relatif (timeAgo) real-time
+    const interval = setInterval(() => setTick(t => t + 1), POLLING_INTERVAL_MS);
     return () => clearInterval(interval);
   }, []);
 

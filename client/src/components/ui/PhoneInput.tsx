@@ -43,7 +43,6 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
  const raw = e.target.value;
- // Remove all non-digit characters to keep raw value pure
  let digits = raw.replace(/\D/g, "");
  
  // Handle the leading 0 scenario for raw value

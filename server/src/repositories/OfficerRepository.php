@@ -26,7 +26,7 @@ class OfficerRepository {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal mengambil data petugas: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_FETCH_PETUGAS . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -45,9 +45,9 @@ class OfficerRepository {
             return (int)$this->pdo->lastInsertId();
         } catch (\PDOException $e) {
             if ($e->getCode() === '23000') {
-                throw new \Core\ConflictException('Username sudah terdaftar');
+                throw new \Core\ConflictException(\Constants\AppMessages::ERR_USERNAME_SUDAH_TERDAFTAR);
             }
-            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -66,9 +66,9 @@ class OfficerRepository {
             $stmt->execute($params);
         } catch (\PDOException $e) {
             if ($e->getCode() === '23000') {
-                throw new \Core\ConflictException('Username sudah digunakan');
+                throw new \Core\ConflictException(\Constants\AppMessages::ERR_USERNAME_SUDAH_DIGUNAKAN);
             }
-            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -78,7 +78,7 @@ class OfficerRepository {
             $stmt->execute([$id]);
             return $stmt->rowCount();
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal menghapus data petugas: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_DELETE_PETUGAS . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -89,7 +89,7 @@ class OfficerRepository {
             $stmt->execute([$searchTerm, $searchTerm]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal melakukan pencarian: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_SEARCH_FAILED . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 

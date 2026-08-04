@@ -54,7 +54,7 @@ class OfficerService {
         if (!empty($data['email'])) {
             $content = sprintf(AppMessages::EMAIL_CONTENT_WELCOME_OFFICER, htmlspecialchars($data['nama_petugas']), htmlspecialchars($data['username']), ucfirst($data['level']));
             $appUrl = \Constants\Config::getAppUrl();
-            EmailService::getInstance()->sendEmail($data['email'], AppMessages::EMAIL_SUBJECT_WELCOME_OFFICER, AppMessages::EMAIL_TITLE_WELCOME_OFFICER, $content, AppMessages::EMAIL_BTN_LOGIN, rtrim($appUrl, '/') . '/login');
+            EmailService::getInstance()->sendEmailAsync($data['email'], AppMessages::EMAIL_SUBJECT_WELCOME_OFFICER, AppMessages::EMAIL_TITLE_WELCOME_OFFICER, $content, AppMessages::EMAIL_BTN_LOGIN, rtrim($appUrl, '/') . '/login');
         }
     }
 

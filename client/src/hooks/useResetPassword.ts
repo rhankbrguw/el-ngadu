@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resetPasswordService } from "@/services/passwordResetService";
 import { getErrorMessage } from "@/lib/complaintUtils";
+import { REDIRECT_DELAY_MS } from "@/lib/constants";
 
 export function useResetPassword() {
   const [password, setPassword] = useState("");
@@ -40,7 +41,7 @@ export function useResetPassword() {
       setSuccessMsg(response.message);
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, REDIRECT_DELAY_MS);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

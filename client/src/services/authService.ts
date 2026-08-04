@@ -22,6 +22,16 @@ export const registerService = async (
  }
 };
 
+const mapUserData = (userData: Record<string, unknown>) => {
+  if (userData.nik) {
+    return { ...userData, userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat" };
+  }
+  if (userData.id_petugas) {
+    return { ...userData, userType: APP_MESSAGES.ROLES.OFFICER as "petugas" };
+  }
+  throw new Error(APP_MESSAGES.AUTH.INVALID_USER_DATA);
+};
+
 export const loginService = async (
  username: string,
  password: string
@@ -32,33 +42,16 @@ export const loginService = async (
  password,
  });
 
- if (response.data.requires_otp) {
- return response.data; // { requires_otp: true, userType: '...', username: '...' }
- }
-
- const userData = response.data.user;
-
- if (userData.nik) {
- return {
- ...userData,
- userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat",
- };
- } else if (userData.id_petugas) {
- return {
- ...userData,
- userType: APP_MESSAGES.ROLES.OFFICER as "petugas",
- };
- }
-
- throw new Error(APP_MESSAGES.AUTH.INVALID_USER_DATA);
- } catch (error) {
- if (axios.isAxiosError(error) && error.response) {
- throw new Error(
- error.response.data.error || APP_MESSAGES.AUTH.LOGIN_FAILED
- );
- }
- throw new Error(APP_MESSAGES.AUTH.LOGIN_UNKNOWN_ERROR);
- }
+    if (response.data.requires_otp) {
+      return response.data;
+    }
+    return mapUserData(response.data.user);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error || APP_MESSAGES.AUTH.LOGIN_FAILED);
+    }
+    throw new Error(APP_MESSAGES.AUTH.LOGIN_UNKNOWN_ERROR);
+  }
 };
 
 export const verifyOtpService = async (
@@ -73,16 +66,9 @@ export const verifyOtpService = async (
  userType
  });
  
- const userData = response.data.user;
- 
- if (userData.nik) {
- return { ...userData, userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat" };
- } else if (userData.id_petugas) {
- return { ...userData, userType: APP_MESSAGES.ROLES.OFFICER as "petugas" };
- }
- 
- throw new Error(APP_MESSAGES.AUTH.INVALID_USER_DATA);
- } catch (error) {
+    const userData = response.data.user;
+    return mapUserData(userData);
+  } catch (error) {
  if (axios.isAxiosError(error) && error.response) {
  throw new Error(error.response.data.error || APP_MESSAGES.AUTH.OTP_VERIFY_FAILED);
  }
@@ -95,18 +81,9 @@ export const getProfileService = async (): Promise<User | null> => {
  const response = await api.get("/auth/profile");
  const userData = response.data.user;
 
- if (!userData) return null;
-
- if (userData.nik) {
- return { ...userData, userType: APP_MESSAGES.ROLES.CITIZEN as "masyarakat" };
- }
-
- if (userData.id_petugas) {
- return { ...userData, userType: APP_MESSAGES.ROLES.OFFICER as "petugas" };
- }
-
- return null;
- } catch (error) {
+    if (!userData) return null;
+    return mapUserData(userData);
+  } catch (error) {
  if (axios.isAxiosError(error) && error.response?.status === 401) {
  // justification: 401 Unauthorized means the user's session has expired or they are not logged in. Returning null handles this expected auth state gracefully.
  return null;

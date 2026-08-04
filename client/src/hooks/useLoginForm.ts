@@ -5,7 +5,7 @@ import { loginService, verifyOtpService } from "@/services/authService";
 import { getErrorMessage } from "@/lib/complaintUtils";
 import type { LoginFormValues, OtpFormValues } from "@/lib/validators/auth";
 
-const REDIRECT_DELAY = 1500;
+const REDIRECT_DELAY = 500;
 
 export function useLogin() {
  const [otpData, setOtpData] = useState({ username: "", userType: "" });

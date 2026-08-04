@@ -1,4 +1,7 @@
 {
+    "name": "el-ngadu/server",
+    "description": "El-Ngadu Backend Server",
+    "license": "proprietary",
     "require": {
         "phpmailer/phpmailer": "^7.1",
         "bramus/router": "^1.6",

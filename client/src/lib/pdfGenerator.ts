@@ -57,16 +57,7 @@ export const generatePdfReport = (data: Report[]) => {
  body: tableData,
  theme: "grid",
  headStyles: { fillColor: [41, 128, 185] },
- styles: { fontSize: 9 },
- columnStyles: {
- 0: { cellWidth: 15 },
- 1: { cellWidth: 30 },
- 2: { cellWidth: 60 },
- 3: { cellWidth: 40 },
- 4: { cellWidth: 25 },
- 5: { cellWidth: 40 },
- 6: { cellWidth: 40 }
- }
+ styles: { fontSize: 9 }
  });
 
  // Footer & Signature

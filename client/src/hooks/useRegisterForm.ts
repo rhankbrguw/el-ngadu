@@ -7,6 +7,7 @@ import { getErrorMessage } from "@/lib/complaintUtils";
 import { useAuth } from "@/hooks/useAuth";
 import { registerSchema } from "@/lib/validators/auth";
 import type { RegisterFormValues } from "@/lib/validators/auth";
+import { REDIRECT_DELAY_MS } from "@/lib/constants";
 
 export function useRegisterForm() {
  const [otpData, setOtpData] = useState({ username: "", userType: "" });
@@ -35,7 +36,7 @@ export function useRegisterForm() {
  if (!showSuccessDialog) return;
  const timer = setTimeout(() => {
  navigate("/dashboard");
- }, 2000);
+ }, REDIRECT_DELAY_MS);
  return () => clearTimeout(timer);
  }, [showSuccessDialog, navigate]);
 

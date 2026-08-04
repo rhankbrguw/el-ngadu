@@ -10,6 +10,18 @@ class AppMessages {
     public const ERR_FILE_FORMAT = 'Format file tidak didukung. Hanya JPG, PNG, dan PDF yang diperbolehkan.';
     public const ERR_DB_SAVE = 'Gagal menyimpan data ke database.';
     public const ERR_DB_CONNECTION = 'Koneksi database gagal.';
+    public const ERR_USER_NOT_FOUND = 'Pengguna tidak ditemukan.';
+    public const ERR_COMPLAINT_NOT_FOUND = 'Pengaduan tidak ditemukan.';
+    public const ERR_AI_SERVER = 'Gagal menghubungi AI Server.';
+    public const ERR_USERNAME_SUDAH_TERDAFTAR = 'Username sudah terdaftar.';
+    public const ERR_USERNAME_SUDAH_DIGUNAKAN = 'Username sudah digunakan';
+    public const ERR_NIK_ATAU_USERNAME_SUDAH_TERDAFTAR = 'NIK atau Username sudah terdaftar.';
+    public const ERR_DB_FETCH_PETUGAS = 'Gagal mengambil data petugas: ';
+    public const ERR_DB_DELETE_PETUGAS = 'Gagal menghapus data petugas: ';
+    public const ERR_DB_FETCH_MASYARAKAT = 'Gagal mengambil data masyarakat: ';
+    public const ERR_DB_DELETE_MASYARAKAT = 'Gagal menghapus data masyarakat: ';
+    public const ERR_SEARCH_FAILED = 'Gagal melakukan pencarian: ';
+    public const EMAIL_TITLE_RESET_PWD = 'Reset Password El-Ngadu';
     
     public const SUCCESS_COMPLAINT_CREATED = 'Pengaduan berhasil dibuat.';
     public const SUCCESS_COMPLAINT_UPDATED = 'Pengaduan berhasil diperbarui.';

@@ -24,7 +24,7 @@ class AuthPasswordService {
         $table = $user['type'];
         $id_col = $table === 'masyarakat' ? 'nik' : 'id_petugas';
         
-        $token = bin2hex(random_bytes(32));
+        $token = bin2hex(random_bytes(Config::TOKEN_BYTE_LENGTH));
         $expires = date('Y-m-d H:i:s', strtotime('+' . Config::RESET_TOKEN_EXPIRY_MINUTES . ' minutes'));
         
         $this->repository->updateResetToken($table, $id_col, $user['id'], $token, $expires);
@@ -39,7 +39,7 @@ class AuthPasswordService {
                         <a href='{$resetLink}' style='background-color: {$bg}; color: {$fg}; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;'>Reset Password</a>
                     </div>";
         
-        EmailService::getInstance()->sendEmail($email, "Reset Password El-Ngadu", "Reset Password Anda", $content);
+        EmailService::getInstance()->sendEmailAsync($email, \Constants\AppMessages::EMAIL_TITLE_RESET_PWD, "Reset Password Anda", $content);
     }
 
     public function resetPassword(string $token, string $password): void {
@@ -61,9 +61,9 @@ class AuthPasswordService {
         
         $user = $this->repository->getPasswordById($table, $id_col, $userId);
         
-        if (!$user) throw new \Exception("Pengguna tidak ditemukan.", 404);
-        if (!password_verify($oldPass, $user['password'])) throw new \Exception("Password lama yang Anda masukkan salah.", 401);
-        if (password_verify($newPass, $user['password'])) throw new \Exception("Password baru tidak boleh sama dengan password saat ini.", 400);
+        if (!$user) throw new \Core\NotFoundException(\Constants\AppMessages::ERR_USER_NOT_FOUND);
+        if (!password_verify($oldPass, $user['password'])) throw new \Core\UnauthorizedException("Password lama yang Anda masukkan salah.");
+        if (password_verify($newPass, $user['password'])) throw new \Core\ValidationException("Password baru tidak boleh sama dengan password saat ini.");
         
         $this->repository->updatePassword($table, $id_col, $userId, password_hash($newPass, PASSWORD_DEFAULT));
     }

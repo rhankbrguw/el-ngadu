@@ -10,6 +10,39 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Loader2, AlertCircle } from "lucide-react";
+import type { UseFormReturn } from "react-hook-form";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FormFields = ({ form, isLoading }: { form: UseFormReturn<any>, isLoading: boolean }) => (
+  <div className="space-y-3">
+    <FormField control={form.control} name="judul" render={({ field }) => (
+      <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_JUDUL}</FormLabel>
+      <FormControl><Input placeholder={PENGADUAN_STRINGS.PLACEHOLDER_JUDUL} disabled={isLoading} {...field} /></FormControl>
+      <FormMessage /></FormItem>
+    )} />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <FormField control={form.control} name="kategori" render={({ field }) => (
+        <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_KATEGORI}</FormLabel>
+        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+          <FormControl><SelectTrigger><SelectValue placeholder={PENGADUAN_STRINGS.PLACEHOLDER_KATEGORI} /></SelectTrigger></FormControl>
+          <SelectContent>
+            {KATEGORI_PENGADUAN.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+          </SelectContent>
+        </Select><FormMessage /></FormItem>
+      )} />
+      <FormField control={form.control} name="lokasi" render={({ field }) => (
+        <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_LOKASI}</FormLabel>
+        <FormControl><Input placeholder={PENGADUAN_STRINGS.PLACEHOLDER_LOKASI} disabled={isLoading} {...field} /></FormControl>
+        <FormMessage /></FormItem>
+      )} />
+    </div>
+    <FormField control={form.control} name="isi" render={({ field }) => (
+      <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_ISI}</FormLabel>
+      <FormControl><Textarea placeholder={PENGADUAN_STRINGS.PLACEHOLDER_ISI} disabled={isLoading} rows={4} {...field} /></FormControl>
+      <FormMessage /></FormItem>
+    )} />
+  </div>
+);
 
 export function CreateComplaintForm() {
  const { form, formError, fileUpload, onSubmit, isLoading } = useCreateComplaint();
@@ -28,34 +61,7 @@ export function CreateComplaintForm() {
  </CardHeader>
  <CardContent className="-mt-2 space-y-3 p-4 sm:p-5">
  <Form {...form}>
- <div className="space-y-3">
- <FormField control={form.control} name="judul" render={({ field }) => (
- <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_JUDUL}</FormLabel>
- <FormControl><Input placeholder={PENGADUAN_STRINGS.PLACEHOLDER_JUDUL} disabled={isLoading} {...field} /></FormControl>
- <FormMessage /></FormItem>
- )} />
- <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
- <FormField control={form.control} name="kategori" render={({ field }) => (
- <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_KATEGORI}</FormLabel>
- <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
- <FormControl><SelectTrigger><SelectValue placeholder={PENGADUAN_STRINGS.PLACEHOLDER_KATEGORI} /></SelectTrigger></FormControl>
- <SelectContent>
- {KATEGORI_PENGADUAN.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
- </SelectContent>
- </Select><FormMessage /></FormItem>
- )} />
- <FormField control={form.control} name="lokasi" render={({ field }) => (
- <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_LOKASI}</FormLabel>
- <FormControl><Input placeholder={PENGADUAN_STRINGS.PLACEHOLDER_LOKASI} disabled={isLoading} {...field} /></FormControl>
- <FormMessage /></FormItem>
- )} />
- </div>
- <FormField control={form.control} name="isi" render={({ field }) => (
- <FormItem><FormLabel>{PENGADUAN_STRINGS.LABEL_ISI}</FormLabel>
- <FormControl><Textarea placeholder={PENGADUAN_STRINGS.PLACEHOLDER_ISI} disabled={isLoading} rows={4} {...field} /></FormControl>
- <FormMessage /></FormItem>
- )} />
- </div>
+ <FormFields form={form} isLoading={isLoading} />
  </Form>
  <div className="space-y-1.5 mt-3">
  <Label>{PENGADUAN_STRINGS.LABEL_FOTO}</Label>

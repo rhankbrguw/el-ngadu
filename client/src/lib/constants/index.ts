@@ -14,6 +14,10 @@ export * from "./complaints";
 export * from "./dashboard";
 export * from "./landing";
 
+export const POLLING_INTERVAL_MS = 60000;
+export const NOTIFICATION_POLL_INTERVAL_MS = 30000;
+export const REDIRECT_DELAY_MS = 500;
+
 export const navItemsMasyarakat: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/dashboard/create-complaint", label: "Buat Pengaduan", icon: FileText },

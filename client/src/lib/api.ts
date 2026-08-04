@@ -22,7 +22,17 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  async (error) => {
+    // Retry once on network/CORS error (often caused by IPv6 localhost fallback on first request)
+    if (!error.response && error.config && !error.config._retry) {
+      error.config._retry = true;
+      try {
+        return await axios(error.config);
+      } catch (retryError) {
+        return Promise.reject(retryError);
+      }
+    }
+
     // Map the new API envelope back to the legacy format the frontend expects
     if (error.response && error.response.data && error.response.data.success === false) {
       error.response.data.error = error.response.data.message;

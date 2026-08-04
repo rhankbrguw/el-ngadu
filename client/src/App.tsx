@@ -42,69 +42,59 @@ const PublicAnimatedLayout = () => {
   );
 };
 
+const PublicRoutes = () => (
+  <Route element={<PublicAnimatedLayout />}>
+    <Route path="/" element={<LandingPage />} />
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/register" element={<RegisterPage />} />
+    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <Route path="/reset-password" element={<ResetPasswordPage />} />
+    <Route path="*" element={<NotFoundPage />} />
+  </Route>
+);
+
+const DashboardRoutes = () => (
+  <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+    <Route index element={<DashboardPage />} />
+    <Route path="search" element={<SearchPage />} />
+    <Route path="profile" element={<ProfilePage />} />
+    <Route path="help" element={<HelpPage />} />
+    <Route path="settings" element={<SettingsPage />} />
+    
+    <Route element={<ProtectedRoute allowedRoles={["masyarakat"]} />}>
+      <Route path="create-complaint" element={<CreateComplaintPage />} />
+      <Route path="history" element={<ComplaintHistoryPage />} />
+      <Route path="history/:id" element={<ComplaintDetailPage />} />
+    </Route>
+    
+    <Route element={<ProtectedRoute allowedRoles={["petugas", "admin"]} />}>
+      <Route path="manage-complaints" element={<ManageComplaintsPage />} />
+      <Route path="complaints/:id" element={<ComplaintDetailPage />} />
+      <Route path="reports" element={<ReportsPage />} />
+    </Route>
+    
+    <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+      <Route path="manage-officers" element={<ManageOfficersPage />} />
+      <Route path="manage-citizens" element={<ManageCitizensPage />} />
+    </Route>
+  </Route>
+);
+
+const AliasRoutes = () => (
+  <>
+    <Route path="/admin/dashboard" element={<Navigate to="/dashboard/manage-complaints" replace />} />
+    <Route path="/admin/manage-complaints" element={<Navigate to="/dashboard/manage-complaints" replace />} />
+    <Route path="/officers/manage-complaints" element={<Navigate to="/dashboard/manage-complaints" replace />} />
+  </>
+);
+
 export default function App() {
  return (
  <>
  <Routes>
- {/* Public Routes with Animation */}
- <Route element={<PublicAnimatedLayout />}>
-   <Route path="/" element={<LandingPage />} />
-   <Route path="/login" element={<LoginPage />} />
-   <Route path="/register" element={<RegisterPage />} />
-   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-   <Route path="/reset-password" element={<ResetPasswordPage />} />
-   <Route path="*" element={<NotFoundPage />} />
- </Route>
-
- {/* Protected Routes (Animations handled in DashboardLayout) */}
- <Route
- path="/dashboard"
- element={
- <ProtectedRoute>
- <DashboardLayout />
- </ProtectedRoute>
- }
- >
- <Route index element={<DashboardPage />} />
- <Route path="search" element={<SearchPage />} />
- <Route path="profile" element={<ProfilePage />} />
- <Route path="help" element={<HelpPage />} />
- <Route path="settings" element={<SettingsPage />} />
- <Route element={<ProtectedRoute allowedRoles={["masyarakat"]} />}>
- <Route path="create-complaint" element={<CreateComplaintPage />} />
- <Route path="history" element={<ComplaintHistoryPage />} />
- <Route path="history/:id" element={<ComplaintDetailPage />} />
- </Route>
- <Route
- element={<ProtectedRoute allowedRoles={["petugas", "admin"]} />}
- >
- <Route path="manage-complaints" element={<ManageComplaintsPage />} />
- <Route path="complaints/:id" element={<ComplaintDetailPage />} />
- <Route path="reports" element={<ReportsPage />} />
- </Route>
- <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
- <Route path="manage-officers" element={<ManageOfficersPage />} />
- <Route
- path="manage-citizens"
- element={<ManageCitizensPage />}
- />
- </Route>
-  </Route>
-
- {/* Alias / Fallback Routes */}
- <Route
- path="/admin/dashboard"
- element={<Navigate to="/dashboard/manage-complaints" replace />}
- />
- <Route
- path="/admin/manage-complaints"
- element={<Navigate to="/dashboard/manage-complaints" replace />}
- />
- <Route
- path="/officers/manage-complaints"
- element={<Navigate to="/dashboard/manage-complaints" replace />}
- />
-
+  {PublicRoutes()}
+  {DashboardRoutes()}
+  {AliasRoutes()}
  </Routes>
  <Toaster richColors position="top-right" />
  </>

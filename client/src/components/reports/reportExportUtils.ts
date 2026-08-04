@@ -34,8 +34,7 @@ export const handleExportPDF = (filteredData: Record<string, unknown>[]) => {
  try {
  generatePdfReport(filteredData);
  toast.success(REPORT_STRINGS.SUCCESS_EXPORT);
-  } catch (error) {
-    console.error("PDF generation failed", error);
+  } catch {
     toast.error(APP_MESSAGES.TOAST_MESSAGES.ERROR_PDF_GENERATE);
   }
  } else {

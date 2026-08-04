@@ -29,7 +29,8 @@ class EmailService {
         $isDev = Config::isDev();
 
         $this->mailer->isSMTP();
-        $this->mailer->Host       = $smtpConfig['host'];
+        // Force IPv4 resolution to prevent IPv6 connection timeouts
+        $this->mailer->Host       = gethostbyname($smtpConfig['host']);
         $this->mailer->SMTPAuth   = true;
         $this->mailer->Username   = $smtpConfig['user'];
         $this->mailer->Password   = $smtpConfig['pass'];
@@ -107,5 +108,28 @@ class EmailService {
             error_log("EmailService::sendEmail failed: {$this->mailer->ErrorInfo} | Exception: {$e->getMessage()}");
             return false;
         }
+    }
+
+    public function sendEmailAsync(string $to, string $subject, string $title, string $content, ?string $actionText = null, ?string $actionUrl = null): bool {
+        $payload = json_encode([
+            'to' => $to,
+            'subject' => $subject,
+            'title' => $title,
+            'content' => $content,
+            'actionText' => $actionText,
+            'actionUrl' => $actionUrl
+        ]);
+        
+        $tempFile = sys_get_temp_dir() . '/email_payload_' . uniqid() . '.json';
+        file_put_contents($tempFile, $payload);
+        
+        $cliScript = realpath(__DIR__ . '/../../cli/send_email.php');
+        if ($cliScript) {
+            $cmd = "php " . escapeshellarg($cliScript) . " " . escapeshellarg($tempFile) . " > /dev/null 2>&1 &";
+            exec($cmd);
+            return true;
+        }
+        
+        return $this->sendEmail($to, $subject, $title, $content, $actionText, $actionUrl);
     }
 }

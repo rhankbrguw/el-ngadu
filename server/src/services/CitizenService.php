@@ -19,7 +19,8 @@ class CitizenService {
         $this->repository = new CitizenRepository();
     }
     
-    public function getAll(int $page = 1, int $limit = 10): array {
+    public function getAll(int $page = 1, ?int $limit = null): array {
+        $limit = $limit ?? \Constants\Config::DEFAULT_PAGINATION_LIMIT;
         $offset = ($page - 1) * $limit;
         $totalRecords = $this->repository->getCount();
         $totalPages = (int)ceil($totalRecords / $limit);

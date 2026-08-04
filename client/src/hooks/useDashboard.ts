@@ -10,6 +10,7 @@ import {
  navItemsPetugas,
  navItemsMasyarakat,
  navItemsAdmin,
+ NOTIFICATION_POLL_INTERVAL_MS,
 } from "@/lib/constants";
 import { calculateProfileProgress } from "@/lib/utils";
 import { APP_MESSAGES } from "@/lib/constants/messages";
@@ -34,49 +35,49 @@ export function useDashboard() {
  }
  }, [user]);
 
- const fetchNotifications = useCallback(async (page = 1, append = false) => {
- if (!user) return;
- if (append) setIsLoadingMore(true);
- try {
- const response = await api.get(`/notifications/read?page=${page}&limit=10`);
- if (response.data?.data) {
- setNotifications((prev) => {
- const newData = response.data.data;
- 
- if (!append && newData.length > 0 && prev.length > 0) {
- const latestNew = newData[0];
- const latestOld = prev[0];
- if (latestNew.id > latestOld.id && !latestNew.is_read) {
- if (
- localStorage.getItem("elngadu_push_notif") === "true" &&
- "Notification" in window &&
- Notification.permission === "granted"
- ) {
- new Notification("El-Ngadu", { body: latestNew.message });
- }
- }
- }
+  const handlePushNotif = (latestNew: Notification, latestOld: Notification) => {
+    if (latestNew.id > latestOld.id && !latestNew.is_read) {
+      if (
+        localStorage.getItem("elngadu_push_notif") === "true" &&
+        "Notification" in window &&
+        Notification.permission === "granted"
+      ) {
+        new Notification("El-Ngadu", { body: latestNew.message });
+      }
+    }
+  };
 
- return append ? [...prev, ...newData] : newData;
- });
- setUnreadCount(response.data.pagination.unread_count || 0);
- setNotifPagination(response.data.pagination);
- }
- } catch (error) {
- if (axios.isAxiosError(error) && error.response?.status === 401) {
- logout();
- navigate("/login");
- }
- } finally {
- if (append) setIsLoadingMore(false);
- }
- }, [user, logout, navigate]);
+  const fetchNotifications = useCallback(async (page = 1, append = false) => {
+    if (!user) return;
+    if (append) setIsLoadingMore(true);
+    try {
+      const response = await api.get(`/notifications/read?page=${page}&limit=10`);
+      if (response.data?.data) {
+        setNotifications((prev) => {
+          const newData = response.data.data;
+          if (!append && newData.length > 0 && prev.length > 0) {
+            handlePushNotif(newData[0], prev[0]);
+          }
+          return append ? [...prev, ...newData] : newData;
+        });
+        setUnreadCount(response.data.pagination.unread_count || 0);
+        setNotifPagination(response.data.pagination);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        logout();
+        navigate("/login");
+      }
+    } finally {
+      if (append) setIsLoadingMore(false);
+    }
+  }, [user, logout, navigate]);
 
- useEffect(() => {
- fetchNotifications(1);
- const intervalId = setInterval(() => fetchNotifications(1), 30000); // 30 detik polling
- return () => clearInterval(intervalId);
- }, [fetchNotifications]);
+  useEffect(() => {
+    fetchNotifications(1);
+    const intervalId = setInterval(() => fetchNotifications(1), NOTIFICATION_POLL_INTERVAL_MS);
+    return () => clearInterval(intervalId);
+  }, [fetchNotifications]);
 
  const handleLoadMoreNotif = () => {
  if (notifPagination && notifPagination.current_page < notifPagination.total_pages) {
@@ -115,9 +116,9 @@ export function useDashboard() {
  const handleLogout = async () => {
  try {
  await api.post("/auth/logout");
- } catch (error) {
- void error; // Intentional silent fail for logout
- } finally {
+    } catch (error) {
+      void error;
+    } finally {
  logout();
  navigate("/login", { replace: true });
  }

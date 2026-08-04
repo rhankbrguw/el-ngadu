@@ -11,6 +11,16 @@ class Config {
     public const SMTP_DEFAULT_FROM_NAME = 'Tim El-Ngadu';
     public const OTP_EXPIRY_MINUTES = 5;
     public const RESET_TOKEN_EXPIRY_MINUTES = 30;
+    
+    public const TOKEN_BYTE_LENGTH = 32;
+    public const OTP_MIN = 1;
+    public const OTP_MAX = 999999;
+    public const OTP_RANGE_MIN = 0;
+    public const OTP_RANGE_MAX = 999999;
+    
+    public const DIR_PERMISSIONS = 0777;
+    public const GEMINI_TEMP = 0.3;
+    public const GEMINI_MAX_TOKENS = 800;
 
     public const DEFAULT_PAGINATION_LIMIT = 10;
     public const MAX_PAGINATION_LIMIT = 100;

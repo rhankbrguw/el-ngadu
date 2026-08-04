@@ -51,7 +51,7 @@ class CitizenRepository {
             if ($e->getCode() === '23000') {
                 throw new \Core\ConflictException(\Constants\AppMessages::ERR_NIK_ATAU_USERNAME_SUDAH_TERDAFTAR ?? 'NIK atau Username sudah terdaftar.');
             }
-            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -71,7 +71,7 @@ class CitizenRepository {
             if ($e->getCode() === '23000') {
                 throw new \Core\ConflictException('NIK atau Username sudah terdaftar.');
             }
-            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -80,7 +80,7 @@ class CitizenRepository {
             $stmt = $this->pdo->query("SELECT COUNT(*) FROM masyarakat");
             return (int)$stmt->fetchColumn();
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal mengambil data masyarakat: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_FETCH_MASYARAKAT . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -93,7 +93,7 @@ class CitizenRepository {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal mengambil data masyarakat: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_FETCH_MASYARAKAT . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -113,7 +113,7 @@ class CitizenRepository {
             if ($e->getCode() === '23000') {
                 throw new \Core\ConflictException('Username sudah terdaftar.');
             }
-            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_SAVE . ': ' . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -123,7 +123,7 @@ class CitizenRepository {
             $stmt->execute([$nik]);
             return $stmt->rowCount();
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal menghapus data masyarakat: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_DB_DELETE_MASYARAKAT . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 
@@ -134,7 +134,7 @@ class CitizenRepository {
             $stmt->execute([$searchTerm, $searchTerm, $searchTerm]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
-            throw new \Core\BaseException('Gagal melakukan pencarian: ' . $e->getMessage(), 500);
+            throw new \Core\BaseException(\Constants\AppMessages::ERR_SEARCH_FAILED . $e->getMessage(), \Core\Response::HTTP_INTERNAL);
         }
     }
 }

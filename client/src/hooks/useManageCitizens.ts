@@ -49,10 +49,10 @@ export function useManageCitizens() {
  };
 
  const handleDialogSuccess = () => {
- setIsDialogOpen(false);
- setEditingMasyarakat(null);
- fetchMasyarakat(currentPage); // Fetch ulang data setelah sukses
- };
+  setIsDialogOpen(false);
+  setEditingMasyarakat(null);
+  fetchMasyarakat(currentPage);
+};
 
  const handleDeleteMasyarakat = async (nik: string) => {
  try {

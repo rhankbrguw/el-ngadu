@@ -2,15 +2,15 @@
 namespace Core;
 
 class Response {
-    private const HTTP_OK = 200;
-    private const HTTP_CREATED = 201;
-    private const HTTP_BAD_REQUEST = 400;
-    private const HTTP_UNAUTHORIZED = 401;
-    private const HTTP_FORBIDDEN = 403;
-    private const HTTP_NOT_FOUND = 404;
-    private const HTTP_CONFLICT = 409;
-    private const HTTP_UNPROCESSABLE = 422;
-    private const HTTP_INTERNAL = 500;
+    public const HTTP_OK = 200;
+    public const HTTP_CREATED = 201;
+    public const HTTP_BAD_REQUEST = 400;
+    public const HTTP_UNAUTHORIZED = 401;
+    public const HTTP_FORBIDDEN = 403;
+    public const HTTP_NOT_FOUND = 404;
+    public const HTTP_CONFLICT = 409;
+    public const HTTP_UNPROCESSABLE = 422;
+    public const HTTP_INTERNAL = 500;
 
     public static function json(array $data, int $statusCode = 200): void {
         http_response_code($statusCode);

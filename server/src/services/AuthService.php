@@ -61,12 +61,12 @@ class AuthService {
             throw new BaseException(AppMessages::ERR_EMAIL_NOT_SET, 400);
         }
         
-        $otpCode = sprintf("%06d", mt_rand(1, 999999));
+        $otpCode = sprintf("%06d", mt_rand(\Constants\Config::OTP_MIN, \Constants\Config::OTP_MAX));
         $expiresAt = date('Y-m-d H:i:s', strtotime('+' . Config::OTP_EXPIRY_MINUTES . ' minutes'));
 
         $this->repository->updateOtp($table, $idColumn, $idValue, $otpCode, $expiresAt);
 
-        EmailService::getInstance()->sendEmail(
+        EmailService::getInstance()->sendEmailAsync(
             $email, 
             AppMessages::EMAIL_SUBJECT_OTP, 
             AppMessages::EMAIL_TITLE_OTP, 
@@ -99,7 +99,7 @@ class AuthService {
 
         if ($userType === 'masyarakat') {
             \Components\NotificationManager::create($user['nik'], 'masyarakat', AppMessages::NOTIF_WELCOME_MSG);
-            EmailService::getInstance()->sendEmail(
+            EmailService::getInstance()->sendEmailAsync(
                 $user['email'], 
                 AppMessages::EMAIL_SUBJECT_WELCOME, 
                 AppMessages::EMAIL_TITLE_WELCOME, 

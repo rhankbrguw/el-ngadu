@@ -93,7 +93,7 @@ export function RegisterForm() {
  placeholder={APP_MESSAGES.AUTH.PLACEHOLDER_OTP}
  required
  maxLength={6}
- value={otpCode}
+ value={otpCode || ""}
  onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ""))}
  disabled={isLoading}
  className="h-10 text-center tracking-[0.5em] font-bold text-lg placeholder:tracking-normal placeholder:font-normal placeholder:text-sm"
