@@ -32,7 +32,7 @@ class AuthPasswordController {
         }
         
         $this->service->forgotPassword($validation->getValidData()['email']);
-        Response::success(AppMessages::SUCCESS_FORGOT_PWD);
+        Response::success(AppMessages::SUCCESS_FORGOT_PWD, ['message' => AppMessages::SUCCESS_FORGOT_PWD]);
     }
 
     public function resetPassword(): void {
@@ -51,7 +51,7 @@ class AuthPasswordController {
         
         $data = $validation->getValidData();
         $this->service->resetPassword($data['token'], $data['password']);
-        Response::success(AppMessages::SUCCESS_RESET_PWD);
+        Response::success(AppMessages::SUCCESS_RESET_PWD, ['message' => AppMessages::SUCCESS_RESET_PWD]);
     }
 
     public function changePassword(): void {
@@ -75,6 +75,6 @@ class AuthPasswordController {
         
         $data = $validation->getValidData();
         $this->service->changePassword((string)Auth::getUserId(), (string)Auth::getUserType(), $data['old_password'], $data['new_password']);
-        Response::success(AppMessages::SUCCESS_UPDATE_PWD);
+        Response::success(AppMessages::SUCCESS_UPDATE_PWD, ['message' => AppMessages::SUCCESS_UPDATE_PWD]);
     }
 }

@@ -1,19 +1,19 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Load Environment Variables
-$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../');
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../../');
 $dotenv->safeLoad();
 
 // Auto-loader for our architecture
 spl_autoload_register(function (string $class): void {
     $map = [
-        'Core\\'         => __DIR__ . '/../src/core/',
-        'Controllers\\'  => __DIR__ . '/../src/controllers/',
-        'Services\\'     => __DIR__ . '/../src/services/',
-        'Repositories\\' => __DIR__ . '/../src/repositories/',
-        'Constants\\'    => __DIR__ . '/../src/constants/',
-        'Components\\'   => __DIR__ . '/../src/components/',
+        'Core\\'         => __DIR__ . '/../core/',
+        'Controllers\\'  => __DIR__ . '/../controllers/',
+        'Services\\'     => __DIR__ . '/../services/',
+        'Repositories\\' => __DIR__ . '/../repositories/',
+        'Constants\\'    => __DIR__ . '/../constants/',
+        'Components\\'   => __DIR__ . '/../components/',
     ];
 
     foreach ($map as $prefix => $baseDir) {

@@ -43,7 +43,6 @@ $router->mount('/api', function() use ($router) {
     
     // Auth Routes
     $router->mount('/auth', function() use ($router) {
-        $router->post('/login', 'Controllers\AuthController@login');
         $router->post('/unified-login', 'Controllers\AuthController@unifiedLogin');
         $router->post('/verify-otp', 'Controllers\AuthController@verifyOtp');
         $router->post('/logout', 'Controllers\AuthController@logout');

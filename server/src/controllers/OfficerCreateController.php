@@ -33,14 +33,13 @@ class OfficerCreateController {
         
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         
-        $validator = new Validator();
-        $validation = $validator->make($input, [
+        $validation = \Core\AppValidator::make($input, [
             'nama_petugas' => 'required|min:3',
-            'username'     => 'required|min:3',
+            'username'     => 'required|min:3|unique_global',
             'password'     => 'required|min:8',
-            'telp'         => 'required',
+            'telp'         => 'required|unique_global',
             'level'        => 'required|in:admin,petugas',
-            'email'        => 'email'
+            'email'        => 'email|unique_global'
         ]);
         
         $validation->validate();

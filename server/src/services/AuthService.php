@@ -19,20 +19,7 @@ class AuthService {
         $this->repository = new AuthRepository();
     }
     
-    public function legacyLogin(string $username, string $password): array {
-        $user = $this->repository->getCitizenByUsername($username);
 
-        if ($user && password_verify($password, $user['password'])) {
-            $public_user = [
-                'nik' => $user['nik'],
-                'nama' => $user['nama'],
-                'username' => $user['username'],
-                'telp' => $user['telp']
-            ];
-            return ['status' => 'success', 'user' => $user, 'public_user' => $public_user];
-        }
-        throw new \Core\ValidationException(\Constants\AppMessages::ERR_ACCOUNT_NOT_FOUND);
-    }
 
     public function unifiedLogin(string $username, string $password): array {
         $user = $this->repository->getCitizenByUsername($username);

@@ -33,7 +33,31 @@ class AuthProfileController {
         }
         
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        $updatedData = $this->service->updateProfile(Auth::getUserId(), Auth::getUserType(), $input);
+        $userType = (string)Auth::getUserType();
+        $userId = (string)Auth::getUserId();
+        $table = $userType === 'masyarakat' ? 'masyarakat' : 'petugas';
+        $id_col = $userType === 'masyarakat' ? 'nik' : 'id_petugas';
+
+        $rules = [
+            'username' => "nullable|min:3|unique_global:{$table},{$userId}",
+            'email' => "nullable|email|unique_global:{$table},{$userId}",
+            'telp' => "nullable|unique_global:{$table},{$userId}"
+        ];
+
+        if ($userType === 'masyarakat') {
+            $rules['nama'] = 'nullable|min:3';
+        } else {
+            $rules['nama_petugas'] = 'nullable|min:3';
+        }
+
+        $validation = \Core\AppValidator::make($input, $rules);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            throw new \Core\ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
+        }
+
+        $updatedData = $this->service->updateProfile($userId, $userType, $input);
         
         foreach ($updatedData as $key => $value) {
             $_SESSION[$key] = $value;

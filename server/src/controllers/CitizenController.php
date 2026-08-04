@@ -63,11 +63,10 @@ class CitizenController {
         $nik = $_GET['nik'];
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         
-        $validator = new Validator();
-        $validation = $validator->make($input, [
+        $validation = \Core\AppValidator::make($input, [
             'nama' => 'sometimes|required',
-            'username' => 'sometimes|required',
-            'telp' => 'sometimes|required'
+            'username' => "sometimes|required|unique_global:masyarakat,{$nik}",
+            'telp' => "sometimes|required|unique_global:masyarakat,{$nik}"
         ]);
 
         $validation->validate();

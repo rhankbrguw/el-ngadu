@@ -123,7 +123,7 @@ class EmailService {
         $tempFile = sys_get_temp_dir() . '/email_payload_' . uniqid() . '.json';
         file_put_contents($tempFile, $payload);
         
-        $cliScript = realpath(__DIR__ . '/../../cli/send_email.php');
+        $cliScript = realpath(__DIR__ . '/EmailWorker.php');
         if ($cliScript) {
             $cmd = "php " . escapeshellarg($cliScript) . " " . escapeshellarg($tempFile) . " > /dev/null 2>&1 &";
             exec($cmd);

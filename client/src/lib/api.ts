@@ -12,6 +12,7 @@ api.interceptors.response.use(
       if (response.data.data !== undefined) {
         const payload = response.data.data;
         if (Array.isArray(payload)) {
+          Object.defineProperty(payload, 'message', { value: response.data.message, enumerable: false });
           return { ...response, data: payload };
         }
         if (typeof payload === "object" && payload !== null) {

@@ -46,15 +46,14 @@ class OfficerController {
         Response::success(\Constants\AppMessages::SUCCESS_OPERATION, $result);
     }
     
-    private function validateUpdateInput(array $input): array {
-        $validator = new Validator();
-        $validation = $validator->make($input, [
+    private function validateUpdateInput(array $input, int $id): array {
+        $validation = \Core\AppValidator::make($input, [
             'nama_petugas' => 'min:3',
-            'username'     => 'min:3',
+            'username'     => "min:3|unique_global:petugas,{$id}",
             'password'     => 'min:8',
-            'telp'         => 'min:5',
+            'telp'         => "min:5|unique_global:petugas,{$id}",
             'level'        => 'in:admin,petugas',
-            'email'        => 'email'
+            'email'        => "email|unique_global:petugas,{$id}"
         ]);
         $validation->validate();
         
@@ -76,7 +75,7 @@ class OfficerController {
         
         $id = (int)$_GET['id'];
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        $data = $this->validateUpdateInput($input);
+        $data = $this->validateUpdateInput($input, $id);
         
         $this->officerService->updateOfficer($id, $data);
         Response::success(AppMessages::SUCCESS_UPDATE_OFFICER);

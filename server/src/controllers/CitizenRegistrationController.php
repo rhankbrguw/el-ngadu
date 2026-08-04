@@ -20,13 +20,12 @@ class CitizenRegistrationController {
     public function registerCitizen(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         
-        $validator = new Validator();
-        $validation = $validator->make($input, [
+        $validation = \Core\AppValidator::make($input, [
             'nik' => 'required',
             'nama' => 'required',
-            'username' => 'required',
-            'email' => 'required|email',
-            'telp' => 'required',
+            'username' => 'required|unique_global',
+            'email' => 'required|email|unique_global',
+            'telp' => 'required|unique_global',
             'password' => 'required'
         ]);
         

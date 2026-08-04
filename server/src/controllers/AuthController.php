@@ -20,26 +20,7 @@ class AuthController {
         $this->authService = new AuthService();
     }
 
-    public function login(): void {
-        $input = json_decode(file_get_contents('php://input'), true) ?? [];
-        
-        $validator = new Validator();
-        $validation = $validator->make($input, [
-            'username' => 'required',
-            'password' => 'required'
-        ]);
-        $validation->validate();
 
-        if ($validation->fails()) {
-            throw new ValidationException(AppMessages::ERR_VALIDATION_FAILED, $validation->errors()->firstOfAll());
-        }
-        $data = $validation->getValidData();
-        
-        $result = $this->authService->legacyLogin($data['username'], $data['password']);
-        Auth::startSession();
-        Auth::login($result['user'], \Constants\Roles::MASYARAKAT);
-        Response::success(AppMessages::SUCCESS_LOGIN, ['user' => $result['public_user']]);
-    }
 
     public function unifiedLogin(): void {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -67,9 +48,12 @@ class AuthController {
         Auth::startSession();
         Auth::login($result['user'], $result['type']);
         
+        $public_user = $result['user'];
+        unset($public_user['password'], $public_user['otp_code'], $public_user['otp_expires_at'], $public_user['reset_token'], $public_user['reset_expires_at']);
+
         Response::success(
             \Constants\AppMessages::SUCCESS_LOGIN,
-            ['user' => $result['user']]
+            ['user' => $public_user]
         );
     }
 
