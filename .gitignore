@@ -1,0 +1,37 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environments
+.env
+.env.*
+!.env.example
+
+# Node / Frontend (Vite)
+client/node_modules/
+client/dist/
+client/build/
+client/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# PHP / Backend
+server/vendor/
+*.log
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads & Cache
+server/uploads/
+server/cache/*
+!server/cache/.gitkeep
+.agents/skills/
+

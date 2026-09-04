@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  client-checks:
+    name: CI/CD Pipeline / Client (React/Vite)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: ./client/package-lock.json
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run Linter
+      run: npm run lint
+      
+    - name: Build and Type Check
+      run: npm run build
+
+  server-checks:
+    name: CI/CD Pipeline / Backend (PHP)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        tools: composer
+        
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+      
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
+    - name: PHP Syntax Check
+      run: find src -name "*.php" -print0 | xargs -0 -n1 php -l
