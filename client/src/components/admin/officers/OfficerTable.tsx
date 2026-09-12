@@ -1,0 +1,92 @@
+import {
+ Table,
+ TableBody,
+ TableCell,
+ TableHead,
+ TableHeader,
+ TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Shield, User as UserIcon, Mail } from "lucide-react";
+import type { Petugas } from "@/types";
+import OfficerActionDropdown from "./OfficerActionDropdown";
+import { getLevelVariant, formatLevel } from "@/lib/officerUtils";
+import { APP_MESSAGES } from "@/lib/constants/messages";
+
+
+interface OfficerTableProps {
+ petugasList: Petugas[];
+ onEdit?: (petugas: Petugas) => void;
+ onDelete?: (id: number) => void;
+}
+
+export default function OfficerTable({
+  petugasList,
+  onEdit,
+  onDelete,
+}: OfficerTableProps) {
+  const list = Array.isArray(petugasList) ? petugasList : [];
+  return (
+    <div className="hidden md:block overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-center">{APP_MESSAGES.OFFICER.NAME}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.AUTH.USERNAME}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.AUTH.EMAIL_LABEL}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.COMMON.PHONE}</TableHead>
+            <TableHead className="text-center">{APP_MESSAGES.OFFICER.LEVEL}</TableHead>
+            {onEdit && onDelete && (
+              <TableHead className="text-center w-24">{APP_MESSAGES.COMMON.ACTION}</TableHead>
+            )}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {list.map((petugas) => (
+ <TableRow key={petugas.id_petugas}>
+ <TableCell className="text-center font-medium">
+ <div className="inline-flex items-center justify-center gap-1.5">
+ <UserIcon className="h-4 w-4 text-muted-foreground" />
+ {petugas.nama_petugas}
+ </div>
+ </TableCell>
+ <TableCell className="text-center">{petugas.username}</TableCell>
+ <TableCell className="text-center">
+ <div className="inline-flex items-center justify-center gap-1.5">
+ <Mail className="h-4 w-4 text-muted-foreground" />
+ {petugas.email || "-"}
+ </div>
+ </TableCell>
+ <TableCell className="text-center">
+ <div className="inline-flex items-center justify-center gap-1.5">
+ <Phone className="h-4 w-4 text-muted-foreground" />
+ {petugas.telp}
+ </div>
+ </TableCell>
+ <TableCell className="text-center">
+ <div className="inline-flex items-center justify-center">
+ <Badge
+ variant={getLevelVariant(petugas.level)}
+ className="gap-1"
+ >
+ <Shield className="h-3 w-3" />
+ {formatLevel(petugas.level)}
+ </Badge>
+ </div>
+ </TableCell>
+ {onEdit && onDelete && (
+ <TableCell className="text-center">
+ <OfficerActionDropdown
+ petugas={petugas}
+ onEdit={onEdit}
+ onDelete={onDelete}
+ />
+ </TableCell>
+ )}
+ </TableRow>
+ ))}
+ </TableBody>
+ </Table>
+ </div>
+ );
+}
