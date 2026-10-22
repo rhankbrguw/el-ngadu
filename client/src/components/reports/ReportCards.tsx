@@ -1,0 +1,99 @@
+import { useNavigate } from "react-router-dom";
+import {
+ Card,
+ CardContent,
+ CardHeader,
+ CardTitle,
+ CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import type { Report } from "@/types";
+import {
+ getStatusVariant,
+ formatDate,
+ formatStatus,
+} from "@/lib/complaintUtils";
+
+interface ReportCardsProps {
+ laporanList: Report[];
+}
+
+export default function ReportCards({ laporanList }: ReportCardsProps) {
+  const navigate = useNavigate();
+  const list = Array.isArray(laporanList) ? laporanList : [];
+ return (
+ <div className="space-y-3">
+ {list.map((item) => (
+ <Card
+ key={`laporan-card-${item.id}-${item.id_tanggapan || "null"}`}
+ className="w-full cursor-pointer hover:border-primary/50 hover:shadow-sm transition-all"
+ onClick={() => navigate(`/dashboard/complaints/${item.id}`)}
+ >
+ <CardHeader className="pb-3">
+ <div className="flex flex-col gap-2">
+ <div className="flex justify-between items-start gap-2">
+ <CardTitle className="text-sm font-semibold break-words line-clamp-2 flex-1">
+ {item.judul}
+ </CardTitle>
+ <Badge
+ variant={getStatusVariant(item.status)}
+ className="text-xs flex-shrink-0"
+ >
+ {formatStatus(item.status)}
+ </Badge>
+ </div>
+                  <CardDescription className="text-xs">
+                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      {item.kecamatan && (
+                        <span className="inline-flex items-center rounded-sm bg-muted px-1.5 py-0.5 text-[11px] font-medium text-foreground/80">
+                          📍 {item.kecamatan}
+                        </span>
+                      )}
+                      <span>{formatDate(item.tgl_pengaduan)}</span>
+                      <span>• <strong className="text-foreground/90">{item.nama_pelapor}</strong></span>
+                    </div>
+                  </CardDescription>
+ </div>
+ </CardHeader>
+ <CardContent className="pt-0">
+ <div className="space-y-3">
+ <div className="text-xs">
+ <p className="font-medium text-muted-foreground mb-1">
+ Pengaduan:
+ </p>
+ <p className="text-foreground line-clamp-3">{item.isi}</p>
+ </div>
+ <hr className="border-border" />
+ <div className="text-xs">
+ <p className="font-medium text-muted-foreground mb-2">
+ Response:
+ </p>
+ {item.isi_tanggapan ? (
+ <div className="space-y-2">
+ <div className="bg-muted/50 p-3 rounded-md border-l-2 border-primary/50">
+ <p className="text-foreground text-xs leading-relaxed">
+ {item.isi_tanggapan}
+ </p>
+ </div>
+ <div className="flex justify-between items-center text-xs text-muted-foreground">
+ <span className="font-medium">
+ {item.nama_petugas_penanggap}
+ </span>
+ <span>{formatDate(item.tgl_tanggapan)}</span>
+ </div>
+ </div>
+ ) : (
+ <div className="bg-muted/30 p-3 rounded-md text-center">
+ <p className="text-xs text-muted-foreground italic">
+ Belum ada tanggapan
+ </p>
+ </div>
+ )}
+ </div>
+ </div>
+ </CardContent>
+ </Card>
+ ))}
+ </div>
+ );
+}
